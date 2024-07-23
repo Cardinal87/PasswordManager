@@ -8,13 +8,13 @@ using Microsoft.Data.SqlClient;
 
 namespace PasswordManager.DataConnectors
 {
-    internal class DataBaseConnector : IDataConnector
+    internal class WebSitesTableConnector : IDataBaseConnector
     {
         public void Delete(int id)
         {
-            
-            SqlConnection connection = GetConnection();
-            SqlCommand cmd = new SqlCommand("DELETE FROM Resources WHERE Id = @Id", connection);
+
+            SqlConnection connection = IDataBaseConnector.GetConnection();
+            SqlCommand cmd = new SqlCommand("DELETE FROM WebSites WHERE Id = @Id", connection);
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
             connection.Close();
@@ -23,9 +23,9 @@ namespace PasswordManager.DataConnectors
 
         public List<Resource> Load()
         {
-            SqlConnection connection = GetConnection();
+            SqlConnection connection = IDataBaseConnector.GetConnection();
             List<Resource> resources = new List<Resource>();
-            SqlCommand cmd = new SqlCommand("SELECT * FROM Resoursces", connection);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM WebSites", connection);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -43,8 +43,8 @@ namespace PasswordManager.DataConnectors
 
         public void Save(Resource resourse)
         {
-            SqlConnection connection = GetConnection();
-            SqlCommand cmd = new SqlCommand("INSERT INTO Resources (Name, Login, Password) VALUES (@Name, @Loign, @Password",connection);
+            SqlConnection connection = IDataBaseConnector.GetConnection();
+            SqlCommand cmd = new SqlCommand("INSERT INTO WebSites (Name, Login, Password) VALUES (@Name, @Loign, @Password", connection);
             cmd.Parameters.AddWithValue("@Name", resourse.Name);
             cmd.Parameters.AddWithValue("@Login", resourse.Login);
             cmd.Parameters.AddWithValue("@Password", resourse.Password);
@@ -54,8 +54,8 @@ namespace PasswordManager.DataConnectors
 
         public void Update(Resource resourse)
         {
-            SqlConnection connection = GetConnection();
-            SqlCommand cmd = new SqlCommand("UPDATE Resources SET Name=@Name,Login=@Loign,Password=@Password WHERE Id=@Id", connection);
+            SqlConnection connection = IDataBaseConnector.GetConnection();
+            SqlCommand cmd = new SqlCommand("UPDATE WebSites SET Name=@Name,Login=@Loign,Password=@Password WHERE Id=@Id", connection);
             cmd.Parameters.AddWithValue("@Name", resourse.Name);
             cmd.Parameters.AddWithValue("@Login", resourse.Login);
             cmd.Parameters.AddWithValue("@Password", resourse.Password);
@@ -64,12 +64,6 @@ namespace PasswordManager.DataConnectors
             connection.Close();
         }
 
-        private SqlConnection GetConnection()
-        {
-            string connectionString = "Server=DESKTOP-SQHQMVO\\SQLEXPRESS;DataBase=PasswordManagers;TrustedConnection=True;";
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            return connection;
-        }
+        
     }
 }

@@ -1,6 +1,13 @@
-﻿namespace PasswordManager.ViewModels;
+﻿using Microsoft.Identity.Client;
 
-public partial class MainViewModel : ViewModelBase
+namespace PasswordManager.ViewModels;
+
+internal partial class MainViewModel : ViewModelBase
 {
-    public string Greeting => "Welcome to Avalonia!";
+    public MainViewModel(DataConnectors.IDataBaseConnector con)
+    {
+        PasMan = new PasswordManagerViewModel(con);
+    }
+    public PasswordManagerViewModel PasMan { get; }
+    
 }

@@ -4,9 +4,82 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:PasswordManager.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="900"
         x:Class="PasswordManager.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="PasswordManager">
-        <views:MainView />
+        Title="PasswordManager"
+		Height="800" Width="1200"
+		MinHeight="800" MinWidth="1200">
+
+	<Grid  ShowGridLines="True" Margin="0 120 0 0">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="350"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="45"></RowDefinition>
+			<RowDefinition Height="45"></RowDefinition>
+			<RowDefinition Height="45"></RowDefinition>
+			<RowDefinition Height="45"></RowDefinition>
+			<RowDefinition Height="45"></RowDefinition>
+			<RowDefinition Height="45"></RowDefinition>
+		</Grid.RowDefinitions>
+		
+		<Button
+			x:Name="AllEntries"
+			Content="Все Записи"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+			VerticalContentAlignment="Center"
+			Grid.Row="0">
+		</Button>
+		
+		<Button 
+			x:Name="WebSites"
+			Content="Веб-сайты"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+			VerticalContentAlignment="Center"
+			Margin="30 0 0 0 "
+			Grid.Row="1">
+		</Button>
+
+		<Button
+			x:Name="Apps"
+			Content="Приложения"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+			VerticalContentAlignment="Center"
+			Margin="30 0 0 0 "
+			Grid.Row="2">
+		</Button>
+
+		<Button
+			x:Name="Cards"
+			Content="Банковские карты"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+			VerticalContentAlignment="Center"
+			Margin="30 0 0 0 "
+			Grid.Row="3">
+		</Button>
+
+		<Button
+			x:Name="Notes"
+			Content="Заметки "
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Left"
+			VerticalContentAlignment="Center"
+			Margin="30 0 0 0 "
+			Grid.Row="4">
+		</Button>
+		
+	</Grid>
+	
+
 </Window>
