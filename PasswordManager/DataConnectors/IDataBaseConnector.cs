@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ namespace PasswordManager.DataConnectors
 {
     internal interface IDataBaseConnector
     {
-        public List<Resource> Load();
-        public void Save(Resource resourse);
-        public void Update(Resource resourse);
+        public List<WebSite> Load();
+        public void Save(WebSite resourse);
+        public void Update(WebSite resourse);
         public void Delete(int id);
         static public SqlConnection GetConnection()
         {

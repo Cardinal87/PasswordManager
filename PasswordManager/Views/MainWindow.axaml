@@ -11,73 +11,93 @@
 		Height="800" Width="1200"
 		MinHeight="800" MinWidth="1200">
 
-	<Grid  ShowGridLines="True" Margin="0 120 0 0">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="350"></ColumnDefinition>
-		</Grid.ColumnDefinitions>
-
-		<Grid.RowDefinitions>
-			<RowDefinition Height="45"></RowDefinition>
-			<RowDefinition Height="45"></RowDefinition>
-			<RowDefinition Height="45"></RowDefinition>
-			<RowDefinition Height="45"></RowDefinition>
-			<RowDefinition Height="45"></RowDefinition>
-			<RowDefinition Height="45"></RowDefinition>
-		</Grid.RowDefinitions>
+	<Grid  ShowGridLines="True">
 		
-		<Button
-			x:Name="AllEntries"
-			Content="Все Записи"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch"
-			HorizontalContentAlignment="Left"
-			VerticalContentAlignment="Center"
-			Grid.Row="0">
-		</Button>
-		
-		<Button 
-			x:Name="WebSites"
-			Content="Веб-сайты"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch"
-			HorizontalContentAlignment="Left"
-			VerticalContentAlignment="Center"
-			Margin="30 0 0 0 "
-			Grid.Row="1">
-		</Button>
+		<TabControl x:Name="Menu" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-		<Button
-			x:Name="Apps"
-			Content="Приложения"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch"
-			HorizontalContentAlignment="Left"
-			VerticalContentAlignment="Center"
-			Margin="30 0 0 0 "
-			Grid.Row="2">
-		</Button>
+			<Grid ShowGridLines="True"  Margin="0 120 0 0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="350"></ColumnDefinition>
+					<ColumnDefinition ></ColumnDefinition>
+				</Grid.ColumnDefinitions>
 
-		<Button
-			x:Name="Cards"
-			Content="Банковские карты"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch"
-			HorizontalContentAlignment="Left"
-			VerticalContentAlignment="Center"
-			Margin="30 0 0 0 "
-			Grid.Row="3">
-		</Button>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="45"></RowDefinition>
+					<RowDefinition Height="45"></RowDefinition>
+					<RowDefinition Height="45"></RowDefinition>
+					<RowDefinition Height="45"></RowDefinition>
+					<RowDefinition Height="45"></RowDefinition>
+					<RowDefinition Height="45"></RowDefinition>
+				</Grid.RowDefinitions>
+				
+				<TabItem x:Name="AllEntries" Grid.Row="0">
+					<TabItem.Header>
+						<TextBlock
+							Text="Все Заметки"
+							Grid.Row="0"
+							Grid.Column="0"
+							TextAlignment="Left">
+						</TextBlock>
+					</TabItem.Header>
+					<TabItem.Content>
+						
+					</TabItem.Content>
+				</TabItem>
+				<TabItem x:Name="WebSites" Grid.Row="1">
+					<TabItem.Header>
+						<TextBlock
+							Text="Сайты"
+							Grid.Row="1"
+							Margin="35 0 0 0"
+							TextAlignment="Left">
+						</TextBlock>
+					</TabItem.Header>
+					<TabItem.Content>
+						
+					</TabItem.Content>
+				</TabItem>
+				<TabItem x:Name="Apps"  Grid.Row="2">
+					<TabItem.Header >
+						<TextBlock 
+							Text="Приложения"
+							Grid.Row="2"
+							Margin="35 0 0 0"
+							TextAlignment="Left">
+						</TextBlock>
+					</TabItem.Header>
+					<TabItem.Content>
 
-		<Button
-			x:Name="Notes"
-			Content="Заметки "
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch"
-			HorizontalContentAlignment="Left"
-			VerticalContentAlignment="Center"
-			Margin="30 0 0 0 "
-			Grid.Row="4">
-		</Button>
+					</TabItem.Content>
+				</TabItem>
+				<TabItem x:Name="Cards"  Grid.Row="3">
+					<TabItem.Header>
+						<TextBlock
+							Text="Банковские карты"
+							Grid.Row="3"
+							Margin="35 0 0 0"
+							TextAlignment="Left">
+						</TextBlock>
+					</TabItem.Header>
+					<TabItem.Content>
+
+					</TabItem.Content>
+				</TabItem>
+				<TabItem x:Name="Notes"  Grid.Row="4" HorizontalAlignment="Stretch">
+					<TabItem.Header>
+						<TextBlock
+							Text="Заметки"
+							Grid.Row="4"
+							Margin="35 0 0 0"
+							TextAlignment="Left">
+						</TextBlock>
+					</TabItem.Header>
+					<TabItem.Content>
+
+					</TabItem.Content>
+				</TabItem>
+				
+			</Grid>
+		</TabControl>
 		
 	</Grid>
 	

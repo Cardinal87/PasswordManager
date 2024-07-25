@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PasswordManager
 {
-    internal class Resource
+    internal class WebSite
     {
-        public Resource(int id, string name, string? login, string password)
+        public WebSite(int id, string name, string? login, string password)
         {
             Name = name;
             Login = login;

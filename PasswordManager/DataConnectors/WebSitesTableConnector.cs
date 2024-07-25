@@ -21,10 +21,10 @@ namespace PasswordManager.DataConnectors
 
         }
 
-        public List<Resource> Load()
+        public List<WebSite> Load()
         {
             SqlConnection connection = IDataBaseConnector.GetConnection();
-            List<Resource> resources = new List<Resource>();
+            List<WebSite> resources = new List<WebSite>();
             SqlCommand cmd = new SqlCommand("SELECT * FROM WebSites", connection);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -33,7 +33,7 @@ namespace PasswordManager.DataConnectors
                 string name = reader.GetString(1);
                 string? login = reader.GetString(2);
                 string password = reader.GetString(3);
-                Resource res = new Resource(id, name, login, password);
+                WebSite res = new WebSite(id, name, login, password);
                 resources.Add(res);
             }
             reader.Close();
@@ -41,7 +41,7 @@ namespace PasswordManager.DataConnectors
             return resources;
         }
 
-        public void Save(Resource resourse)
+        public void Save(WebSite resourse)
         {
             SqlConnection connection = IDataBaseConnector.GetConnection();
             SqlCommand cmd = new SqlCommand("INSERT INTO WebSites (Name, Login, Password) VALUES (@Name, @Loign, @Password", connection);
@@ -52,7 +52,7 @@ namespace PasswordManager.DataConnectors
             connection.Close();
         }
 
-        public void Update(Resource resourse)
+        public void Update(WebSite resourse)
         {
             SqlConnection connection = IDataBaseConnector.GetConnection();
             SqlCommand cmd = new SqlCommand("UPDATE WebSites SET Name=@Name,Login=@Loign,Password=@Password WHERE Id=@Id", connection);

@@ -6,8 +6,8 @@ internal partial class MainViewModel : ViewModelBase
 {
     public MainViewModel(DataConnectors.IDataBaseConnector con)
     {
-        PasMan = new PasswordManagerViewModel(con);
+        PasMan = new WebSitesViewModel(con);
     }
-    public PasswordManagerViewModel PasMan { get; }
+    public WebSitesViewModel PasMan { get; }
     
 }
