@@ -4,10 +4,12 @@ namespace PasswordManager.ViewModels;
 
 internal partial class MainViewModel : ViewModelBase
 {
+    public MainViewModel() { }
+    
     public MainViewModel(DataConnectors.IDataBaseConnector con)
     {
-        PasMan = new WebSitesViewModel(con);
+        WebSitesVm = new WebSitesViewModel(con);
     }
-    public WebSitesViewModel PasMan { get; }
+    public WebSitesViewModel WebSitesVm { get; }
     
 }

@@ -9,7 +9,9 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="PasswordManager"
 		Height="800" Width="1200"
-		MinHeight="800" MinWidth="1200">
+		MinHeight="800" MinWidth="1200" 
+		x:DataType="vm:MainViewModel"
+		>
 
 	<Grid  ShowGridLines="True">
 		
@@ -53,7 +55,7 @@
 						</TextBlock>
 					</TabItem.Header>
 					<TabItem.Content>
-						
+						<vm:WebSitesViewModel/>
 					</TabItem.Content>
 				</TabItem>
 				<TabItem x:Name="Apps"  Grid.Row="2">

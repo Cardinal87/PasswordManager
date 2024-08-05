@@ -10,6 +10,7 @@ namespace PasswordManager.DataConnectors
 {
     internal interface IDataBaseConnector
     {
+        
         public List<WebSite> Load();
         public void Save(WebSite resourse);
         public void Update(WebSite resourse);

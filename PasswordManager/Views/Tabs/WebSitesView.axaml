@@ -1,0 +1,112 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="900"
+			 xmlns:views="clr-namespace:PasswordManager.Views"
+			 xmlns:vm="using:PasswordManager.ViewModels"
+			 x:Class="PasswordManager.Views.WebSitesView"
+			 x:DataType="vm:WebSitesViewModel">
+	
+	
+	
+	<Grid >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="350"></ColumnDefinition>
+			<ColumnDefinition ></ColumnDefinition>
+			<ColumnDefinition Width="50"></ColumnDefinition>
+			<ColumnDefinition Width="320"></ColumnDefinition>
+			
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="100"></RowDefinition>
+			<RowDefinition Height="50"></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+
+		<Button x:Name="Add"
+			Grid.Row="1"
+			Grid.Column="2"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch">
+			
+		</Button>
+
+		<TextBox x:Name="Find"
+			Grid.Row="1"
+			Grid.Column="3"
+			Watermark="Find"
+			HorizontalContentAlignment="Left"
+			VerticalContentAlignment="Center">
+		</TextBox>
+
+		<ListBox x:Name="DataList "
+			Grid.Row="2"
+			Grid.Column="1" Grid.ColumnSpan="3"
+			ItemsSource="{Binding WebSites}">
+			<ListBox.ItemTemplate  >
+				<DataTemplate >
+					<Grid ShowGridLines="True" Width="910">
+						
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="400"></ColumnDefinition>
+							<ColumnDefinition Width="300"></ColumnDefinition>
+							<ColumnDefinition Width="*"></ColumnDefinition>
+							<ColumnDefinition Width="*"></ColumnDefinition>
+							<ColumnDefinition Width="*"></ColumnDefinition>
+
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="30"></RowDefinition>
+							<RowDefinition Height="30"></RowDefinition>
+							<RowDefinition Height="30"></RowDefinition>
+							<RowDefinition Height="30"></RowDefinition>
+							<RowDefinition Height="30"></RowDefinition>
+							<RowDefinition Height="40"></RowDefinition>
+							
+						</Grid.RowDefinitions>
+						
+						<TextBlock Text="Name:" Grid.Column="0" Grid.Row="0"
+								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+						<TextBlock Text="Link:" Grid.Column="1" Grid.Row="0"
+								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+						
+						<Button x:Name="Favorite" Grid.Row="0" Grid.Column="2"
+								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
+								/>
+						<Button x:Name="Change" Grid.Row="0" Grid.Column="3"
+								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
+								Command="{Binding Change}"/>
+						<Button x:Name="Delete" Grid.Row="0" Grid.Column="4"
+								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"/>
+
+						<TextBlock Text="Login" Grid.Column="0" Grid.Row="1"
+								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+						<TextBlock Text="{Binding Login}" Grid.Column="0" Grid.Row="2"
+								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+						<TextBlock Text="Password" Grid.Column="0" Grid.Row="3"
+								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+						<TextBlock Text="{Binding Password}" Grid.Column="0" Grid.Row="4"
+								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+						<Button x:Name="CopyLogin" Grid.Row="2" Grid.Column="2"
+								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
+								Command="{Binding CopyToClipboard}" CommandParameter="login"/>
+						<Button x:Name="CopyPassword" Grid.Row="4" Grid.Column="2"
+								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
+								Command="{Binding CopyToClipboard}" CommandParameter="password"/>
+						<Button x:Name="GoToWebSite" Grid.Row="5" Grid.Column="1" Content="Go To WebSite"
+								HorizontalAlignment="Left" VerticalAlignment="Stretch" HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center" 
+								Command="{Binding GoToWebSite}" />
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		
+		
+		
+	</Grid>
+
+</UserControl>

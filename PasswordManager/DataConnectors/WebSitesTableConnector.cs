@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using PasswordManager.Views;
 
 namespace PasswordManager.DataConnectors
 {
     internal class WebSitesTableConnector : IDataBaseConnector
     {
+        
         public void Delete(int id)
         {
 
@@ -18,6 +20,7 @@ namespace PasswordManager.DataConnectors
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
             connection.Close();
+            
 
         }
 

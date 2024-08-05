@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace PasswordManager;
+namespace PasswordManager.Views;
 
 public partial class WebSitesView : UserControl
 {
@@ -10,4 +10,6 @@ public partial class WebSitesView : UserControl
     {
         InitializeComponent();
     }
+
+    
 }

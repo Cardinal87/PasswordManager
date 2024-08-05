@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Input;
+using PasswordManager;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,16 +9,32 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels
 {
-    internal class WebSitesViewModel : ViewModelBase
+    internal partial class WebSitesViewModel : ViewModelBase
     {
+        public WebSitesViewModel() { }
+        
+
         public WebSitesViewModel(DataConnectors.IDataBaseConnector con)
         {
             connector = con;
-            WebSites = new ObservableCollection<WebSite>(connector.Load());
+            ObservableCollection<WebSitesItemViewModel> websites = new ObservableCollection<WebSitesItemViewModel>();
+            foreach (var a in con.Load())
+            {
+                WebSitesItemViewModel item = new WebSitesItemViewModel(a);
+                item.DeleteCommand = new RelayCommand<int>(Delete);
+                websites.Add(item);
+            }
+            WebSites = websites;
+            
         }
         private DataConnectors.IDataBaseConnector connector;
-        public ObservableCollection<WebSite> WebSites { get; private set; } 
-
+        public ObservableCollection<WebSitesItemViewModel> WebSites { get; private set; }
+        private void Delete(int id)
+        {
+            WebSites.Remove(WebSites.First(x => x.Id == id));
+            connector.Delete(id);
+        }
         
-    }
+    }    
+    
 }
