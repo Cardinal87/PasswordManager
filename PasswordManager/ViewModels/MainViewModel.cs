@@ -1,4 +1,6 @@
 ﻿using Microsoft.Identity.Client;
+using PasswordManager.ViewModels.WebSiteViewModels;
+
 
 namespace PasswordManager.ViewModels;
 
@@ -10,6 +12,6 @@ internal partial class MainViewModel : ViewModelBase
     {
         WebSitesVm = new WebSitesViewModel(con);
     }
-    public WebSitesViewModel WebSitesVm { get; }
+    public  WebSitesViewModel WebSitesVm { get; }
     
 }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels
+namespace PasswordManager.ViewModels.WebSiteViewModels
 {
     internal partial class WebSitesViewModel : ViewModelBase
     {
@@ -18,13 +18,13 @@ namespace PasswordManager.ViewModels
         {
             connector = con;
             ObservableCollection<WebSitesItemViewModel> websites = new ObservableCollection<WebSitesItemViewModel>();
-            foreach (var a in con.Load())
-            {
-                WebSitesItemViewModel item = new WebSitesItemViewModel(a);
-                item.DeleteCommand = new RelayCommand<int>(Delete);
-                websites.Add(item);
-            }
-            WebSites = websites;
+            //foreach (var a in con.Load())
+            //{
+            //    WebSitesItemViewModel item = new WebSitesItemViewModel(a);
+            //    item.DeleteCommand = new RelayCommand<int>(Delete);
+            //    websites.Add(item);
+            //}
+            //WebSites = websites;
             
         }
         private DataConnectors.IDataBaseConnector connector;

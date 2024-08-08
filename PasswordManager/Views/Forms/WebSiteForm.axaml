@@ -1,0 +1,99 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="550"
+        x:Class="PasswordManager.Views.Forms.WebSiteForm"
+        Title="Form" 
+		xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
+		Height="550" Width="550"
+		MinHeight="550" MaxHeight="550"
+		MinWidth="550" MaxWidth="550"
+		x:DataType="vm:WebSiteFormViewModel">
+
+
+	<Grid >
+		<Grid.RowDefinitions>
+			<RowDefinition Height="60"></RowDefinition>
+			<RowDefinition ></RowDefinition>
+			<RowDefinition Height="40"></RowDefinition>
+			
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition ></ColumnDefinition>
+			
+		</Grid.ColumnDefinitions>
+		
+		<Grid Grid.Row="0" Grid.Column="0" >
+			<Grid.RowDefinitions>
+				<RowDefinition Height="60"></RowDefinition>
+				<RowDefinition ></RowDefinition>
+				<RowDefinition ></RowDefinition>
+
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="250"></ColumnDefinition>
+				<ColumnDefinition Width="35"></ColumnDefinition>
+				<ColumnDefinition ></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<TextBlock x:Name="NameOfWebSite" Text="New WebSite" HorizontalAlignment="Left" VerticalAlignment="Center"
+					   Grid.Column="0" Grid.Row="0" Margin="10 0 0 0"/>
+			<Button x:Name="ChangeWebSiteName" Margin="10 13 0 13" Grid.Column="1" Grid.Row="0"
+					HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<Button x:Name="Close" Margin="0 0 0 40" Grid.Column="2" Grid.Row="0"
+					HorizontalAlignment="Right" VerticalAlignment="Stretch" />
+		</Grid>
+		
+		
+		<Grid Grid.Row="1" Grid.Column="0" >
+			<Grid.RowDefinitions>
+				<RowDefinition Height="100"></RowDefinition>
+				<RowDefinition Height="180"></RowDefinition>
+				<RowDefinition ></RowDefinition>
+				
+
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="130"></ColumnDefinition>
+				<ColumnDefinition ></ColumnDefinition>
+				
+			</Grid.ColumnDefinitions>
+			<TextBlock Text="WebSite Adress" HorizontalAlignment="Left" VerticalAlignment="Center"
+					   Grid.Column="0" Grid.Row="0" Margin="10 0 0 0"/>
+			<TextBox Watermark="WebSiteAddress" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+					 HorizontalContentAlignment="Left" Text="{Binding Address}"/>
+			
+			<TextBlock Text="Account" HorizontalAlignment="Left" VerticalAlignment="Top"
+					   Grid.Column="0" Grid.Row="1" Margin="20 50 0 0 "/>
+			
+			<TextBlock Text="Login" HorizontalAlignment="Center" VerticalAlignment="Center"
+					   Grid.Column="0" Grid.Row="1" Margin="0 80 0 0"/>
+			<TextBox Watermark="Login" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+					 HorizontalContentAlignment="Left" Margin="0 80 50 0" Text="{Binding Password}"/>
+			
+			<TextBlock Text="Password" HorizontalAlignment="Center" VerticalAlignment="Center"
+					   Grid.Column="0" Grid.Row="2" Margin="0 0 0 90"/>
+			<TextBox Watermark="Password" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+					 HorizontalContentAlignment="Left" Text="{Binding Password}"  Margin="0 0 50 90"/>
+		</Grid>
+
+		<Grid Grid.Column="0" Grid.Row="2" >
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition></ColumnDefinition>
+				<ColumnDefinition Width="150"></ColumnDefinition>
+				<ColumnDefinition Width="150"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition></RowDefinition>
+			</Grid.RowDefinitions>
+			
+			<Button Content="Add" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+					HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding Add}"/>
+			<Button Content="Cancel" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+					HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+			
+		</Grid>
+	</Grid>
+	
+
+</Window>

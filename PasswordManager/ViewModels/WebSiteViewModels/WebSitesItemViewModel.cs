@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 
-namespace PasswordManager.ViewModels
+namespace PasswordManager.ViewModels.WebSiteViewModels
 {
     internal partial class WebSitesItemViewModel : ViewModelBase 
     {
@@ -32,7 +32,8 @@ namespace PasswordManager.ViewModels
         public bool Favourite { get; private set; }
 
         
-        public RelayCommand<int> DeleteCommand; 
+        public RelayCommand<int> DeleteCommand;
+        public RelayCommand<int> Change;
 
         [RelayCommand]
         public async void CopyToClipboard(string name)

@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="900"
 			 xmlns:views="clr-namespace:PasswordManager.Views"
-			 xmlns:vm="using:PasswordManager.ViewModels"
+			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
 			 x:Class="PasswordManager.Views.WebSitesView"
-			 x:DataType="vm:WebSitesViewModel">
+			 x:DataType="vm:WebSitesViewModel"
+			 Height="900" Width="1300">
 	
 	
 	
@@ -76,7 +77,7 @@
 								/>
 						<Button x:Name="Change" Grid.Row="0" Grid.Column="3"
 								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
-								Command="{Binding Change}"/>
+								/>
 						<Button x:Name="Delete" Grid.Row="0" Grid.Column="4"
 								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"/>
 
