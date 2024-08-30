@@ -1,104 +1,30 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:PasswordManager.ViewModels"
+		xmlns:web ="using:PasswordManager.ViewModels.WebSiteViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:PasswordManager.Views"
-        mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="900"
+        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
         x:Class="PasswordManager.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="PasswordManager"
-		Height="800" Width="1300"
-		MinHeight="800" MinWidth="1300" 
+		Height="700" Width="1100"
+		MinHeight="700" MinWidth="1100" 
 		x:DataType="vm:MainViewModel">
 
-	<Grid  ShowGridLines="True">
+	<Grid RowDefinitions="100,50,50,50,50,50,*" ColumnDefinitions="200,*" ShowGridLines="True">
 		
-		<TabControl x:Name="Menu" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
-			<Grid ShowGridLines="True"  Margin="0 120 0 0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="350"></ColumnDefinition>
-					<ColumnDefinition ></ColumnDefinition>
-				</Grid.ColumnDefinitions>
-
-				<Grid.RowDefinitions>
-					<RowDefinition Height="45"></RowDefinition>
-					<RowDefinition Height="45"></RowDefinition>
-					<RowDefinition Height="45"></RowDefinition>
-					<RowDefinition Height="45"></RowDefinition>
-					<RowDefinition Height="45"></RowDefinition>
-					<RowDefinition Height="45"></RowDefinition>
-				</Grid.RowDefinitions>
-				
-				<TabItem x:Name="AllEntries" Grid.Row="0">
-					<TabItem.Header>
-						<TextBlock
-							Text="Все Заметки"
-							Grid.Row="0"
-							Grid.Column="0"
-							TextAlignment="Left">
-						</TextBlock>
-					</TabItem.Header>
-					<TabItem.Content>
-						
-					</TabItem.Content>
-				</TabItem>
-				<TabItem x:Name="WebSites" Grid.Row="1">
-					<TabItem.Header>
-						<TextBlock
-							Text="Сайты"
-							Grid.Row="1"
-							Margin="35 0 0 0"
-							TextAlignment="Left">
-						</TextBlock>
-					</TabItem.Header>
-					<TabItem.Content>
-						
-					</TabItem.Content>
-				</TabItem>
-				<TabItem x:Name="Apps"  Grid.Row="2">
-					<TabItem.Header >
-						<TextBlock 
-							Text="Приложения"
-							Grid.Row="2"
-							Margin="35 0 0 0"
-							TextAlignment="Left">
-						</TextBlock>
-					</TabItem.Header>
-					<TabItem.Content>
-
-					</TabItem.Content>
-				</TabItem>
-				<TabItem x:Name="Cards"  Grid.Row="3">
-					<TabItem.Header>
-						<TextBlock
-							Text="Банковские карты"
-							Grid.Row="3"
-							Margin="35 0 0 0"
-							TextAlignment="Left">
-						</TextBlock>
-					</TabItem.Header>
-					<TabItem.Content>
-
-					</TabItem.Content>
-				</TabItem>
-				<TabItem x:Name="Notes"  Grid.Row="4" HorizontalAlignment="Stretch">
-					<TabItem.Header>
-						<TextBlock
-							Text="Заметки"
-							Grid.Row="4"
-							Margin="35 0 0 0"
-							TextAlignment="Left">
-						</TextBlock>
-					</TabItem.Header>
-					<TabItem.Content>
-
-					</TabItem.Content>
-				</TabItem>
-				
-			</Grid>
-		</TabControl>
+		<ContentControl Content="{Binding CurrentPage}" Grid.Column="1" Grid.RowSpan="7" Grid.Row="0"/>
+		<Button Content="AllEntries" Grid.Column="0" Grid.Row="1" Command="{Binding SetCurrentPage}" CommandParameter="{Binding AllEntriesVm}"
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+		<Button Content="WebSites" Grid.Column="0" Grid.Row="2" Command="{Binding SetCurrentPage}" CommandParameter="{Binding WebSitesVm}" 
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+		<Button Content="Apps" Grid.Column="0" Grid.Row="3" 
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 		
 	</Grid>
 	

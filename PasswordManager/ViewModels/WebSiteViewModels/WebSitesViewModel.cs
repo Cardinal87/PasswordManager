@@ -11,6 +11,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 {
     internal partial class WebSitesViewModel : ViewModelBase
     {
+        
         public WebSitesViewModel() { }
         
 
@@ -27,6 +28,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             //WebSites = websites;
             
         }
+        public WebSiteFormViewModel Form { get; private set; }
         private DataConnectors.IDataBaseConnector connector;
         public ObservableCollection<WebSitesItemViewModel> WebSites { get; private set; }
         private void Delete(int id)
@@ -35,6 +37,9 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             connector.Delete(id);
         }
         
+
+
+
     }    
     
 }

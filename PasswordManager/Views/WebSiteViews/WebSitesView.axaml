@@ -2,32 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="900"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
 			 xmlns:views="clr-namespace:PasswordManager.Views"
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
-			 x:Class="PasswordManager.Views.WebSitesView"
+			 x:Class="PasswordManager.Views.WebSiteViews.WebSitesView"
 			 x:DataType="vm:WebSitesViewModel"
-			 Height="900" Width="1300">
+			 Height="700" Width="900">
 	
 	
 	
-	<Grid >
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="350"></ColumnDefinition>
-			<ColumnDefinition ></ColumnDefinition>
-			<ColumnDefinition Width="50"></ColumnDefinition>
-			<ColumnDefinition Width="320"></ColumnDefinition>
-			
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="100"></RowDefinition>
-			<RowDefinition Height="50"></RowDefinition>
-			<RowDefinition></RowDefinition>
-		</Grid.RowDefinitions>
+	<Grid ColumnDefinitions="*,50,320" RowDefinitions="100,50,*" >
+		
+		
 
 		<Button x:Name="Add"
 			Grid.Row="1"
-			Grid.Column="2"
+			Grid.Column="1"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch">
 			
@@ -35,7 +25,7 @@
 
 		<TextBox x:Name="Find"
 			Grid.Row="1"
-			Grid.Column="3"
+			Grid.Column="2"
 			Watermark="Find"
 			HorizontalContentAlignment="Left"
 			VerticalContentAlignment="Center">
@@ -43,29 +33,12 @@
 
 		<ListBox x:Name="DataList "
 			Grid.Row="2"
-			Grid.Column="1" Grid.ColumnSpan="3"
+			Grid.Column="0" Grid.ColumnSpan="3"
 			ItemsSource="{Binding WebSites}">
 			<ListBox.ItemTemplate  >
 				<DataTemplate >
-					<Grid ShowGridLines="True" Width="910">
+					<Grid ShowGridLines="True" Width="910" ColumnDefinitions="400,300,*,*,*" RowDefinitions="30,30,30,30,30,40">
 						
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="400"></ColumnDefinition>
-							<ColumnDefinition Width="300"></ColumnDefinition>
-							<ColumnDefinition Width="*"></ColumnDefinition>
-							<ColumnDefinition Width="*"></ColumnDefinition>
-							<ColumnDefinition Width="*"></ColumnDefinition>
-
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="30"></RowDefinition>
-							<RowDefinition Height="30"></RowDefinition>
-							<RowDefinition Height="30"></RowDefinition>
-							<RowDefinition Height="30"></RowDefinition>
-							<RowDefinition Height="30"></RowDefinition>
-							<RowDefinition Height="40"></RowDefinition>
-							
-						</Grid.RowDefinitions>
 						
 						<TextBlock Text="Name:" Grid.Column="0" Grid.Row="0"
 								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
