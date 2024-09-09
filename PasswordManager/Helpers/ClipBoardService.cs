@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Helpers
 {
-    internal static class ClipBoard
+    internal class ClipBoardService : IClipBoardService
     {
-        public static IClipboard GetClipBoard()
+        private static IClipboard GetClipBoard()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } window })
             {
@@ -20,9 +20,10 @@ namespace PasswordManager.Helpers
             else return null!;
         }
 
-
-
-
-
+        public void SaveToClipBoard(string text)
+        {
+            var clipboard = GetClipBoard();
+            clipboard.SetTextAsync(text);
+        }
     }
 }

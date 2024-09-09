@@ -9,21 +9,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
+using PasswordManager.Helpers;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
     internal partial class WebSitesItemViewModel : ViewModelBase 
     {
         private WebSite model;
-        private IClipboard clipboard = Helpers.ClipBoard.GetClipBoard();
-        public WebSitesItemViewModel(WebSite model)
+        private IClipBoardService clipBoardService;
+        public WebSitesItemViewModel(WebSite model, IClipBoardService clipBoardService, RelayCommand<int> deleteCommand, RelayCommand<int> changeCommand)
         {
             this.model = model;
             Id = model.Id;
             Name = model.Name;
             Login = model.Login;
             Password = model.Password;
+            this.clipBoardService = clipBoardService; 
+            DeleteCommand = deleteCommand;
+            ChangeCommand = changeCommand;
         }
         public int Id { get; private set; }
         public string Name { get; private set; }
@@ -33,19 +36,12 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         
         public RelayCommand<int> DeleteCommand;
-        public RelayCommand<int> Change;
+        public RelayCommand<int> ChangeCommand;
 
         [RelayCommand]
-        public async void CopyToClipboard(string name)
+        public void CopyToClipboard(string text)
         {
-            if (name == "login")
-            {
-                await clipboard.SetTextAsync(Login);
-            }
-            else if (name == "password")
-            {
-                await clipboard.SetTextAsync(Password);
-            }
+            clipBoardService.SaveToClipBoard(text);
         }
         
 
