@@ -15,11 +15,11 @@ namespace PasswordManager.Helpers
     {
         public Control? Build(object? param)
         {
-            var name = param.GetType().FullName.Replace("ViewModel", "View");
+            var name = param!.GetType().FullName!.Replace("ViewModel", "View");
             var type = Type.GetType(name);
             if (type != null)
             {
-                return (Control)Activator.CreateInstance(type);
+                return (Control)Activator.CreateInstance(type)!;
             }
             else
             {

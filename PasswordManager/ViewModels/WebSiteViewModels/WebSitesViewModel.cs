@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PasswordManager;
+using PasswordManager.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +29,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             //}
             //WebSites = websites;
             
+            
         }
         public WebSiteFormViewModel Form { get; private set; }
         private DataConnectors.IDataBaseConnector connector;
@@ -37,7 +40,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             connector.Delete(id);
         }
         
+        public void ShowDialog()
+        {
+            
 
+        }
 
 
     }    

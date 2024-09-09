@@ -17,7 +17,7 @@ namespace PasswordManager.Helpers
             {
                 return window.Clipboard!;
             }
-            else return null;
+            else return null!;
         }
 
 

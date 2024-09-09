@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
-    internal partial class WebSiteFormViewModel : ViewModelBase
+    internal partial class WebSiteFormViewModel : DialogViewModelBase
     {
         public WebSiteFormViewModel()
         {
