@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.Helpers;
+using PasswordManager.Models;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
@@ -33,6 +34,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public string? Login { get; private set; }
         public string Password { get; private set; }
         public bool Favourite { get; private set; }
+        public string WebAddress { get; private set; }
 
         
         public RelayCommand<int> DeleteCommand;

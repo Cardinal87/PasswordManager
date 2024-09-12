@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.Data.SqlClient;
+using PasswordManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

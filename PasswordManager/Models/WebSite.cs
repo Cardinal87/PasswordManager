@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager
+namespace PasswordManager.Models
 {
     internal class WebSite
     {
@@ -16,7 +16,7 @@ namespace PasswordManager
             Id = id;
         }
 
-        public int Id { get;private set; }
+        public int Id { get; private set; }
         public string Name { get; private set; }
         public string? Login { get; private set; }
         public string Password { get; private set; }

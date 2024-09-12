@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using PasswordManager.Views;
+using PasswordManager.Models;
 
 namespace PasswordManager.DataConnectors
 {
