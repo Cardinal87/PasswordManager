@@ -3,13 +3,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="550"
-        x:Class="PasswordManager.Views.WebSiteViews.WebSiteDialog"
+        x:Class="PasswordManager.Views.WebSiteViews.WebSiteDialogView"
         Title="Form" 
 		xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
 		Height="550" Width="550"
 		MinHeight="550" MaxHeight="550"
 		MinWidth="550" MaxWidth="550"
-		x:DataType="vm:WebSiteFormViewModel">
+		x:DataType="vm:WebSiteDialogViewModel">
 
 
 	<Grid RowDefinitions="60,*,40" ColumnDefinitions="*">
@@ -32,7 +32,7 @@
 			<TextBlock Text="WebSite Adress" HorizontalAlignment="Left" VerticalAlignment="Center"
 					   Grid.Column="0" Grid.Row="0" Margin="10 0 0 0"/>
 			<TextBox Watermark="WebSiteAddress" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch"
-					 HorizontalContentAlignment="Left" Text="{Binding Address, Mode=TwoWay}"/>
+					 HorizontalContentAlignment="Left" Text="{Binding WebAddress, Mode=TwoWay}"/>
 			
 			<TextBlock Text="Account" HorizontalAlignment="Left" VerticalAlignment="Top"
 					   Grid.Column="0" Grid.Row="1" Margin="20 50 0 0 "/>

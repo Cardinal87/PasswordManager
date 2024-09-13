@@ -6,32 +6,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PasswordManager.Helpers
 {
     internal class DialogService : IDialogService
     {
+        private List<Window?> openWindows = [];
+        
         private void RegisterView(IDialogViewModel viewmodel, Window dialog) => dialog.DataContext = viewmodel;
         
         
         public void OpenDialog(IDialogViewModel DialogVm)
         {
             Window owner = ((IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!)!.MainWindow!;
-            var dialog = CreateWindow(DialogVm);
+            Window dialog = CreateWindow(DialogVm);
+            openWindows.Add(dialog);
             RegisterView(DialogVm, dialog);
             dialog.ShowDialog(owner);
         }
 
         private Window CreateWindow(IDialogViewModel viewmodel)
         {
-            string name = viewmodel.GetType().FullName!.Replace("ViewModel", "");
+            string name = viewmodel.GetType().FullName!.Replace( "ViewModel", "View");
             var type = Type.GetType(name);
             if (type != null)
             {
-                return (Window)Activator.CreateInstance(type)!;
+                Window win = (Window)Activator.CreateInstance(type)!;
+                return win;
             }
             else throw new Exception();
         }
+
+        public void CloseDialog(IDialogViewModel dialogVM)
+        {
+            Window? win = openWindows.FirstOrDefault(x => x!.DataContext == dialogVM);
+            if (win != null)
+            {
+                win.Close();
+                openWindows.Remove(win);
+            }
+        }
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Avalonia.Markup.Xaml.MarkupExtensions;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PasswordManager;
 using PasswordManager.Helpers;
@@ -21,29 +22,35 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public WebSitesViewModel() { }
         
 
-        public WebSitesViewModel(DataConnectors.IDataBaseConnector con)
+        public WebSitesViewModel(DataConnectors.IDataBaseConnector con, IDialogService dialogService, IClipBoardService clipboard)
         {
             connector = con;
-            ObservableCollection<WebSitesItemViewModel> websites = new ObservableCollection<WebSitesItemViewModel>();
-            //foreach (var a in con.Load())d
-            //{
-            //    WebSitesItemViewModel item = new WebSitesItemViewModel(a);
-            //    item.DeleteCommand = new RelayCommand<int>(Delete);
-            //    websites.Add(item);
-            //}
-            //WebSites = websites;
+            this.dialogService = dialogService;
+            this.clipboard = clipboard;
+            ShowDialogCommand = new RelayCommand(ShowDialog);
+            DeleteCommand = new RelayCommand<int>(Delete);
+            ChangeCommand = new RelayCommand<int>(Change);
             
-            
+            WebSites =  new ObservableCollection<WebSitesItemViewModel>();
+            LoadViewModelsList();  
+
+
         }
+        private IClipBoardService clipboard;
         private IDialogService dialogService;
         private DataConnectors.IDataBaseConnector connector;
         public WebSiteDialogViewModel Dialog { get; private set; }
         public ObservableCollection<WebSitesItemViewModel> WebSites { get; private set; }
 
-        public RelayCommand DeleteCommand;
+        public RelayCommand<int> DeleteCommand;
         public RelayCommand ShowDialogCommand;
-        public RelayCommand ChangeCommand;
+        public RelayCommand<int> ChangeCommand;
         
+        
+        private void Change(int id)
+        {
+
+        }
         
         private void Delete(int id)
         {
@@ -51,8 +58,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             // update WebSites list
         }
 
-        public void ShowDialog() => dialogService.OpenDialog(Dialog);
-        
+        public void ShowDialog()
+        {
+            Dialog = new WebSiteDialogViewModel();
+            dialogService.OpenDialog(Dialog);
+        }
         public void GetDialogResult(object sender, DialogResultEventArgs e)
         {
             if (e.DialogResult)
@@ -62,6 +72,16 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                 WebSite model = new WebSite(0, vm.Name!, vm.Login, vm.Password!);
                 // update WebSites list
 
+            }
+            dialogService.CloseDialog(Dialog);
+        }
+
+        private void LoadViewModelsList()
+        {
+            foreach (var a in connector.Load())
+            {
+                WebSitesItemViewModel item = new WebSitesItemViewModel(a, clipboard, DeleteCommand, ChangeCommand);
+                WebSites.Add(item);
             }
         }
 

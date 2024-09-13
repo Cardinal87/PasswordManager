@@ -22,11 +22,13 @@ public partial class App : Application
         BindingPlugins.DataValidators.RemoveAt(0);
 
         DataConnectors.WebSitesTableConnector dbConnector = new DataConnectors.WebSitesTableConnector();
+        Helpers.ClipBoardService clipboard = new Helpers.ClipBoardService();
+        Helpers.DialogService dialogService = new Helpers.DialogService();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel(dbConnector)
+                DataContext = new MainViewModel(dbConnector, dialogService, clipboard)
             };
         }
         //else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)

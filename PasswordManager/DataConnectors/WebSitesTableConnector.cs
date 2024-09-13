@@ -16,7 +16,9 @@ namespace PasswordManager.DataConnectors
         public void Delete(int id)
         {
 
-            SqlConnection connection = IDataBaseConnector.GetConnection();
+            string connectionStr = IDataBaseConnector.GetConnectionString();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            connection.Open();
             SqlCommand cmd = new SqlCommand("DELETE FROM WebSites WHERE Id = @Id", connection);
             cmd.Parameters.AddWithValue("@Id", id);
             cmd.ExecuteNonQuery();
@@ -27,7 +29,9 @@ namespace PasswordManager.DataConnectors
 
         public List<WebSite> Load()
         {
-            SqlConnection connection = IDataBaseConnector.GetConnection();
+            string connectionStr = IDataBaseConnector.GetConnectionString();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            connection.Open();
             List<WebSite> resources = new List<WebSite>();
             SqlCommand cmd = new SqlCommand("SELECT * FROM WebSites", connection);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -47,7 +51,9 @@ namespace PasswordManager.DataConnectors
 
         public void Save(WebSite resourse)
         {
-            SqlConnection connection = IDataBaseConnector.GetConnection();
+            string connectionStr = IDataBaseConnector.GetConnectionString();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            connection.Open();
             SqlCommand cmd = new SqlCommand("INSERT INTO WebSites (Name, Login, Password) VALUES (@Name, @Loign, @Password", connection);
             cmd.Parameters.AddWithValue("@Name", resourse.Name);
             cmd.Parameters.AddWithValue("@Login", resourse.Login);
@@ -58,7 +64,9 @@ namespace PasswordManager.DataConnectors
 
         public void Update(WebSite resourse)
         {
-            SqlConnection connection = IDataBaseConnector.GetConnection();
+            string connectionStr = IDataBaseConnector.GetConnectionString();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            connection.Open();
             SqlCommand cmd = new SqlCommand("UPDATE WebSites SET Name=@Name,Login=@Loign,Password=@Password WHERE Id=@Id", connection);
             cmd.Parameters.AddWithValue("@Name", resourse.Name);
             cmd.Parameters.AddWithValue("@Login", resourse.Login);

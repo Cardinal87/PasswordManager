@@ -10,6 +10,7 @@ namespace PasswordManager.Helpers
     internal interface IDialogService
     {
         void OpenDialog(IDialogViewModel DialogVm);
+        void CloseDialog(IDialogViewModel dialogVM);
         
     }
 }

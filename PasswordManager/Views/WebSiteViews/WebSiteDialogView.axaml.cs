@@ -6,14 +6,13 @@ using PasswordManager.ViewModels.WebSiteViewModels;
 
 namespace PasswordManager.Views.WebSiteViews;
 
-public partial class WebSiteDialog : Window
+public partial class WebSiteDialogView : Window
 {
-    public WebSiteDialog()
+    public WebSiteDialogView()
     {
         InitializeComponent();
-        (this.DataContext as WebSiteDialogViewModel)!.dialogResultRequest += CloseWindow!;
     }
-    private void CloseWindow(object sender, DialogResultEventArgs e) => this.Close();
+    
 
 
 }

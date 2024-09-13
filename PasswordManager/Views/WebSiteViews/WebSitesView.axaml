@@ -19,7 +19,8 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch">
+			VerticalAlignment="Stretch" Command="{Binding ShowDialog}">
+			
 			
 		</Button>
 
