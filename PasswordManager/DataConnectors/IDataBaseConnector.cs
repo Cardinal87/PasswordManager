@@ -1,5 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.Data.SqlClient;
+
 using PasswordManager.Models;
 using System;
 using System.Collections.Generic;
@@ -16,10 +16,9 @@ namespace PasswordManager.DataConnectors
         public void Save(WebSite resourse);
         public void Update(WebSite resourse);
         public void Delete(int id);
-        static public string GetConnectionString()
-        {
-            string connectionString = "Server=DESKTOP-SQHQMVO\\SQLEXPRESS;DataBase=PasswordManager;Trusted_Connection=True;TrustServerCertificate=True;";
-            return connectionString;
-        }
+        static public string GetConnectionString() => "Data Source=passwordManager.db";
+       
+            
+       
     }
 }
