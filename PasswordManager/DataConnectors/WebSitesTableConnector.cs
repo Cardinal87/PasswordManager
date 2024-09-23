@@ -11,13 +11,20 @@ using Microsoft.Data.Sqlite;
 
 namespace PasswordManager.DataConnectors
 {
-    internal class WebSitesTableConnector : IDataBaseConnector
+    internal class WebSitesTableConnector : ITableConnector
     {
+        
+        public WebSitesTableConnector() 
+        {
+            
+        }
+        
+        
         
         public void Delete(int id)
         {
             
-            string connectionStr = IDataBaseConnector.GetConnectionString();
+            string connectionStr = ITableConnector.GetConnectionString();
             SqliteConnection connection = new SqliteConnection(connectionStr);
             connection.Open();
             SqliteCommand cmd = new SqliteCommand("DELETE FROM WebSites WHERE Id = @Id", connection);
@@ -30,7 +37,7 @@ namespace PasswordManager.DataConnectors
 
         public List<WebSite> Load()
         {
-            string connectionStr = IDataBaseConnector.GetConnectionString();
+            string connectionStr = ITableConnector.GetConnectionString();
             SqliteConnection connection = new SqliteConnection(connectionStr);
             connection.Open();
             List<WebSite> resources = new List<WebSite>();
@@ -42,7 +49,9 @@ namespace PasswordManager.DataConnectors
                 string name = reader.GetString(1);
                 string? login = reader.GetString(2);
                 string password = reader.GetString(3);
-                WebSite res = new WebSite(id, name, login, password);
+                string adress = reader.GetString(4);
+                bool favourite = reader.GetBoolean(5);
+                WebSite res = new WebSite(id, name, login, password,adress,favourite);
                 resources.Add(res);
             }
             reader.Close();
@@ -52,7 +61,7 @@ namespace PasswordManager.DataConnectors
 
         public void Save(WebSite resourse)
         {
-            string connectionStr = IDataBaseConnector.GetConnectionString();
+            string connectionStr = ITableConnector.GetConnectionString();
             SqliteConnection connection = new SqliteConnection(connectionStr);
             connection.Open();
             SqliteCommand cmd = new SqliteCommand("INSERT INTO WebSites (Name, Login, Password) VALUES (@Name, @Loign, @Password)", connection);
@@ -65,7 +74,7 @@ namespace PasswordManager.DataConnectors
 
         public void Update(WebSite resourse)
         {
-            string connectionStr = IDataBaseConnector.GetConnectionString();
+            string connectionStr = ITableConnector.GetConnectionString();
             SqliteConnection connection = new SqliteConnection(connectionStr);
             connection.Open();
             SqliteCommand cmd = new SqliteCommand("UPDATE WebSites SET Name=@Name,Login=@Loign,Password=@Password WHERE Id=@Id", connection);

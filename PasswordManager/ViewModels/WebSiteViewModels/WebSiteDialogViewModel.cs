@@ -26,6 +26,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             WebAddress = item.WebAddress;
             Login = item.Login;
             Password = item.Password;
+            IsFavourite = item.Favourite;
         }
 
 
@@ -33,6 +34,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public string? WebAddress { get; private set; }
         public string? Login { get; private set; }
         public string? Password { get; private set; }
+        public bool IsFavourite { get; private set; }
 
         RelayCommand AddCommand;
         RelayCommand CloseCommand;

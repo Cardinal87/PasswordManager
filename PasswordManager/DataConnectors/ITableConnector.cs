@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.DataConnectors
 {
-    internal interface IDataBaseConnector
+    internal interface ITableConnector
     {
         
         public List<WebSite> Load();

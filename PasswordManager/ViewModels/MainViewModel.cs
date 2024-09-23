@@ -1,4 +1,4 @@
-﻿using Microsoft.Identity.Client;
+﻿
 using PasswordManager.ViewModels.WebSiteViewModels;
 using PasswordManager.ViewModels.AllEntriesViewModels;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ internal partial class MainViewModel : ViewModelBase
             OnPropertyChanged("CurrentPage");
         }
     }
-    public MainViewModel(DataConnectors.IDataBaseConnector con, IDialogService dialogService, IClipBoardService clipboard)
+    public MainViewModel(DataConnectors.ITableConnector con, IDialogService dialogService, IClipBoardService clipboard)
     {
         connector = con;
         this.dialogService = dialogService;
@@ -33,7 +33,7 @@ internal partial class MainViewModel : ViewModelBase
     }
     private IClipBoardService clipboard;
     private IDialogService dialogService;
-    private DataConnectors.IDataBaseConnector connector;
+    private DataConnectors.ITableConnector connector;
 
     public AllEntriesViewModel AllEntriesVm { get; }
     public WebSitesViewModel WebSitesVm { get; }

@@ -22,7 +22,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public WebSitesViewModel() { }
         
 
-        public WebSitesViewModel(DataConnectors.IDataBaseConnector con, IDialogService dialogService, IClipBoardService clipboard)
+        public WebSitesViewModel(DataConnectors.ITableConnector con, IDialogService dialogService, IClipBoardService clipboard)
         {
             connector = con;
             this.dialogService = dialogService;
@@ -38,7 +38,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
         private IClipBoardService clipboard;
         private IDialogService dialogService;
-        private DataConnectors.IDataBaseConnector connector;
+        private DataConnectors.ITableConnector connector;
         public WebSiteDialogViewModel Dialog { get; private set; }
         public ObservableCollection<WebSitesItemViewModel> WebSites { get; private set; }
 
@@ -69,7 +69,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             {
                 WebSiteDialogViewModel? vm = sender as WebSiteDialogViewModel;
                 if (vm == null) return;
-                WebSite model = new WebSite(0, vm.Name!, vm.Login, vm.Password!);
+                WebSite model = new WebSite(0, vm.Name!, vm.Login, vm.Password!,vm.WebAddress! ,vm.IsFavourite);
                 // update WebSites list
 
             }
