@@ -16,8 +16,33 @@ namespace PasswordManager.DataConnectors
         {
             optionsBuilder.UseSqlite(GetConnectionString());
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WebSite>().UseTpcMappingStrategy();  // Используем стратегию TPC
+        }
+
 
         public string GetConnectionString() => "Data Source=passwordmanager.db;";
+
+        public void Save(string vmName, object model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string vmName, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(string vmName, object model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbSet<TEntity> GetList<TEntity>()
+        {
+            return null;
+        } 
 
         public DbSet<WebSite> WebSites { get; private set; }
 
