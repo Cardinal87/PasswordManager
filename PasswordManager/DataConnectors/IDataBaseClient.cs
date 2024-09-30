@@ -9,9 +9,9 @@ namespace PasswordManager.DataConnectors
 {
     internal interface IDataBaseClient
     {
-        string GetConnectionString();
-        public void Save(string vmName, object model);
-        public void Delete(string vmName, int id);
-        public void Update(string vmName, object model);
+        public List<T> Load<T>() where T : class;
+        public void Save<T>(T model) where T: class;
+        public void Delete<T>(T model) where T : class;
+        public void Update<T>(T model) where T : class;
     }
 }

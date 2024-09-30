@@ -20,20 +20,20 @@ internal partial class MainViewModel : ViewModelBase
             OnPropertyChanged("CurrentPage");
         }
     }
-    public MainViewModel(DataConnectors.ITableConnector con, IDialogService dialogService, IClipBoardService clipboard)
+    public MainViewModel(DataConnectors.IDataBaseClient dbClient, IDialogService dialogService, IClipBoardService clipboard)
     {
-        connector = con;
+        this.dbClient = dbClient;
         this.dialogService = dialogService;
         this.clipboard = clipboard;
         AllEntriesVm = new AllEntriesViewModel();
-        WebSitesVm = new WebSitesViewModel(connector, this.dialogService, this.clipboard);
+        WebSitesVm = new WebSitesViewModel(dbClient, this.dialogService, this.clipboard);
 
 
         CurrentPage = AllEntriesVm;
     }
     private IClipBoardService clipboard;
     private IDialogService dialogService;
-    private DataConnectors.ITableConnector connector;
+    private DataConnectors.IDataBaseClient dbClient;
 
     public AllEntriesViewModel AllEntriesVm { get; }
     public WebSitesViewModel WebSitesVm { get; }

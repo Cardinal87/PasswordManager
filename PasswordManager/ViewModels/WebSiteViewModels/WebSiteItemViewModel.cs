@@ -14,11 +14,11 @@ using PasswordManager.Models;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
-    internal partial class WebSitesItemViewModel : ViewModelBase 
+    internal partial class WebSiteItemViewModel : ViewModelBase 
     {
         private WebSite model;
         private IClipBoardService clipBoardService;
-        public WebSitesItemViewModel(WebSite model, IClipBoardService clipBoardService, RelayCommand<int> deleteCommand, RelayCommand<int> changeCommand)
+        public WebSiteItemViewModel(WebSite model, IClipBoardService clipBoardService, RelayCommand<WebSite> deleteCommand, RelayCommand<WebSite> changeCommand)
         {
             this.model = model;
             Id = model.Id;
@@ -37,8 +37,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public string WebAddress { get; private set; }
 
         
-        public RelayCommand<int> DeleteCommand;
-        public RelayCommand<int> ChangeCommand;
+        public RelayCommand<WebSite> DeleteCommand;
+        public RelayCommand<WebSite> ChangeCommand;
 
         [RelayCommand]
         public void CopyToClipboard(string text)

@@ -29,7 +29,7 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel(con, dialogService, clipboard)
+                DataContext = new MainViewModel(dataBaseClient, dialogService, clipboard)
             };
         }
         //else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)

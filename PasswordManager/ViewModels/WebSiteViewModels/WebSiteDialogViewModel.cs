@@ -18,7 +18,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             CloseCommand = new RelayCommand(Close);
         }
 
-        public WebSiteDialogViewModel(WebSitesItemViewModel item)
+        public WebSiteDialogViewModel(WebSiteItemViewModel item)
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);

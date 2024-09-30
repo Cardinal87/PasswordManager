@@ -22,39 +22,39 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public WebSitesViewModel() { }
         
 
-        public WebSitesViewModel(DataConnectors.ITableConnector con, IDialogService dialogService, IClipBoardService clipboard)
+        public WebSitesViewModel(DataConnectors.IDataBaseClient dataBaseClient, IDialogService dialogService, IClipBoardService clipboard)
         {
-            connector = con;
+            dbClient = dataBaseClient;
             this.dialogService = dialogService;
             this.clipboard = clipboard;
             ShowDialogCommand = new RelayCommand(ShowDialog);
-            DeleteCommand = new RelayCommand<int>(Delete);
-            ChangeCommand = new RelayCommand<int>(Change);
+            DeleteCommand = new RelayCommand<WebSite>(Delete);
+            ChangeCommand = new RelayCommand<WebSite>(Change);
             
-            WebSites =  new ObservableCollection<WebSitesItemViewModel>();
+            WebSites =  new ObservableCollection<WebSiteItemViewModel>();
             LoadViewModelsList();  
 
 
         }
         private IClipBoardService clipboard;
         private IDialogService dialogService;
-        private DataConnectors.ITableConnector connector;
+        private DataConnectors.IDataBaseClient dbClient;
         public WebSiteDialogViewModel Dialog { get; private set; }
-        public ObservableCollection<WebSitesItemViewModel> WebSites { get; private set; }
+        public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
 
-        public RelayCommand<int> DeleteCommand;
+        public RelayCommand<WebSite> DeleteCommand;
         public RelayCommand ShowDialogCommand;
-        public RelayCommand<int> ChangeCommand;
+        public RelayCommand<WebSite> ChangeCommand;
         
         
-        private void Change(int id)
+        private void Change(WebSite model)
         {
 
         }
         
-        private void Delete(int id)
+        private void Delete(WebSite model)
         {
-            connector.Delete(id);
+            dbClient.Delete(model);
             // update WebSites list
         }
 
@@ -78,9 +78,9 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         private void LoadViewModelsList()
         {
-            foreach (var a in connector.Load())
+            foreach (var a in dbClient.Load<WebSite>())
             {
-                WebSitesItemViewModel item = new WebSitesItemViewModel(a, clipboard, DeleteCommand, ChangeCommand);
+                WebSiteItemViewModel item = new WebSiteItemViewModel(a, clipboard, DeleteCommand, ChangeCommand);
                 WebSites.Add(item);
             }
         }

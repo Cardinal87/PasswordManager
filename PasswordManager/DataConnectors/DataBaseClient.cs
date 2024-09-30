@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PasswordManager.Models;
+using PasswordManager.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace PasswordManager.DataConnectors
 {
@@ -15,35 +14,43 @@ namespace PasswordManager.DataConnectors
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(GetConnectionString());
+            Collection.Add(nameof(WebSites), WebSites);
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<WebSite>().UseTpcMappingStrategy();  // Используем стратегию TPC
-        }
-
-
+        
         public string GetConnectionString() => "Data Source=passwordmanager.db;";
 
-        public void Save(string vmName, object model)
+        public void Save<T>(T model) where T : class 
         {
-            throw new NotImplementedException();
+            DbSet<T> dbSet = GetList<T>();
+            dbSet.Add(model);
         }
 
-        public void Delete(string vmName, int id)
+        public void Delete<T>(T model) where T : class
         {
-            throw new NotImplementedException();
+            DbSet<T> dbSet = GetList<T>();
+            dbSet.Remove(model);
+        }
+        
+        public void Update<T>(T model) where T: class
+        {
+            Delete(model);
+            Save(model);
         }
 
-        public void Update(string vmName, object model)
+        private DbSet<T> GetList<T>() where T : class
         {
-            throw new NotImplementedException();
+            string key = typeof(T).Name.Replace("ViewModel", "");
+            var list = Collection[key];
+            return (list as DbSet<T>)!;
         }
 
-        public DbSet<TEntity> GetList<TEntity>()
+        public List<T> Load<T>() where T : class
         {
-            return null;
-        } 
+            var dbSet = GetList<T>();
+            return dbSet.ToList();
+        }
 
+        public Dictionary<string, object> Collection { get; set; } = new Dictionary<string, object>();
         public DbSet<WebSite> WebSites { get; private set; }
 
     }

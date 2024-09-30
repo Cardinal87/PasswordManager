@@ -8,5 +8,6 @@ namespace PasswordManager.Models
 {
     internal interface IModel
     {
+        public int Id { get; set; }
     }
 }
