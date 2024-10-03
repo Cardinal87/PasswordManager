@@ -26,7 +26,7 @@
 		</Grid>
 		
 		
-		<Grid Grid.Row="1" Grid.Column="0" RowDefinitions="100,180,*" ColumnDefinitions="130,*">
+		<Grid Grid.Row="1" Grid.Column="0" RowDefinitions="100,180,*" ColumnDefinitions="130,*" ShowGridLines="True">
 			
 			
 			<TextBlock Text="WebSite Adress" HorizontalAlignment="Left" VerticalAlignment="Center"
@@ -40,7 +40,7 @@
 			<TextBlock Text="Login" HorizontalAlignment="Center" VerticalAlignment="Center"
 					   Grid.Column="0" Grid.Row="1" Margin="0 80 0 0"/>
 			<TextBox Watermark="Login" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"
-					 HorizontalContentAlignment="Left" Margin="0 80 50 0" Text="{Binding Login, Mode=TwoWay}"/>
+					 HorizontalContentAlignment="Left" Margin="0 80 50 0"/>
 			
 			<TextBlock Text="Password" HorizontalAlignment="Center" VerticalAlignment="Center"
 					   Grid.Column="0" Grid.Row="2" Margin="0 0 0 90"/>

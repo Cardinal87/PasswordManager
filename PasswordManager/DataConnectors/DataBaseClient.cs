@@ -10,11 +10,15 @@ namespace PasswordManager.DataConnectors
 {
     internal class DataBaseClient: DbContext, IDataBaseClient
     {
-        public DataBaseClient() => Database.EnsureCreated();
+        public DataBaseClient()
+        {
+            Collection.Add(nameof(WebSite), WebSites);
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(GetConnectionString());
-            Collection.Add(nameof(WebSites), WebSites);
         }
         
         public string GetConnectionString() => "Data Source=passwordmanager.db;";
@@ -23,6 +27,7 @@ namespace PasswordManager.DataConnectors
         {
             DbSet<T> dbSet = GetList<T>();
             dbSet.Add(model);
+            SaveChanges();
         }
 
         public void Delete<T>(T model) where T : class
@@ -31,7 +36,7 @@ namespace PasswordManager.DataConnectors
             dbSet.Remove(model);
         }
         
-        public void Update<T>(T model) where T: class
+        public void UpdateList<T>(T model) where T: class
         {
             Delete(model);
             Save(model);
@@ -50,7 +55,7 @@ namespace PasswordManager.DataConnectors
             return dbSet.ToList();
         }
 
-        public Dictionary<string, object> Collection { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, object?> Collection { get; set; } = new Dictionary<string, object?>();
         public DbSet<WebSite> WebSites { get; private set; }
 
     }

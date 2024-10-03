@@ -19,7 +19,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     internal partial class WebSitesViewModel : ViewModelBase
     {
         
-        public WebSitesViewModel() { }
+        
         
 
         public WebSitesViewModel(DataConnectors.IDataBaseClient dataBaseClient, IDialogService dialogService, IClipBoardService clipboard)
@@ -28,52 +28,63 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             this.dialogService = dialogService;
             this.clipboard = clipboard;
             ShowDialogCommand = new RelayCommand(ShowDialog);
-            DeleteCommand = new RelayCommand<WebSite>(Delete);
-            ChangeCommand = new RelayCommand<WebSite>(Change);
+            DeleteCommand = new RelayCommand<WebSite>(Delete!);
+            ChangeCommand = new RelayCommand<WebSite>(Change!);
             
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
             LoadViewModelsList();  
+
+            
 
 
         }
         private IClipBoardService clipboard;
         private IDialogService dialogService;
         private DataConnectors.IDataBaseClient dbClient;
-        public WebSiteDialogViewModel Dialog { get; private set; }
+        public WebSiteDialogViewModel? Dialog { get; private set; }
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
 
         public RelayCommand<WebSite> DeleteCommand;
         public RelayCommand ShowDialogCommand;
         public RelayCommand<WebSite> ChangeCommand;
-        
-        
-        private void Change(WebSite model)
-        {
 
+
+        public void Change(WebSite model)
+        {
+            Dialog = new WebSiteDialogViewModel(model);
+            ShowDialog();
         }
-        
+        public void AddNew() 
+        { 
+            Dialog = new WebSiteDialogViewModel();
+            ShowDialog();
+        }
+
         private void Delete(WebSite model)
         {
             dbClient.Delete(model);
-            // update WebSites list
+            LoadViewModelsList();
         }
 
         public void ShowDialog()
         {
-            Dialog = new WebSiteDialogViewModel();
+            Dialog!.dialogResultRequest += GetDialogResult;
             dialogService.OpenDialog(Dialog);
         }
-        public void GetDialogResult(object sender, DialogResultEventArgs e)
+        public void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
             if (e.DialogResult)
             {
                 WebSiteDialogViewModel? vm = sender as WebSiteDialogViewModel;
                 if (vm == null) return;
                 WebSite model = new WebSite(0, vm.Name!, vm.Login, vm.Password!,vm.WebAddress! ,vm.IsFavourite);
-                // update WebSites list
+                WebSite model1 = new WebSite(1, "vm.Name!", "vm.Login"," vm.Password!", "vm.WebAddress!",true);
+                dbClient.Save(model1);
+                LoadViewModelsList();
 
             }
-            dialogService.CloseDialog(Dialog);
+            dialogService.CloseDialog(Dialog!);
+            Dialog = null;
         }
 
         private void LoadViewModelsList()

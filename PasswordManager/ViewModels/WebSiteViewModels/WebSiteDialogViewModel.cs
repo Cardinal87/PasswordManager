@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using PasswordManager.Models;
 using PasswordManager.ViewModels.DialogInterfaces;
 using System;
 using System.Collections.Generic;
@@ -16,24 +17,75 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
+            IsFavourite = false;
         }
 
-        public WebSiteDialogViewModel(WebSiteItemViewModel item)
+        public WebSiteDialogViewModel(WebSite item)
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
+            Id = item.Id;
             Name = item.Name;
             WebAddress = item.WebAddress;
             Login = item.Login;
             Password = item.Password;
-            IsFavourite = item.Favourite;
+            IsFavourite = item.IsFavourite;
+        }
+       
+        private string password = "";
+        public string login = "";
+        public string webAdress = ""; 
+        public string name = "";
+        public int? Id { get; private set; }
+        public string Name 
+        {
+            get
+            {
+                return name!;
+            }
+            set
+            {
+                name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+        public string WebAddress 
+        {
+            get
+            {
+                return webAdress!;
+            }
+            set
+            {
+                webAdress = value;
+                OnPropertyChanged(nameof(WebAddress));
+            }
+        }
+        
+        public string Login
+        {
+            get
+            {
+                return login!;
+            }
+            set
+            {
+                login = value;
+                OnPropertyChanged(nameof(Login));
+            }
         }
 
-
-        public string? Name { get; private set; }
-        public string? WebAddress { get; private set; }
-        public string? Login { get; private set; }
-        public string? Password { get; private set; }
+        public string Password {
+            get
+            {
+                return password!;
+            }
+            set 
+            {
+                password = value;
+                OnPropertyChanged(nameof(Password));
+            }
+        }
         public bool IsFavourite { get; private set; }
 
         RelayCommand AddCommand;

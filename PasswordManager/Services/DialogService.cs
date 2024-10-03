@@ -46,6 +46,7 @@ namespace PasswordManager.Helpers
             {
                 win.Close();
                 openWindows.Remove(win);
+                
             }
         }
         

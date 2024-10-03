@@ -25,13 +25,14 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             Name = model.Name;
             Login = model.Login;
             Password = model.Password;
+            WebAddress = model.WebAddress;
             this.clipBoardService = clipBoardService; 
             DeleteCommand = deleteCommand;
             ChangeCommand = changeCommand;
         }
-        public int Id { get; private set; }
+        public int? Id { get; private set; }
         public string Name { get; private set; }
-        public string? Login { get; private set; }
+        public string Login { get; private set; }
         public string Password { get; private set; }
         public bool Favourite { get; private set; }
         public string WebAddress { get; private set; }
