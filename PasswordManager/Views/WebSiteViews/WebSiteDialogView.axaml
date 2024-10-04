@@ -10,23 +10,37 @@
 		MinHeight="550" MaxHeight="550"
 		MinWidth="550" MaxWidth="550"
 		x:DataType="vm:WebSiteDialogViewModel">
-
-
-	<Grid RowDefinitions="60,*,40" ColumnDefinitions="*">
-		
-		
-		<Grid Grid.Row="0" Grid.Column="0" RowDefinitions="60,*,*" ColumnDefinitions="250,35,*">
+	<Window.Resources>
+		<DataTemplate x:Key="EnterBox" DataType="{x:Type vm:WebSiteDialogViewModel}" x:Class="PasswordManager.Views.WebSiteViews.WebSiteDialogView">
+			<DockPanel>
+				<TextBox DockPanel.Dock="Left" Watermark="Name" Text="{Binding Name}"/>
+				<Button DockPanel.Dock="Left"/>
+				<Button DockPanel.Dock="Left"/>
+			</DockPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowBox" DataType="{x:Type vm:WebSiteDialogViewModel}" x:Class="PasswordManager.Views.WebSiteViews.WebSiteDialogView">
+			<DockPanel>
+				<TextBlock x:Name="NameOfWebSite" Text="{Binding Name, Mode=TwoWay}" DockPanel.Dock="Left"/>
+				<Button x:Name="ChangeWebSiteName" DockPanel.Dock="Left" />
+			</DockPanel>
 			
-			
-			<TextBlock x:Name="NameOfWebSite" Text="{Binding Name, Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Center"
-					   Grid.Column="0" Grid.Row="0" Margin="10 0 0 0"/>
-			<Button x:Name="ChangeWebSiteName" Margin="10 13 0 13" Grid.Column="1" Grid.Row="0"
-					HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-			
-		</Grid>
+		</DataTemplate>
+	</Window.Resources>
+	
+	
+	
+	
+	
+	<Grid RowDefinitions="60,*,40" ColumnDefinitions="*" ShowGridLines="True">
 		
 		
-		<Grid Grid.Row="1" Grid.Column="0" RowDefinitions="100,180,*" ColumnDefinitions="130,*" ShowGridLines="True">
+		
+		<ContentControl Name="WebSiteName" ContentTemplate="{StaticResource ShowBox}" Grid.Column="0" Grid.Row="0"
+						HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+			
+		
+		
+		<Grid Grid.Row="1" Grid.Column="0" RowDefinitions="100,180,*" ColumnDefinitions="130,*">
 			
 			
 			<TextBlock Text="WebSite Adress" HorizontalAlignment="Left" VerticalAlignment="Center"

@@ -30,12 +30,72 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             DeleteCommand = deleteCommand;
             ChangeCommand = changeCommand;
         }
-        public int? Id { get; private set; }
-        public string Name { get; private set; }
-        public string Login { get; private set; }
-        public string Password { get; private set; }
-        public bool Favourite { get; private set; }
-        public string WebAddress { get; private set; }
+        private string name;
+        private string login;
+        private string password;
+        private string webAddress;
+        private bool favourite;
+        
+        public int Id { get; private set; }
+        public string Name
+        {
+            get
+            {
+                return name; 
+            }
+            set 
+            { 
+                name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+        public string Login {
+            get
+            {
+                return login;
+            }
+            set
+            {
+                login = value;
+                OnPropertyChanged(nameof(Login));
+            }
+        }
+        public string Password 
+        {
+            get
+            {
+                return password;
+            }
+            set
+            {
+                password = value;
+                OnPropertyChanged(nameof(Password));
+            }
+        }
+        public bool Favourite 
+        {
+            get
+            {
+                return favourite;
+            }
+            set
+            {
+                favourite = value;
+                OnPropertyChanged(nameof(Favourite));
+            }
+        }
+        public string WebAddress 
+        {
+            get
+            {
+                return webAddress;
+            }
+            set
+            {
+                webAddress = value;
+                OnPropertyChanged(nameof(WebAddress));
+            }
+        }
 
         
         public RelayCommand<WebSite> DeleteCommand;

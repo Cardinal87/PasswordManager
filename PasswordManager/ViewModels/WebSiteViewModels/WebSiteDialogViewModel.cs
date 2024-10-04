@@ -36,7 +36,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public string login = "";
         public string webAdress = ""; 
         public string name = "";
-        public int? Id { get; private set; }
+        public int Id { get; private set; }
         public string Name 
         {
             get
