@@ -27,9 +27,9 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             dbClient = dataBaseClient;
             this.dialogService = dialogService;
             this.clipboard = clipboard;
-            ShowDialogCommand = new RelayCommand(ShowDialog);
-            DeleteCommand = new RelayCommand<WebSite>(Delete!);
-            ChangeCommand = new RelayCommand<WebSite>(Change!);
+            
+            DeleteCommand = new RelayCommand<WebSite>(Delete);
+            ChangeCommand = new RelayCommand<WebSite>(Change);
             
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
             LoadViewModelsList();  
@@ -45,13 +45,12 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
 
         public RelayCommand<WebSite> DeleteCommand;
-        public RelayCommand ShowDialogCommand;
         public RelayCommand<WebSite> ChangeCommand;
 
 
-        public void Change(WebSite model)
+        public void Change(WebSite? model)
         {
-            Dialog = new WebSiteDialogViewModel(model);
+            Dialog = new WebSiteDialogViewModel(model!);
             ShowDialog();
         }
         public void AddNew() 
@@ -60,9 +59,10 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             ShowDialog();
         }
 
-        private void Delete(WebSite model)
+        private void Delete(WebSite? model)
         {
-            dbClient.Delete(model);
+            dbClient.Delete(model!);
+            
             LoadViewModelsList();
         }
 
@@ -77,8 +77,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             {
                 WebSiteDialogViewModel? vm = sender as WebSiteDialogViewModel;
                 if (vm == null) return;
-                WebSite model = new WebSite(0, vm.Name!, vm.Login, vm.Password!,vm.WebAddress! ,vm.IsFavourite);
-                WebSite model1 = new WebSite(1, "vm.Name!", "vm.Login"," vm.Password!", "vm.WebAddress!",true);
+                WebSite model = new WebSite(vm.Name!, vm.Login, vm.Password!,vm.WebAddress! ,vm.IsFavourite);
+                WebSite model1 = new WebSite("vm.Name!", "vm.Login"," vm.Password!", "vm.WebAddress!",true);
                 dbClient.Save(model1);
                 LoadViewModelsList();
 
@@ -91,6 +91,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             foreach (var a in dbClient.Load<WebSite>())
             {
+                WebSites.Clear();
                 WebSiteItemViewModel item = new WebSiteItemViewModel(a, clipboard, DeleteCommand, ChangeCommand);
                 WebSites.Add(item);
             }

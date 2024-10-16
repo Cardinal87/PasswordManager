@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
@@ -18,78 +20,90 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     {
         private WebSite model;
         private IClipBoardService clipBoardService;
+        
         public WebSiteItemViewModel(WebSite model, IClipBoardService clipBoardService, RelayCommand<WebSite> deleteCommand, RelayCommand<WebSite> changeCommand)
         {
             this.model = model;
-            Id = model.Id;
+            
             Name = model.Name;
             Login = model.Login;
             Password = model.Password;
+            IsFavourite = model.IsFavourite;
             WebAddress = model.WebAddress;
             this.clipBoardService = clipBoardService; 
             DeleteCommand = deleteCommand;
             ChangeCommand = changeCommand;
         }
+
+        
         private string name;
         private string login;
         private string password;
         private string webAddress;
-        private bool favourite;
-        
-        public int Id { get; private set; }
+        private bool isFavourite;
+
         public string Name
         {
             get
             {
                 return name; 
             }
+            [MemberNotNull(nameof(name))]
             set 
             { 
                 name = value;
                 OnPropertyChanged(nameof(Name));
             }
         }
+        
         public string Login {
             get
             {
                 return login;
             }
+            [MemberNotNull(nameof(login))]
             set
             {
                 login = value;
                 OnPropertyChanged(nameof(Login));
             }
         }
+        
         public string Password 
         {
             get
             {
                 return password;
             }
+            [MemberNotNull(nameof(password))]
             set
             {
                 password = value;
                 OnPropertyChanged(nameof(Password));
             }
         }
-        public bool Favourite 
+        
+        public bool IsFavourite 
         {
             get
             {
-                return favourite;
+                return isFavourite;
             }
+            [MemberNotNull(nameof(isFavourite))]
             set
             {
-                favourite = value;
-                OnPropertyChanged(nameof(Favourite));
+                isFavourite = value;
+                OnPropertyChanged(nameof(IsFavourite));
             }
         }
+        
         public string WebAddress 
         {
             get
             {
                 return webAddress;
             }
+            [MemberNotNull(nameof(webAddress))]
             set
             {
                 webAddress = value;
@@ -117,8 +131,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         [RelayCommand]
         public void AddToFavourite()
         {
-            if (Favourite) Favourite = false;
-            else Favourite = true;
+            if (IsFavourite) IsFavourite = false;
+            else IsFavourite = true;
         }
             
             

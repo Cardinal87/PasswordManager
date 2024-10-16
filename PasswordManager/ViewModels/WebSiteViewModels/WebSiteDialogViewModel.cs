@@ -24,7 +24,6 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
-            Id = item.Id;
             Name = item.Name;
             WebAddress = item.WebAddress;
             Login = item.Login;

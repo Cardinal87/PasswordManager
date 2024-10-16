@@ -13,6 +13,7 @@ namespace PasswordManager.DataConnectors
         public DataBaseClient()
         {
             Collection.Add(nameof(WebSite), WebSites);
+            Collection.Add(nameof(App), WebSites);
             Database.EnsureDeleted();
             Database.EnsureCreated();
         }
@@ -57,6 +58,7 @@ namespace PasswordManager.DataConnectors
 
         public Dictionary<string, object?> Collection { get; set; } = new Dictionary<string, object?>();
         public DbSet<WebSite> WebSites { get; private set; }
+        public DbSet<Models.App> Apps { get; private set; }
 
     }
 }
