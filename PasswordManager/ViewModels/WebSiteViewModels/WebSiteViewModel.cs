@@ -28,9 +28,6 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             this.dialogService = dialogService;
             this.clipboard = clipboard;
             
-            DeleteCommand = new RelayCommand<WebSite>(Delete);
-            ChangeCommand = new RelayCommand<WebSite>(Change);
-            
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
             LoadViewModelsList();  
 
@@ -43,14 +40,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private DataConnectors.IDataBaseClient dbClient;
         public WebSiteDialogViewModel? Dialog { get; private set; }
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
+         
 
-        public RelayCommand<WebSite> DeleteCommand;
-        public RelayCommand<WebSite> ChangeCommand;
-
-
-        public void Change(WebSite? model)
+        public void Change(WebSite model)
         {
-            Dialog = new WebSiteDialogViewModel(model!);
+            Dialog = new WebSiteDialogViewModel(model);
             ShowDialog();
         }
         public void AddNew() 
@@ -59,9 +53,9 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             ShowDialog();
         }
 
-        private void Delete(WebSite? model)
+        private void Delete(WebSite model)
         {
-            dbClient.Delete(model!);
+            dbClient.Delete(model);
             
             LoadViewModelsList();
         }
@@ -80,7 +74,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             {
                 WebSiteDialogViewModel vm = (WebSiteDialogViewModel)sender;
                 WebSite model = new WebSite(vm.Name, vm.Login, vm.Password,vm.WebAddress,vm.IsFavourite);
-                dbClient.Save(model);
+                if (vm.IsNew) dbClient.Save(model);
+                else dbClient.UpdateList(model);
                 LoadViewModelsList();
 
             }
@@ -93,7 +88,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             foreach (var a in dbClient.Load<WebSite>())
             {
                 WebSites.Clear();
-                WebSiteItemViewModel item = new WebSiteItemViewModel(a, clipboard, DeleteCommand, ChangeCommand);
+                WebSiteItemViewModel item = new WebSiteItemViewModel(a, clipboard, Delete, Change);
                 WebSites.Add(item);
             }
         }

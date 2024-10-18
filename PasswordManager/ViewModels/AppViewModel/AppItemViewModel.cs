@@ -12,19 +12,19 @@ namespace PasswordManager.ViewModels.AppViewModel
 {
     internal partial class AppItemViewModel : ViewModelBase
     {
-        public AppItemViewModel(Models.App app, RelayCommand<Models.App> Delete, RelayCommand<Models.App> Change, IClipBoardService clipboard)
+        public AppItemViewModel(Models.App app, Action<Models.App> delete, Action<Models.App> change, IClipBoardService clipboard)
         {
             model = app;
             Name = app.Name;
             Password = app.Password;
 
-            DeleteCommand = Delete;
-            ChangeCommand = Change;
+            this.delete = delete;
+            this.change = change;
 
             clipBoard = clipboard;
         }
-        RelayCommand<Models.App> DeleteCommand;
-        RelayCommand<Models.App> ChangeCommand;
+        Action<Models.App> delete;
+        Action<Models.App> change;
 
         IClipBoardService clipBoard;
         Models.App model;
@@ -81,6 +81,22 @@ namespace PasswordManager.ViewModels.AppViewModel
         {
             if (IsFavourite) IsFavourite = false;
             else IsFavourite = true;
+        }
+        [RelayCommand]
+        public void GoToWebSite()
+        {
+
+        }
+
+        [RelayCommand]
+        public void Change()
+        {
+            change.Invoke(model);
+        }
+        [RelayCommand]
+        public void Delete()
+        {
+            delete.Invoke(model);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             IsFavourite = false;
+            IsNew = true;
         }
 
         public WebSiteDialogViewModel(WebSite item)
@@ -29,8 +30,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             Login = item.Login;
             Password = item.Password;
             IsFavourite = item.IsFavourite;
+            IsNew = false;
+
         }
-       
+        
+
         private string password = "";
         public string login = "";
         public string webAdress = ""; 
@@ -86,6 +90,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             }
         }
         public bool IsFavourite { get; private set; }
+        public bool IsNew { get; set; }
 
         RelayCommand AddCommand;
         RelayCommand CloseCommand;
@@ -111,5 +116,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
             }
         }
+
+        
     }
 }

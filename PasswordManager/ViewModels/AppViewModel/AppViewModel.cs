@@ -24,18 +24,12 @@ namespace PasswordManager.ViewModels.AppViewModel
             this.dbClient = dbClient;
             this.dialogService = dialogService;
             LoadViewModelList();
-
-            DeleteCommand = new RelayCommand<Models.App>(Delete);
-            ChangeCommand = new RelayCommand<Models.App>(Change);
-                
-            
         }
         IClipBoardService clipboard;
         IDataBaseClient dbClient;
         IDialogService dialogService;
         ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
-        RelayCommand<Models.App> DeleteCommand;
-        RelayCommand<Models.App> ChangeCommand;
+        
 
         AppDialogViewModel? dialogVM;
 
@@ -44,18 +38,18 @@ namespace PasswordManager.ViewModels.AppViewModel
             foreach (var app in dbClient.Load<Models.App>())
             {
                 Apps.Clear();
-                Apps.Add(new AppItemViewModel(app, DeleteCommand, ChangeCommand, clipboard));
+                Apps.Add(new AppItemViewModel(app, Delete, Change, clipboard));
             }
         }
-        public void Delete(Models.App? app)
+        public void Delete(Models.App app)
         {
-            dbClient.Delete(app!);
+            dbClient.Delete(app);
             LoadViewModelList();
         }
         
-        public void Change(Models.App? app)
+        public void Change(Models.App app)
         {
-            dialogVM = new AppDialogViewModel(app!);
+            dialogVM = new AppDialogViewModel(app);
             ShowDialog();
         }
         
@@ -79,6 +73,8 @@ namespace PasswordManager.ViewModels.AppViewModel
             {
                 AppDialogViewModel vm = (AppDialogViewModel)sender;
                 Models.App app = new(vm.Name ,vm.Password, false);
+                if (vm.IsNew) dbClient.Save(app);
+                else dbClient.UpdateList(app);
                 LoadViewModelList();
             }
             dialogService.CloseDialog(dialogVM!);

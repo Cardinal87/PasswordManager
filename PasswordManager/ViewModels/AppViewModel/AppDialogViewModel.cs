@@ -16,6 +16,7 @@ namespace PasswordManager.ViewModels.AppViewModel
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
+            IsNew = true;
         }
         public AppDialogViewModel(Models.App model)
         {
@@ -23,7 +24,8 @@ namespace PasswordManager.ViewModels.AppViewModel
             Password = model.Password;
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
-
+            IsFavourite = model.IsFavourite;
+            IsNew = false
         }
         
 
@@ -58,9 +60,9 @@ namespace PasswordManager.ViewModels.AppViewModel
                 OnPropertyChanged(nameof(password));
             }
         }
-        
 
-
+        public bool IsFavourite { get; private set; }
+        public bool IsNew { get; private set; }
         public bool CanClose()
         {
             return true;
