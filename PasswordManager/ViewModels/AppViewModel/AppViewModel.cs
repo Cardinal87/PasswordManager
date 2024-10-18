@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using PasswordManager.DataConnectors;
 using PasswordManager.Helpers;
+using PasswordManager.ViewModels.DialogInterfaces;
+using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,6 +37,7 @@ namespace PasswordManager.ViewModels.AppViewModel
         RelayCommand<Models.App> DeleteCommand;
         RelayCommand<Models.App> ChangeCommand;
 
+        AppDialogViewModel? dialogVM;
 
         private void LoadViewModelList()
         {
@@ -49,14 +52,37 @@ namespace PasswordManager.ViewModels.AppViewModel
             dbClient.Delete(app!);
             LoadViewModelList();
         }
+        
         public void Change(Models.App? app)
         {
-            
+            dialogVM = new AppDialogViewModel(app!);
+            ShowDialog();
         }
+        
+        public void AddNew()
+        {
+            dialogVM = new AppDialogViewModel();
+            ShowDialog();
+        }
+
         public void ShowDialog()
         {
-
+            if (dialogVM != null)
+            {
+                dialogVM.dialogResultRequest += GetDialogResult;
+                dialogService.OpenDialog(dialogVM);
+            }
         }
-
+        public void GetDialogResult(object? sender, DialogResultEventArgs e)
+        {
+            if (e.DialogResult && sender != null)
+            {
+                AppDialogViewModel vm = (AppDialogViewModel)sender;
+                Models.App app = new(vm.Name ,vm.Password, false);
+                LoadViewModelList();
+            }
+            dialogService.CloseDialog(dialogVM!);
+            dialogVM = null;
+        }
     }
 }

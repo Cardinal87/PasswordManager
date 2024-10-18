@@ -68,18 +68,19 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         public void ShowDialog()
         {
-            Dialog!.dialogResultRequest += GetDialogResult;
-            dialogService.OpenDialog(Dialog);
+            if (Dialog != null)
+            {
+                Dialog.dialogResultRequest += GetDialogResult;
+                dialogService.OpenDialog(Dialog);
+            }
         }
         public void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (e.DialogResult)
+            if (e.DialogResult && sender != null)
             {
-                WebSiteDialogViewModel? vm = sender as WebSiteDialogViewModel;
-                if (vm == null) return;
-                WebSite model = new WebSite(vm.Name!, vm.Login, vm.Password!,vm.WebAddress! ,vm.IsFavourite);
-                WebSite model1 = new WebSite("vm.Name!", "vm.Login"," vm.Password!", "vm.WebAddress!",true);
-                dbClient.Save(model1);
+                WebSiteDialogViewModel vm = (WebSiteDialogViewModel)sender;
+                WebSite model = new WebSite(vm.Name, vm.Login, vm.Password,vm.WebAddress,vm.IsFavourite);
+                dbClient.Save(model);
                 LoadViewModelsList();
 
             }
