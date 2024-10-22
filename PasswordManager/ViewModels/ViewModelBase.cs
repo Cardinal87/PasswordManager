@@ -4,4 +4,7 @@ namespace PasswordManager.ViewModels;
 
 public class ViewModelBase : ObservableObject
 {
+    
+    
 }
+

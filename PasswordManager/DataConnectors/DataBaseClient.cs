@@ -56,7 +56,9 @@ namespace PasswordManager.DataConnectors
             return dbSet.ToList();
         }
 
-        public Dictionary<string, object?> Collection { get; set; } = new Dictionary<string, object?>();
+        
+
+        private Dictionary<string, object?> Collection { get; set; } = new Dictionary<string, object?>();
         public DbSet<WebSite> WebSites { get; private set; }
         public DbSet<Models.App> Apps { get; private set; }
 

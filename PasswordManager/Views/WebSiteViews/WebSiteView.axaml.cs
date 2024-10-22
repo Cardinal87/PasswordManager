@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace PasswordManager.Views.WebSiteViews;
 
-public partial class WebSitesView : UserControl
+public partial class WebSiteView : UserControl
 {
-    public WebSitesView()
+    public WebSiteView()
     {
         InitializeComponent();
     }

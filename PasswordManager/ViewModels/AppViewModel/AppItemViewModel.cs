@@ -10,41 +10,29 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.AppViewModel
 {
-    internal partial class AppItemViewModel : ViewModelBase
+    internal partial class AppItemViewModel : ItemViewModelBase
     {
-        public AppItemViewModel(Models.App app, Action<Models.App> delete, Action<Models.App> change, IClipBoardService clipboard)
+        public AppItemViewModel(Models.App app, Action<Models.App> delete, Action<Models.App> change, IClipBoardService clipboard) : base(app.Name, new RelayCommand(() => delete.Invoke(app)))
         {
             model = app;
-            Name = app.Name;
             Password = app.Password;
 
-            this.delete = delete;
+            DeleteCommand = new RelayCommand(() => delete.Invoke(app));
             this.change = change;
-
+            
             clipBoard = clipboard;
         }
-        Action<Models.App> delete;
+       
         Action<Models.App> change;
+        new RelayCommand DeleteCommand;
 
         IClipBoardService clipBoard;
         Models.App model;
-        string name;
+        
         string password;
         bool isFavourite;
         
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-            [MemberNotNull(nameof(name))]
-            set
-            {
-                name = value;
-                OnPropertyChanged(nameof(Name));
-            }
-        }
+        
         public string Password
         {
             get
@@ -93,11 +81,7 @@ namespace PasswordManager.ViewModels.AppViewModel
         {
             change.Invoke(model);
         }
-        [RelayCommand]
-        public void Delete()
-        {
-            delete.Invoke(model);
-        }
+        
     }
 }
 

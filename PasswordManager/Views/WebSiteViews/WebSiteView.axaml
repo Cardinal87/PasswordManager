@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
 			 xmlns:views="clr-namespace:PasswordManager.Views"
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
-			 x:Class="PasswordManager.Views.WebSiteViews.WebSitesView"
+			 x:Class="PasswordManager.Views.WebSiteViews.WebSiteView"
 			 x:DataType="vm:WebSitesViewModel"
 			 Height="700" Width="900">
 	

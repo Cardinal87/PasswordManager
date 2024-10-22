@@ -13,5 +13,6 @@ namespace PasswordManager.DataConnectors
         public void Save<T>(T model) where T: class;
         public void Delete<T>(T model) where T : class;
         public void UpdateList<T>(T model) where T : class;
+        
     }
 }

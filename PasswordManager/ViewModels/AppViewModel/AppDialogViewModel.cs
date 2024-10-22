@@ -25,7 +25,7 @@ namespace PasswordManager.ViewModels.AppViewModel
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             IsFavourite = model.IsFavourite;
-            IsNew = false
+            IsNew = false;
         }
         
 

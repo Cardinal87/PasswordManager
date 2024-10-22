@@ -16,47 +16,34 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
-    internal partial class WebSiteItemViewModel : ViewModelBase 
+    internal partial class WebSiteItemViewModel : ItemViewModelBase
     {
+        
         private WebSite model;
         private IClipBoardService clipBoardService;
         
-        public WebSiteItemViewModel(WebSite model, IClipBoardService clipBoardService, Action<WebSite> delete, Action<WebSite> change)
+        public WebSiteItemViewModel(WebSite model, IClipBoardService clipBoardService, Action<WebSite> delete, Action<WebSite> change) : base(model.Name, new RelayCommand(() => delete.Invoke(model)))
         {
             this.model = model;
-            
-            Name = model.Name;
+
             Login = model.Login;
             Password = model.Password;
             IsFavourite = model.IsFavourite;
             WebAddress = model.WebAddress;
             this.clipBoardService = clipBoardService; 
             this.change = change;
-            this.delete = delete;
+            DeleteCommand = new RelayCommand(() => delete.Invoke(model));
         }
-        Action<WebSite> delete;
+        
         Action<WebSite> change;
+        new RelayCommand DeleteCommand;
 
-        private string name;
+        
         private string login;
         private string password;
         private string webAddress;
         private bool isFavourite;
 
-        public string Name
-        {
-            get
-            {
-                return name; 
-            }
-            [MemberNotNull(nameof(name))]
-            set 
-            { 
-                name = value;
-                OnPropertyChanged(nameof(Name));
-            }
-        }
-        
         public string Login {
             get
             {
@@ -139,12 +126,6 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             change.Invoke(model);
         }
-        [RelayCommand]
-        public void Delete()
-        {
-            delete.Invoke(model);
-        }
-
-
+        
     }
 }

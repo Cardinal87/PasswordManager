@@ -18,9 +18,6 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 {
     internal partial class WebSitesViewModel : ViewModelBase
     {
-        
-        
-        
 
         public WebSitesViewModel(DataConnectors.IDataBaseClient dataBaseClient, IDialogService dialogService, IClipBoardService clipboard)
         {
@@ -30,14 +27,12 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
             LoadViewModelsList();  
-
-            
-
-
         }
         private IClipBoardService clipboard;
         private IDialogService dialogService;
         private DataConnectors.IDataBaseClient dbClient;
+        
+        public event Func<ObservableCollection<ItemViewModelBase>>? OnDataBaseChanged;
         public WebSiteDialogViewModel? Dialog { get; private set; }
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
          
@@ -56,8 +51,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private void Delete(WebSite model)
         {
             dbClient.Delete(model);
-            
             LoadViewModelsList();
+            OnDataBaseChanged?.Invoke();
         }
 
         public void ShowDialog()
