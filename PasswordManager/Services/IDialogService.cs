@@ -1,4 +1,5 @@
-﻿using PasswordManager.ViewModels.DialogInterfaces;
+﻿using PasswordManager.ViewModels;
+using PasswordManager.ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace PasswordManager.Helpers
 {
     internal interface IDialogService
     {
-        void OpenDialog(IDialogViewModel DialogVm);
-        void CloseDialog(IDialogViewModel dialogVM);
+        void OpenDialog(DialogViewModelBase DialogVm);
+        void CloseDialog(DialogViewModelBase dialogVM);
         
     }
 }

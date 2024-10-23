@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using PasswordManager.DataConnectors;
 using PasswordManager.Helpers;
-using PasswordManager.ViewModels.DialogInterfaces;
+using PasswordManager.ViewModels.Interfaces;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.AppViewModel
 {
-    internal class AppViewModel : ViewModelBase
+    internal partial class AppViewModel : ViewModelBase, ICanChangeDataBase
     {
         AppViewModel(IClipBoardService clipboard, IDataBaseClient dbClient, IDialogService dialogService)
         {
@@ -33,26 +33,32 @@ namespace PasswordManager.ViewModels.AppViewModel
 
         AppDialogViewModel? dialogVM;
 
+        public event Func<ObservableCollection<ItemViewModelBase>>? OnDataBaseChanged;
+
         private void LoadViewModelList()
         {
             foreach (var app in dbClient.Load<Models.App>())
             {
                 Apps.Clear();
-                Apps.Add(new AppItemViewModel(app, Delete, Change, clipboard));
+                Apps.Add(new AppItemViewModel(app, new RelayCommand(() => Delete(app)), new RelayCommand(() => Change(app)), new RelayCommand(ShowData),  clipboard));
             }
         }
-        public void Delete(Models.App app)
+        private void Delete(Models.App app)
         {
             dbClient.Delete(app);
             LoadViewModelList();
+            OnDataBaseChanged?.Invoke();
         }
-        
-        public void Change(Models.App app)
+        private void ShowData()
+        {
+
+        }
+        private void Change(Models.App app)
         {
             dialogVM = new AppDialogViewModel(app);
             ShowDialog();
         }
-        
+        [RelayCommand]
         public void AddNew()
         {
             dialogVM = new AppDialogViewModel();
@@ -76,6 +82,7 @@ namespace PasswordManager.ViewModels.AppViewModel
                 if (vm.IsNew) dbClient.Save(app);
                 else dbClient.UpdateList(app);
                 LoadViewModelList();
+                OnDataBaseChanged?.Invoke();
             }
             dialogService.CloseDialog(dialogVM!);
             dialogVM = null;

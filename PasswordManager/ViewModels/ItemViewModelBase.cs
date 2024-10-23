@@ -11,15 +11,18 @@ namespace PasswordManager.ViewModels
     internal partial class ItemViewModelBase : ViewModelBase
     {
         
-        public ItemViewModelBase(string name, RelayCommand del)
+        public ItemViewModelBase(string name, RelayCommand del, RelayCommand change, RelayCommand showData)
         {
             Name = name;
             DeleteCommand = del;
+            ChangeCommand = change;
+            ShowDataCommand = showData;
         }
 
         public string Name { get; set; }
         public RelayCommand DeleteCommand { get; private set; }
-        
-        
+        public RelayCommand ChangeCommand { get; private set; }
+
+        public RelayCommand ShowDataCommand { get; private set; }
     }
 }

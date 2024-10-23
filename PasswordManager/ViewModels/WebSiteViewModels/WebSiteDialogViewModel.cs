@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Models;
-using PasswordManager.ViewModels.DialogInterfaces;
+using PasswordManager.ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
-    internal partial class WebSiteDialogViewModel : ViewModelBase, IDialogViewModel, IDialogResultHelper
+    internal partial class WebSiteDialogViewModel : DialogViewModelBase, IDialogResultHelper
     {
 
         private bool dialogResult;
@@ -103,12 +103,12 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
-        public bool CanClose()
+        protected override bool CanClose()
         {
             return true;
         }
 
-        public void Close()
+        public override void Close()
         {
             dialogResult = false;
             if (CanClose())

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PasswordManager;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
-using PasswordManager.ViewModels.DialogInterfaces;
+using PasswordManager.ViewModels.Interfaces;
 using PasswordManager.Views;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
-    internal partial class WebSitesViewModel : ViewModelBase
+    internal partial class WebSitesViewModel : ViewModelBase, ICanChangeDataBase
     {
 
         public WebSitesViewModel(DataConnectors.IDataBaseClient dataBaseClient, IDialogService dialogService, IClipBoardService clipboard)
@@ -37,17 +37,21 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
          
 
-        public void Change(WebSite model)
+        private void Change(WebSite model)
         {
             Dialog = new WebSiteDialogViewModel(model);
             ShowDialog();
         }
+        [RelayCommand]
         public void AddNew() 
         { 
             Dialog = new WebSiteDialogViewModel();
             ShowDialog();
         }
+        private void ShowData()
+        {
 
+        }
         private void Delete(WebSite model)
         {
             dbClient.Delete(model);
@@ -60,7 +64,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             if (Dialog != null)
             {
                 Dialog.dialogResultRequest += GetDialogResult;
-                dialogService.OpenDialog(Dialog);
+                dialogService.OpenDialog(Dialog!);
             }
         }
         public void GetDialogResult(object? sender, DialogResultEventArgs e)
@@ -72,7 +76,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                 if (vm.IsNew) dbClient.Save(model);
                 else dbClient.UpdateList(model);
                 LoadViewModelsList();
-
+                OnDataBaseChanged?.Invoke();
             }
             dialogService.CloseDialog(Dialog!);
             Dialog = null;
@@ -83,14 +87,10 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             foreach (var a in dbClient.Load<WebSite>())
             {
                 WebSites.Clear();
-                WebSiteItemViewModel item = new WebSiteItemViewModel(a, clipboard, Delete, Change);
+                WebSiteItemViewModel item = new WebSiteItemViewModel(a, clipboard,new RelayCommand(() => Delete(a)), new RelayCommand(() => Change(a)), new RelayCommand(ShowData));
                 WebSites.Add(item);
             }
         }
-
-        
-
-
     }    
     
 }

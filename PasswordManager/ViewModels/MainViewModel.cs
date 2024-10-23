@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 
+
 namespace PasswordManager.ViewModels;
 
 internal partial class MainViewModel : ViewModelBase
