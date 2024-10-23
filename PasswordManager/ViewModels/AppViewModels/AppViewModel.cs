@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using PasswordManager.DataConnectors;
 using PasswordManager.Helpers;
-using PasswordManager.ViewModels.DialogInterfaces;
+using PasswordManager.ViewModels.Interfaces;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
@@ -14,11 +14,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.AppViewModel
+namespace PasswordManager.ViewModels.AppViewModels
 {
-    internal class AppViewModel : ViewModelBase
+    internal partial class AppViewModel : ViewModelBase
     {
-        AppViewModel(IClipBoardService clipboard, IDataBaseClient dbClient, IDialogService dialogService)
+        public AppViewModel(IDataBaseClient dbClient, IDialogService dialogService, IClipBoardService clipboard)
         {
             this.clipboard = clipboard;
             this.dbClient = dbClient;
@@ -28,31 +28,49 @@ namespace PasswordManager.ViewModels.AppViewModel
         IClipBoardService clipboard;
         IDataBaseClient dbClient;
         IDialogService dialogService;
-        ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
+        private ItemViewModelBase? currentItem;
+        public ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
         
 
         AppDialogViewModel? dialogVM;
+
+        
+
+        public ItemViewModelBase? CurrentItem
+        {
+
+            get { return currentItem; }
+            set
+            {
+                currentItem = value;
+                OnPropertyChanged(new PropertyChangedEtendedEventArgs(nameof(CurrentItem), value));
+            }
+        }
 
         private void LoadViewModelList()
         {
             foreach (var app in dbClient.Load<Models.App>())
             {
                 Apps.Clear();
-                Apps.Add(new AppItemViewModel(app, Delete, Change, clipboard));
+                Apps.Add(new AppItemViewModel(app, new RelayCommand(() => Delete(app)), new RelayCommand(() => Change(app)), ShowData,  clipboard));
             }
         }
-        public void Delete(Models.App app)
+        private void Delete(Models.App app)
         {
             dbClient.Delete(app);
             LoadViewModelList();
+            
         }
-        
-        public void Change(Models.App app)
+        private void ShowData(ItemViewModelBase vm)
+        {
+            CurrentItem = vm;
+        }
+        private void Change(Models.App app)
         {
             dialogVM = new AppDialogViewModel(app);
             ShowDialog();
         }
-        
+        [RelayCommand]
         public void AddNew()
         {
             dialogVM = new AppDialogViewModel();
@@ -76,6 +94,7 @@ namespace PasswordManager.ViewModels.AppViewModel
                 if (vm.IsNew) dbClient.Save(app);
                 else dbClient.UpdateList(app);
                 LoadViewModelList();
+                
             }
             dialogService.CloseDialog(dialogVM!);
             dialogVM = null;

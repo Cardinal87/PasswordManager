@@ -22,7 +22,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private WebSite model;
         private IClipBoardService clipBoardService;
         
-        public WebSiteItemViewModel(WebSite model, IClipBoardService clipBoardService, Action<WebSite> delete, Action<WebSite> change) : base(model.Name, new RelayCommand(() => delete.Invoke(model)))
+        public WebSiteItemViewModel(WebSite model, IClipBoardService clipBoardService, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> ShowData) : base(model.Name, delete, change, ShowData)
         {
             this.model = model;
 
@@ -30,15 +30,12 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             Password = model.Password;
             IsFavourite = model.IsFavourite;
             WebAddress = model.WebAddress;
-            this.clipBoardService = clipBoardService; 
-            this.change = change;
-            DeleteCommand = new RelayCommand(() => delete.Invoke(model));
+            this.clipBoardService = clipBoardService;
+            ShowDataCommand = new RelayCommand(() => ShowData.Invoke(this));
         }
-        
-        Action<WebSite> change;
-        new RelayCommand DeleteCommand;
 
         
+
         private string login;
         private string password;
         private string webAddress;
@@ -100,7 +97,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
 
 
-       
+        public RelayCommand ShowDataCommand;
 
         [RelayCommand]
         public void CopyToClipboard(string text)
@@ -120,11 +117,6 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             if (IsFavourite) IsFavourite = false;
             else IsFavourite = true;
-        }
-        [RelayCommand]
-        public void Change()
-        {
-            change.Invoke(model);
         }
         
     }

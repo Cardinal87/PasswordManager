@@ -1,12 +1,16 @@
 ﻿
 using PasswordManager.ViewModels.WebSiteViewModels;
 using PasswordManager.ViewModels.AllEntriesViewModels;
+using PasswordManager.ViewModels.AppViewModels;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Helpers;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Net;
+
 
 namespace PasswordManager.ViewModels;
 
@@ -29,19 +33,31 @@ internal partial class MainViewModel : ViewModelBase
         this.dbClient = dbClient;
         this.dialogService = dialogService;
         this.clipboard = clipboard;
-        WebSitesVm = new WebSitesViewModel(dbClient, this.dialogService, this.clipboard);
-        itemsCollections.Add(WebSitesVm.WebSites.Select(x => (ItemViewModelBase)x).ToList());
-        AllEntriesVm = new AllEntriesViewModel(LoadViewModelList);
+
+        
+        WebSitesVm = new WebSitesViewModel(dbClient, dialogService, clipboard);
+        AppVm = new AppViewModel(dbClient, dialogService, clipboard);
+        list.Add(WebSitesVm);
+        list.Add(AppVm);
+        items.AddRange(WebSitesVm.WebSites);
+        items.AddRange(AppVm.Apps);
+
+
+        AllEntriesVm = new AllEntriesViewModel(items);
+        WebSitesVm.WebSites.CollectionChanged += AllEntriesVm.LoadViewModelList;
+        AppVm.Apps.CollectionChanged += AllEntriesVm.LoadViewModelList;
+
         CurrentPage = AllEntriesVm;
 
-        WebSitesVm.OnDataBaseChanged += AllEntriesVm.LoadViewModelList;
+        Subscribe();
     }
     private IClipBoardService clipboard;
     private IDialogService dialogService;
     private DataConnectors.IDataBaseClient dbClient;
-    private List<List<ItemViewModelBase>> itemsCollections = new List<List<ItemViewModelBase>>();
-
+    private List<ObservableObject> list = new List<ObservableObject>();
+    private List<ItemViewModelBase> items = new List<ItemViewModelBase>();
     public AllEntriesViewModel AllEntriesVm { get; }
+    public AppViewModel AppVm { get; }
     public WebSitesViewModel WebSitesVm { get; }
 
     [RelayCommand]
@@ -49,18 +65,12 @@ internal partial class MainViewModel : ViewModelBase
     {
         CurrentPage = vm;
     }
-    private ObservableCollection<ItemViewModelBase> LoadViewModelList()
+    private void Subscribe()
     {
-        ObservableCollection<ItemViewModelBase> items = new ObservableCollection<ItemViewModelBase>();
-        foreach(var collection in itemsCollections)
+        foreach (var item in list)
         {
-            foreach(var item in collection)
-            {
-                items.Add(item);
-            }
-        }  
-        return items;
-    
+            item.PropertyChanged += AllEntriesVm.SetItem;
+        }
     }
 
 }

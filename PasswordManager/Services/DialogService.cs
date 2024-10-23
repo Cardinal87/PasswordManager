@@ -1,7 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using PasswordManager.ViewModels.DialogInterfaces;
+using PasswordManager.ViewModels;
+using PasswordManager.ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,10 @@ namespace PasswordManager.Helpers
     {
         private List<Window?> openWindows = [];
         
-        private void RegisterView(IDialogViewModel viewmodel, Window dialog) => dialog.DataContext = viewmodel;
+        private void RegisterView(DialogViewModelBase viewmodel, Window dialog) => dialog.DataContext = viewmodel;
         
         
-        public void OpenDialog(IDialogViewModel DialogVm)
+        public void OpenDialog(DialogViewModelBase DialogVm)
         {
             Window owner = ((IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!)!.MainWindow!;
             Window dialog = CreateWindow(DialogVm);
@@ -27,7 +28,7 @@ namespace PasswordManager.Helpers
             dialog.ShowDialog(owner);
         }
 
-        private Window CreateWindow(IDialogViewModel viewmodel)
+        private Window CreateWindow(DialogViewModelBase viewmodel)
         {
             string name = viewmodel.GetType().FullName!.Replace( "ViewModel", "View");
             var type = Type.GetType(name);
@@ -39,7 +40,7 @@ namespace PasswordManager.Helpers
             else throw new Exception();
         }
 
-        public void CloseDialog(IDialogViewModel dialogVM)
+        public void CloseDialog(DialogViewModelBase dialogVM)
         {
             Window? win = openWindows.FirstOrDefault(x => x!.DataContext == dialogVM);
             if (win != null)

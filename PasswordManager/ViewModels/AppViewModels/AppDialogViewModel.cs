@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Helpers;
-using PasswordManager.ViewModels.DialogInterfaces;
+using PasswordManager.ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.AppViewModel
+namespace PasswordManager.ViewModels.AppViewModels
 {
-    internal class AppDialogViewModel : ViewModelBase, IDialogResultHelper, IDialogViewModel
+    internal class AppDialogViewModel : DialogViewModelBase, IDialogResultHelper
     {
         public AppDialogViewModel() 
         {
@@ -27,7 +27,6 @@ namespace PasswordManager.ViewModels.AppViewModel
             IsFavourite = model.IsFavourite;
             IsNew = false;
         }
-        
 
         public bool dialogResult;
         private string name = "";
@@ -63,7 +62,7 @@ namespace PasswordManager.ViewModels.AppViewModel
 
         public bool IsFavourite { get; private set; }
         public bool IsNew { get; private set; }
-        public bool CanClose()
+        protected override bool CanClose()
         {
             return true;
         }
@@ -74,7 +73,7 @@ namespace PasswordManager.ViewModels.AppViewModel
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
-        public void Close()
+        public override void Close()
         {
             dialogResult = false;
             if (CanClose())

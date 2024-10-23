@@ -21,10 +21,9 @@ public partial class App : Application
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
-        DataConnectors.ITableConnector con = new DataConnectors.WebSitesTableConnector();
-        DataConnectors.DataBaseClient dataBaseClient = new DataConnectors.DataBaseClient();
-        Helpers.ClipBoardService clipboard = new Helpers.ClipBoardService();
-        Helpers.DialogService dialogService = new Helpers.DialogService();
+        DataConnectors.IDataBaseClient dataBaseClient = new DataConnectors.DataBaseClient();
+        Helpers.IClipBoardService clipboard = new Helpers.ClipBoardService();
+        Helpers.IDialogService dialogService = new Helpers.DialogService();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow

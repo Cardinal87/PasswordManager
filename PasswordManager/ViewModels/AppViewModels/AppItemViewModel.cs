@@ -8,26 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.AppViewModel
+namespace PasswordManager.ViewModels.AppViewModels
 {
     internal partial class AppItemViewModel : ItemViewModelBase
     {
-        public AppItemViewModel(Models.App app, Action<Models.App> delete, Action<Models.App> change, IClipBoardService clipboard) : base(app.Name, new RelayCommand(() => delete.Invoke(app)))
+        public AppItemViewModel(Models.App app, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> ShowData, IClipBoardService clipboard) : base(app.Name, delete, change, ShowData)
         {
             model = app;
             Password = app.Password;
 
-            DeleteCommand = new RelayCommand(() => delete.Invoke(app));
-            this.change = change;
-            
             clipBoard = clipboard;
+            ShowDataCommand = new RelayCommand(() => ShowData(this));
         }
-       
-        Action<Models.App> change;
-        new RelayCommand DeleteCommand;
 
+       
         IClipBoardService clipBoard;
         Models.App model;
+        
         
         string password;
         bool isFavourite;
@@ -58,6 +55,8 @@ namespace PasswordManager.ViewModels.AppViewModel
                 OnPropertyChanged(nameof(IsFavourite));
             }
         }
+        public RelayCommand ShowDataCommand;
+
         [RelayCommand]
         public void CopyToClipBoard(string text)
         {
@@ -75,13 +74,6 @@ namespace PasswordManager.ViewModels.AppViewModel
         {
 
         }
-
-        [RelayCommand]
-        public void Change()
-        {
-            change.Invoke(model);
-        }
-        
     }
 }
 

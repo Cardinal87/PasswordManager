@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.DialogInterfaces
+namespace PasswordManager.ViewModels.Interfaces
 {
     internal interface IDialogResultHelper
     {
