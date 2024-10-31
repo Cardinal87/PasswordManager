@@ -64,7 +64,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
         }
         public void SetItem(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CurrentItem) && e is PropertyChangedEtendedEventArgs a && a.NewValue != null)
+            if (e.PropertyName == nameof(CurrentItem) && e is PropertyChangedExtendedEventArgs a && a.NewValue != null)
             {
                 currentItem = (ItemViewModelBase)a.NewValue;
             }

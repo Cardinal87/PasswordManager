@@ -1,6 +1,7 @@
 ﻿using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Helpers;
+using PasswordManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -12,20 +13,22 @@ namespace PasswordManager.ViewModels.AppViewModels
 {
     internal partial class AppItemViewModel : ItemViewModelBase
     {
-        public AppItemViewModel(Models.App app, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> ShowData, IClipBoardService clipboard) : base(app.Name, delete, change, ShowData)
+        public AppItemViewModel(Models.App app, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> ShowDataOfItem, IClipboardService clipboard) : base(app.Id, app.Name, delete, change, ShowDataOfItem)
         {
             model = app;
-            Password = app.Password;
-
+            UpdateModel(app);
             clipBoard = clipboard;
-            ShowDataCommand = new RelayCommand(() => ShowData(this));
+            ShowDataCommand = new RelayCommand(() => ShowDataOfItem(this));
+            CopyToClipboardCommand = new RelayCommand<string>(CopyToClipBoard);
+            AddToFavouriteCommand = new RelayCommand(AddToFavourite);
         }
+        public RelayCommand ShowDataCommand { get; }
+        public RelayCommand<string> CopyToClipboardCommand { get; }
+        public RelayCommand AddToFavouriteCommand { get; }
+        IClipboardService clipBoard;
 
-       
-        IClipBoardService clipBoard;
+
         Models.App model;
-        
-        
         string password;
         bool isFavourite;
         
@@ -55,24 +58,27 @@ namespace PasswordManager.ViewModels.AppViewModels
                 OnPropertyChanged(nameof(IsFavourite));
             }
         }
-        public RelayCommand ShowDataCommand;
+        
 
-        [RelayCommand]
-        public void CopyToClipBoard(string text)
+        private void CopyToClipBoard(string? text)
         {
-            clipBoard.SaveToClipBoard(text);
+            if (text != null)
+                clipBoard.SaveToClipBoard(text);
         }
-
-        [RelayCommand]
-        public void AddToFavourite()
+        private void AddToFavourite()
         {
             if (IsFavourite) IsFavourite = false;
             else IsFavourite = true;
         }
-        [RelayCommand]
-        public void GoToWebSite()
+        
+        [MemberNotNull(nameof(password))]
+        public void UpdateModel(Models.App model)
         {
-
+            this.model = model;
+            Id = model.Id;
+            Name = model.Name;
+            Password = model.Password;
+            IsFavourite = model.IsFavourite;
         }
     }
 }

@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using PasswordManager.DataConnectors;
+using PasswordManager.Factories;
 using PasswordManager.Helpers;
+using PasswordManager.Models;
 using PasswordManager.ViewModels.Interfaces;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
@@ -18,15 +20,16 @@ namespace PasswordManager.ViewModels.AppViewModels
 {
     internal partial class AppViewModel : ViewModelBase
     {
-        public AppViewModel(IDataBaseClient dbClient, IDialogService dialogService, IClipBoardService clipboard)
+        public AppViewModel(IDatabaseClient dbclient, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
-            this.clipboard = clipboard;
-            this.dbClient = dbClient;
+            this.itemFactory = itemFactory;
+            this.dbClient = dbclient;
             this.dialogService = dialogService;
+            AddNewCommand = new RelayCommand(ShowAddNewDialog);
             LoadViewModelList();
         }
-        IClipBoardService clipboard;
-        IDataBaseClient dbClient;
+        IItemViewModelFactory itemFactory;
+        IDatabaseClient dbClient;
         IDialogService dialogService;
         private ItemViewModelBase? currentItem;
         public ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
@@ -34,7 +37,7 @@ namespace PasswordManager.ViewModels.AppViewModels
 
         AppDialogViewModel? dialogVM;
 
-        
+        public RelayCommand AddNewCommand { get; set; }
 
         public ItemViewModelBase? CurrentItem
         {
@@ -43,41 +46,38 @@ namespace PasswordManager.ViewModels.AppViewModels
             set
             {
                 currentItem = value;
-                OnPropertyChanged(new PropertyChangedEtendedEventArgs(nameof(CurrentItem), value));
+                OnPropertyChanged(new PropertyChangedExtendedEventArgs(nameof(CurrentItem), value));
             }
         }
 
-        private void LoadViewModelList()
+        
+        private void Delete(Models.App model)
         {
-            foreach (var app in dbClient.Load<Models.App>())
+            var a = Apps.FirstOrDefault(x => x.Id == model.Id);
+            if (a != null)
             {
-                Apps.Clear();
-                Apps.Add(new AppItemViewModel(app, new RelayCommand(() => Delete(app)), new RelayCommand(() => Change(app)), ShowData,  clipboard));
+                dbClient.Delete(model);
+                Apps.Remove(a);
             }
+            dbClient.Save();
+
         }
-        private void Delete(Models.App app)
-        {
-            dbClient.Delete(app);
-            LoadViewModelList();
-            
-        }
-        private void ShowData(ItemViewModelBase vm)
+        private void ShowDataOfItem(ItemViewModelBase vm)
         {
             CurrentItem = vm;
         }
-        private void Change(Models.App app)
+        private void ShowChangeDialog(Models.App app)
         {
             dialogVM = new AppDialogViewModel(app);
             ShowDialog();
         }
-        [RelayCommand]
-        public void AddNew()
+        private void ShowAddNewDialog()
         {
             dialogVM = new AppDialogViewModel();
             ShowDialog();
         }
 
-        public void ShowDialog()
+        private void ShowDialog()
         {
             if (dialogVM != null)
             {
@@ -85,19 +85,40 @@ namespace PasswordManager.ViewModels.AppViewModels
                 dialogService.OpenDialog(dialogVM);
             }
         }
-        public void GetDialogResult(object? sender, DialogResultEventArgs e)
+        private void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
             if (e.DialogResult && sender != null)
             {
                 AppDialogViewModel vm = (AppDialogViewModel)sender;
-                Models.App app = new(vm.Name ,vm.Password, false);
-                if (vm.IsNew) dbClient.Save(app);
-                else dbClient.UpdateList(app);
-                LoadViewModelList();
-                
+                Models.App model = new(vm.Name ,vm.Password, false);
+                if (vm.IsNew)
+                {
+                    dbClient.Insert(model);
+                    dbClient.Save();
+                    AppItemViewModel item = itemFactory.CreateAppItem(model, new RelayCommand(() => Delete(model)), new RelayCommand(() => ShowChangeDialog(model)), ShowDataOfItem);
+                    Apps.Add(item);
+
+                }
+                else
+                {
+                    dbClient.Replace(model);
+                    var a = Apps.FirstOrDefault(x => x.Id == model.Id);
+                    a?.UpdateModel(model);
+                }
+
+
             }
             dialogService.CloseDialog(dialogVM!);
             dialogVM = null;
+        }
+
+        private void LoadViewModelList()
+        {
+            foreach (var model in dbClient.GetListOfType<Models.App>())
+            {
+                var item = itemFactory.CreateAppItem(model, new RelayCommand(() => Delete(model)), new RelayCommand(() => ShowChangeDialog(model)), ShowDataOfItem);
+                Apps.Add(item);
+            }
         }
     }
 }

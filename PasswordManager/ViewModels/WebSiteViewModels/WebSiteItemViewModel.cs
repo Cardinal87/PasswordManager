@@ -20,27 +20,30 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     {
         
         private WebSite model;
-        private IClipBoardService clipBoardService;
+        private IClipboardService clipBoardService;
         
-        public WebSiteItemViewModel(WebSite model, IClipBoardService clipBoardService, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> ShowData) : base(model.Name, delete, change, ShowData)
+        public WebSiteItemViewModel(WebSite model, IClipboardService clipBoardService, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> ShowDataOfItem) : base(model.Id, model.Name, delete, change, ShowDataOfItem)
         {
             this.model = model;
-
-            Login = model.Login;
-            Password = model.Password;
-            IsFavourite = model.IsFavourite;
-            WebAddress = model.WebAddress;
+            UpdateModel(model);
             this.clipBoardService = clipBoardService;
-            ShowDataCommand = new RelayCommand(() => ShowData.Invoke(this));
+            ShowDataCommand = new RelayCommand(() => ShowDataOfItem.Invoke(this));
+            GoTowebSiteCommand = new RelayCommand(GoToWebSite);
+            CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);
+            AddToFavouriteCommand = new RelayCommand(AddToFavourite);
         }
+        public RelayCommand ShowDataCommand { get; }
+        public RelayCommand<string> CopyToClipboardCommand { get; }
+        public RelayCommand AddToFavouriteCommand { get; }
+        public RelayCommand GoTowebSiteCommand { get; }
 
         
-
         private string login;
         private string password;
         private string webAddress;
         private bool isFavourite;
-
+        
+        
         public string Login {
             get
             {
@@ -97,26 +100,34 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
 
 
-        public RelayCommand ShowDataCommand;
-
-        [RelayCommand]
-        public void CopyToClipboard(string text)
+        private void CopyToClipboard(string? text)
         {
-            clipBoardService.SaveToClipBoard(text);
+            if (text != null)
+                clipBoardService.SaveToClipBoard(text);
         }
         
-
-        [RelayCommand]
-        public void GoToWebSite()
+        private void GoToWebSite()
         {
 
         }
-
-        [RelayCommand]
-        public void AddToFavourite()
+        private void AddToFavourite()
         {
             if (IsFavourite) IsFavourite = false;
             else IsFavourite = true;
+        }
+        [MemberNotNull(nameof(webAddress))]
+        [MemberNotNull(nameof(login))]
+        [MemberNotNull(nameof(password))]
+        public void UpdateModel(WebSite model)
+        {
+            
+            this.model = model;
+            Id = model.Id;
+            Name = model.Name;
+            Password = model.Password;
+            Login = model.Login;
+            WebAddress = model.WebAddress;
+            IsFavourite = model.IsFavourite;
         }
         
     }

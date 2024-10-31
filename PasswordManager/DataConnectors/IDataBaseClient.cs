@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Internal;
+using PasswordManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +10,14 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.DataConnectors
 {
-    internal interface IDataBaseClient
+    internal interface IDatabaseClient
     {
-        public List<T> Load<T>() where T : class;
-        public void Save<T>(T model) where T: class;
-        public void Delete<T>(T model) where T : class;
-        public void UpdateList<T>(T model) where T : class;
+        public IEnumerable<TEntity> GetListOfType<TEntity>() where TEntity : ModelBase;
+        public void Insert<TEntity>(TEntity model) where TEntity : ModelBase; 
+        public void Delete<TEntity>(TEntity model) where TEntity : ModelBase;
+        public void Replace<TEntity>(TEntity model) where TEntity : ModelBase;
+
+        public void Save();
         
     }
 }

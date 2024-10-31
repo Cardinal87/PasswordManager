@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace PasswordManager.ViewModels
 {
     
-    internal class PropertyChangedEtendedEventArgs : PropertyChangedEventArgs
+    internal class PropertyChangedExtendedEventArgs : PropertyChangedEventArgs
     {
-        public PropertyChangedEtendedEventArgs(string? propertyName, object? newValue) : base(propertyName)
+        public PropertyChangedExtendedEventArgs(string? propertyName, object? newValue) : base(propertyName)
         {
             NewValue = newValue;
         }

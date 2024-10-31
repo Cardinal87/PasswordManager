@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using PasswordManager.Models;
 using PasswordManager.ViewModels;
 using System;
@@ -8,59 +9,56 @@ using System.Linq;
 
 namespace PasswordManager.DataConnectors
 {
-    internal class DataBaseClient: DbContext, IDataBaseClient
+    internal class DataBaseClient : DbContext, IDatabaseClient 
     {
-        public DataBaseClient()
-        {
-            Collection.Add(nameof(WebSite), WebSites);
-            Collection.Add(nameof(App), WebSites);
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
-        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(GetConnectionString());
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlite("Data Source=passwordmanager.db;");
         }
-        
-        public string GetConnectionString() => "Data Source=passwordmanager.db;";
 
-        public void Save<T>(T model) where T : class 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DbSet<T> dbSet = GetList<T>();
-            dbSet.Add(model);
+            base.OnModelCreating(modelBuilder); 
+        }
+        public IEnumerable<T> GetListOfType<T>() where T : ModelBase
+        {
+            var list = Set<T>();
+            return list;
+        }
+
+        public void Insert<T>(T model) where T : ModelBase
+        {
+            var list = Set<T>();
+            list.Add(model);
+        }
+
+        public void Delete<T>(T model) where T : ModelBase
+        {
+            var list = Set<T>();
+            list.Remove(model);
+        }
+
+        public void Replace<T>(T model) where T : ModelBase
+        {
+            var list = Set<T>();
+            var excist = list.FirstOrDefault(x => x.Id == model.Id);
+            if (excist != null)
+            {
+                list.Remove(list.First(x => x.Id == model.Id));
+                list.Add(model);
+            }
+        }
+
+        public void Save()
+        {
             SaveChanges();
         }
 
-        public void Delete<T>(T model) where T : class
+        private new DbSet<TEntity> Set<TEntity>() where TEntity : ModelBase
         {
-            DbSet<T> dbSet = GetList<T>();
-            dbSet.Remove(model);
+            return base.Set<TEntity>();
         }
-        
-        public void UpdateList<T>(T model) where T: class
-        {
-            Delete(model);
-            Save(model);
-        }
-
-        private DbSet<T> GetList<T>() where T : class
-        {
-            string key = typeof(T).Name.Replace("ViewModel", "");
-            var list = Collection[key];
-            return (list as DbSet<T>)!;
-        }
-
-        public List<T> Load<T>() where T : class
-        {
-            var dbSet = GetList<T>();
-            return dbSet.ToList();
-        }
-
-        
-
-        private Dictionary<string, object?> Collection { get; set; } = new Dictionary<string, object?>();
-        public DbSet<WebSite> WebSites { get; private set; }
-        public DbSet<Models.App> Apps { get; private set; }
-
     }
 }

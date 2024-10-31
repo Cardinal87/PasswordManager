@@ -10,13 +10,14 @@ using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Net;
+using PasswordManager.DataConnectors;
+using PasswordManager.Factories;
 
 
 namespace PasswordManager.ViewModels;
 
 internal partial class MainViewModel : ViewModelBase
 {
-
 
     private ViewModelBase currentPage;
     public ViewModelBase CurrentPage {
@@ -28,15 +29,12 @@ internal partial class MainViewModel : ViewModelBase
             OnPropertyChanged("CurrentPage");
         }
     }
-    public MainViewModel(DataConnectors.IDataBaseClient dbClient, IDialogService dialogService, IClipBoardService clipboard)
+    public MainViewModel(IViewModelFactory factory)
     {
-        this.dbClient = dbClient;
-        this.dialogService = dialogService;
-        this.clipboard = clipboard;
-
         
-        WebSitesVm = new WebSitesViewModel(dbClient, dialogService, clipboard);
-        AppVm = new AppViewModel(dbClient, dialogService, clipboard);
+        
+        WebSitesVm = factory.CreateWebSiteVM();
+        AppVm = factory.CreateAppVM();
         list.Add(WebSitesVm);
         list.Add(AppVm);
         items.AddRange(WebSitesVm.WebSites);
@@ -51,17 +49,15 @@ internal partial class MainViewModel : ViewModelBase
 
         Subscribe();
     }
-    private IClipBoardService clipboard;
-    private IDialogService dialogService;
-    private DataConnectors.IDataBaseClient dbClient;
+    
     private List<ObservableObject> list = new List<ObservableObject>();
     private List<ItemViewModelBase> items = new List<ItemViewModelBase>();
     public AllEntriesViewModel AllEntriesVm { get; }
     public AppViewModel AppVm { get; }
-    public WebSitesViewModel WebSitesVm { get; }
+    public WebSiteViewModel WebSitesVm { get; }
 
     [RelayCommand]
-    public void SetCurrentPage(ViewModelBase vm)
+    private void SetCurrentPage(ViewModelBase vm)
     {
         CurrentPage = vm;
     }

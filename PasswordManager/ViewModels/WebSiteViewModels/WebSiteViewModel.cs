@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PasswordManager;
+using PasswordManager.DataConnectors;
+using PasswordManager.Factories;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels.Interfaces;
@@ -17,25 +19,26 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
-    internal partial class WebSitesViewModel : ViewModelBase
+    internal partial class WebSiteViewModel : ViewModelBase
     {
 
-        public WebSitesViewModel(DataConnectors.IDataBaseClient dataBaseClient, IDialogService dialogService, IClipBoardService clipboard)
+        public WebSiteViewModel(IDatabaseClient dbClient, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
-            dbClient = dataBaseClient;
+            this.itemFactory = itemFactory;
+            this.dbClient = dbClient;
             this.dialogService = dialogService;
-            this.clipboard = clipboard;
-            
+            AddNewCommand = new RelayCommand(ShowAddNewDialog);
+
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
             LoadViewModelsList();  
         }
-        private IClipBoardService clipboard;
+        private IItemViewModelFactory itemFactory;
         private IDialogService dialogService;
-        private DataConnectors.IDataBaseClient dbClient;
+        private IDatabaseClient dbClient;
         private ItemViewModelBase? currentItem;
+        public RelayCommand AddNewCommand { get; }
 
-        
-        
+
         public WebSiteDialogViewModel? Dialog { get; private set; }
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
         
@@ -46,35 +49,38 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             set
             {
                 currentItem = value;
-                OnPropertyChanged(new PropertyChangedEtendedEventArgs(nameof(CurrentItem), value));
+                OnPropertyChanged(new PropertyChangedExtendedEventArgs(nameof(CurrentItem), value));
             }
         }
 
-        private void Change(WebSite model)
+        private void ShowChangeDialog(WebSite model)
         {
             Dialog = new WebSiteDialogViewModel(model);
             ShowDialog();
         }
-        [RelayCommand]
-        public void AddNew() 
+        
+        private void ShowAddNewDialog() 
         { 
             Dialog = new WebSiteDialogViewModel();
             ShowDialog();
         }
-        private void ShowData(ItemViewModelBase vm)
+        private void ShowDataOfItem(ItemViewModelBase vm)
         {
             CurrentItem = vm;
-            
         }
+
         private void Delete(WebSite model)
         {
-            dbClient.Delete(model);
-            LoadViewModelsList();
-            
-
+            var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
+            if (a != null) 
+            {
+                dbClient.Delete(model);
+                WebSites.Remove(a);
+            }
+            dbClient.Save();
         }
 
-        public void ShowDialog()
+        private void ShowDialog()
         {
             if (Dialog != null)
             {
@@ -82,17 +88,30 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                 dialogService.OpenDialog(Dialog!);
             }
         }
-        public void GetDialogResult(object? sender, DialogResultEventArgs e)
+
+
+        private void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
             if (e.DialogResult && sender != null)
             {
                 WebSiteDialogViewModel vm = (WebSiteDialogViewModel)sender;
-                WebSite model = new WebSite(vm.Name, vm.Login, vm.Password,vm.WebAddress,vm.IsFavourite);
-                if (vm.IsNew) dbClient.Save(model);
-                else dbClient.UpdateList(model);
-                LoadViewModelsList();
+                WebSite model = vm.Model!;
                 
-
+                if (vm.IsNew)
+                {
+                    dbClient.Insert(model);
+                    dbClient.Save();
+                    WebSiteItemViewModel item = itemFactory.CreateWebSiteItem(model, new RelayCommand(() => Delete(model)), new RelayCommand(() => ShowChangeDialog(model)), ShowDataOfItem);
+                    WebSites.Add(item);
+                }
+                else
+                {
+                    dbClient.Replace(model);
+                    var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
+                    a?.UpdateModel(model);
+                    dbClient.Save();
+                }
+                
             }
             dialogService.CloseDialog(Dialog!);
             Dialog = null;
@@ -100,13 +119,12 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         private void LoadViewModelsList()
         {
-            foreach (var a in dbClient.Load<WebSite>())
+            foreach (var a in dbClient.GetListOfType<WebSite>())
             {
-                WebSites.Clear();
-                WebSiteItemViewModel item = new WebSiteItemViewModel(a, clipboard,new RelayCommand(() => Delete(a)), new RelayCommand(() => Change(a)), ShowData);
+                var item = itemFactory.CreateWebSiteItem(a, new RelayCommand(() => Delete(a)), new RelayCommand(() => ShowChangeDialog(a)), ShowDataOfItem);
                 WebSites.Add(item);
             }
-            
+
         }
     }    
     

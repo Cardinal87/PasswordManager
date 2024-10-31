@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.AppViewModels
@@ -20,6 +21,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         }
         public AppDialogViewModel(Models.App model)
         {
+            Model = model;
             Name = model.Name;
             Password = model.Password;
             AddCommand = new RelayCommand(Add);
@@ -35,6 +37,7 @@ namespace PasswordManager.ViewModels.AppViewModels
 
         RelayCommand AddCommand;
         RelayCommand CloseCommand;
+        public Models.App? Model { get; set; }
         public string Name
         {
             get
@@ -78,6 +81,7 @@ namespace PasswordManager.ViewModels.AppViewModels
             dialogResult = false;
             if (CanClose())
             {
+                Model = new Models.App(Name,Password,IsFavourite);
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
             }
         }

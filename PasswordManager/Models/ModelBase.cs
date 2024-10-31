@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.Helpers
+namespace PasswordManager.Models
 {
-    internal interface IClipboardService
+    internal class ModelBase
     {
-        void SaveToClipBoard(string text);
+        public int Id { get;}
     }
 }
