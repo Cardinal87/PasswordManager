@@ -31,7 +31,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         IItemViewModelFactory itemFactory;
         IDatabaseClient dbClient;
         IDialogService dialogService;
-        private ItemViewModelBase? currentItem;
+        private AppItemViewModel? currentItem;
         public ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
         
 
@@ -39,7 +39,7 @@ namespace PasswordManager.ViewModels.AppViewModels
 
         public RelayCommand AddNewCommand { get; set; }
 
-        public ItemViewModelBase? CurrentItem
+        public AppItemViewModel? CurrentItem
         {
 
             get { return currentItem; }
@@ -62,7 +62,7 @@ namespace PasswordManager.ViewModels.AppViewModels
             dbClient.Save();
 
         }
-        private void ShowDataOfItem(ItemViewModelBase vm)
+        private void ShowDataOfItem(AppItemViewModel vm)
         {
             CurrentItem = vm;
         }

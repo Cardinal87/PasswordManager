@@ -31,8 +31,9 @@ internal partial class MainViewModel : ViewModelBase
     }
     public MainViewModel(IViewModelFactory factory)
     {
-        
-        
+        SetCurrentPageCommand = new RelayCommand<ViewModelBase>(SetCurrentPage!);
+
+
         WebSitesVm = factory.CreateWebSiteVM();
         AppVm = factory.CreateAppVM();
         list.Add(WebSitesVm);
@@ -49,14 +50,16 @@ internal partial class MainViewModel : ViewModelBase
 
         Subscribe();
     }
-    
+    public RelayCommand<ViewModelBase> SetCurrentPageCommand { get; set; }
+
+
     private List<ObservableObject> list = new List<ObservableObject>();
     private List<ItemViewModelBase> items = new List<ItemViewModelBase>();
     public AllEntriesViewModel AllEntriesVm { get; }
     public AppViewModel AppVm { get; }
     public WebSiteViewModel WebSitesVm { get; }
 
-    [RelayCommand]
+    
     private void SetCurrentPage(ViewModelBase vm)
     {
         CurrentPage = vm;

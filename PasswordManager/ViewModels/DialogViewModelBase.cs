@@ -9,6 +9,6 @@ namespace PasswordManager.ViewModels
     internal abstract class DialogViewModelBase : ViewModelBase
     {
         protected abstract bool CanClose();
-        public abstract void Close();
+        protected abstract void Close();
     }
 }

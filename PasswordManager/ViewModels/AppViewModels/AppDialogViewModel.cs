@@ -70,13 +70,13 @@ namespace PasswordManager.ViewModels.AppViewModels
             return true;
         }
 
-        public void Add()
+        private void Add()
         {
             dialogResult = true;
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
-        public override void Close()
+        protected override void Close()
         {
             dialogResult = false;
             if (CanClose())
@@ -85,5 +85,6 @@ namespace PasswordManager.ViewModels.AppViewModels
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
             }
         }
+        
     }
 }

@@ -4,6 +4,7 @@ using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels;
 using PasswordManager.ViewModels.AppViewModels;
+using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,8 @@ namespace PasswordManager.Factories
     internal interface IItemViewModelFactory
     {
         public IClipboardService Clipboard { get; }
-        public WebSiteItemViewModel CreateWebSiteItem(WebSite model, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> showData);
-        public AppItemViewModel CreateAppItem(Models.App model, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> showData);
-        
+        public WebSiteItemViewModel CreateWebSiteItem(WebSite model, RelayCommand delete, RelayCommand change, Action<WebSiteItemViewModel> showData);
+        public AppItemViewModel CreateAppItem(Models.App model, RelayCommand delete, RelayCommand change, Action<AppItemViewModel> showData);
+        public CardItemViewModel CreateCardItem(Card model, RelayCommand delete, RelayCommand change, Action<AppItemViewModel> showData);
     }
 }

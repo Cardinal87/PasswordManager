@@ -6,7 +6,7 @@
 			 xmlns:views="clr-namespace:PasswordManager.Views"
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
 			 x:Class="PasswordManager.Views.WebSiteViews.WebSiteView"
-			 x:DataType="vm:WebSitesViewModel"
+			 x:DataType="vm:WebSiteViewModel"
 			 Height="700" Width="900">
 	
 	
@@ -19,7 +19,7 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch" Command="{Binding AddNew}">
+			VerticalAlignment="Stretch" Command="{Binding ShowAddNewDialog}">
 			
 			
 		</Button>

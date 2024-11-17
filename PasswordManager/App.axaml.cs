@@ -35,7 +35,7 @@ public partial class App : Application
         
         
         IDatabaseClient dataBaseClient = new DataBaseClient();
-        IClipboardService clipboard = new ClipBoardService();
+        IClipboardService clipboard = new ClipboardService();
         IDialogService dialogService = new DialogService();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

@@ -35,14 +35,14 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private IItemViewModelFactory itemFactory;
         private IDialogService dialogService;
         private IDatabaseClient dbClient;
-        private ItemViewModelBase? currentItem;
+        private WebSiteItemViewModel? currentItem;
         public RelayCommand AddNewCommand { get; }
 
 
         public WebSiteDialogViewModel? Dialog { get; private set; }
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
         
-        public ItemViewModelBase? CurrentItem
+        public WebSiteItemViewModel? CurrentItem
         {
 
             get { return currentItem; }
@@ -64,7 +64,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             Dialog = new WebSiteDialogViewModel();
             ShowDialog();
         }
-        private void ShowDataOfItem(ItemViewModelBase vm)
+        private void ShowDataOfItem(WebSiteItemViewModel vm)
         {
             CurrentItem = vm;
         }

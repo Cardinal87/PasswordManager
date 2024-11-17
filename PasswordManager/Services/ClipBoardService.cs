@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Helpers
 {
-    internal class ClipBoardService : IClipboardService
+    internal class ClipboardService : IClipboardService
     {
         private static IClipboard GetClipBoard()
         {

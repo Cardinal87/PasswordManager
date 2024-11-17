@@ -100,7 +100,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
 
-        public void Add()
+        protected void Add()
         {
             dialogResult = true;
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
@@ -111,7 +111,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             return true;
         }
 
-        public override void Close()
+        protected override void Close()
         {
             dialogResult = false;
             if (CanClose())

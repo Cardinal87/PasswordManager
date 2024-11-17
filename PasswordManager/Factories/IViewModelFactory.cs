@@ -3,6 +3,7 @@ using PasswordManager.Helpers;
 using PasswordManager.ViewModels;
 using PasswordManager.ViewModels.AllEntriesViewModels;
 using PasswordManager.ViewModels.AppViewModels;
+using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using PasswordManager.Views.AllEntriesViews;
 using System;
@@ -20,6 +21,7 @@ namespace PasswordManager.Factories
         public IDatabaseClient DatabaseClient { get; }
         public WebSiteViewModel CreateWebSiteVM();
         public AppViewModel CreateAppVM();
+        public CardViewModel CreateCardVM();
         public AllEntriesViewModel CreateAllEntriesVM(List<ItemViewModelBase> list);
 
     }

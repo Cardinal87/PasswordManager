@@ -16,10 +16,10 @@
 	<Grid RowDefinitions="100,50,50,50,50,50,*" ColumnDefinitions="200,*" ShowGridLines="True">
 		
 		<ContentControl Content="{Binding CurrentPage}" Grid.Column="1" Grid.RowSpan="7" Grid.Row="0"/>
-		<Button Content="AllEntries" Grid.Column="0" Grid.Row="1" Command="{Binding SetCurrentPage}" CommandParameter="{Binding AllEntriesVm}"
+		<Button Content="AllEntries" Grid.Column="0" Grid.Row="1" Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding AllEntriesVm}"
 				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 				HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-		<Button Content="WebSites" Grid.Column="0" Grid.Row="2" Command="{Binding SetCurrentPage}" CommandParameter="{Binding WebSitesVm}" 
+		<Button Content="WebSites" Grid.Column="0" Grid.Row="2" Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding WebSitesVm}" 
 				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 		<Button Content="Apps" Grid.Column="0" Grid.Row="3" 

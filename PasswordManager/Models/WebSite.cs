@@ -19,10 +19,8 @@ namespace PasswordManager.Models
             IsFavourite = isFavourite;
         }
         
-        public string Name { get;  set; }
         public string Login { get;  set; }
         public string Password { get;  set; }
         public string WebAddress { get;  set; }
-        public bool IsFavourite { get;  set; }
     }
 }

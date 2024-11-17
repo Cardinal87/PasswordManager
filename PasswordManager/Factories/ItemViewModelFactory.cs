@@ -4,6 +4,7 @@ using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels;
 using PasswordManager.ViewModels.AppViewModels;
+using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,16 @@ namespace PasswordManager.Factories
         }
 
 
-        public AppItemViewModel CreateAppItem(Models.App model, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> showData)
-        {
-            return new AppItemViewModel(model, delete, change, showData, Clipboard);
-        }
+        public AppItemViewModel CreateAppItem(Models.App model, RelayCommand delete, RelayCommand change, Action<AppItemViewModel> showData) =>
+            new AppItemViewModel(model, delete, change, showData, Clipboard);
+        
 
-        public WebSiteItemViewModel CreateWebSiteItem(WebSite model, RelayCommand delete, RelayCommand change, Action<ItemViewModelBase> showData)
-        {
-            return new WebSiteItemViewModel(model, Clipboard, delete, change, showData);
-        }
+        public WebSiteItemViewModel CreateWebSiteItem(WebSite model, RelayCommand delete, RelayCommand change, Action<WebSiteItemViewModel> showData) =>
+            new WebSiteItemViewModel(model, Clipboard, delete, change, showData);
+
+
+        public CardItemViewModel CreateCardItem(Card model, RelayCommand delete, RelayCommand change, Action<CardItemViewModel> showData) =>
+            new CardItemViewModel(model,Clipboard, delete, change, showData);
+        
     }
 }

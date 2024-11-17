@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PasswordManager.Models;
 using PasswordManager.ViewModels;
 using System;
@@ -11,7 +11,10 @@ namespace PasswordManager.DataConnectors
 {
     internal class DataBaseClient : DbContext, IDatabaseClient 
     {
-
+        public DbSet<WebSite> WebSites { get; set; }
+        public DbSet<Models.App> Apps { get; set; }
+        public DbSet<Card> Cards { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
@@ -20,7 +23,17 @@ namespace PasswordManager.DataConnectors
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); 
+            modelBuilder.Entity<WebSite>().ToTable("WebSites").HasKey(e => e.Id);
+
+            modelBuilder.Entity<Models.App>().ToTable("Apps").HasKey(e => e.Id);
+            
+            modelBuilder.Entity<Card>().ToTable("Cards").HasKey(e => e.Id);
+            modelBuilder.Entity<Card>().Ignore(e => e.ValidUntil);
+            modelBuilder.Entity<Card>().Property(e => e.ValidUntil.Year).HasColumnName("Year");
+            modelBuilder.Entity<Card>().Property(e => e.ValidUntil.Month).HasColumnName("Month");
+
+
+
         }
         public IEnumerable<T> GetListOfType<T>() where T : ModelBase
         {
