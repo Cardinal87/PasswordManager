@@ -78,7 +78,7 @@ namespace PasswordManager.ViewModels.AppViewModels
 
         protected override void Close()
         {
-            dialogResult = false;
+            dialogResult = true;
             if (CanClose())
             {
                 Model = new Models.App(Name,Password,IsFavourite);

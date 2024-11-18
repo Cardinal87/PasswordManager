@@ -11,6 +11,12 @@ namespace PasswordManager.DataConnectors
 {
     internal class DataBaseClient : DbContext, IDatabaseClient 
     {
+       public DataBaseClient() 
+       {
+            
+       }
+        
+        
         public DbSet<WebSite> WebSites { get; set; }
         public DbSet<Models.App> Apps { get; set; }
         public DbSet<Card> Cards { get; set; }
@@ -28,10 +34,7 @@ namespace PasswordManager.DataConnectors
             modelBuilder.Entity<Models.App>().ToTable("Apps").HasKey(e => e.Id);
             
             modelBuilder.Entity<Card>().ToTable("Cards").HasKey(e => e.Id);
-            modelBuilder.Entity<Card>().Ignore(e => e.ValidUntil);
-            modelBuilder.Entity<Card>().Property(e => e.ValidUntil.Year).HasColumnName("Year");
-            modelBuilder.Entity<Card>().Property(e => e.ValidUntil.Month).HasColumnName("Month");
-
+           
 
 
         }

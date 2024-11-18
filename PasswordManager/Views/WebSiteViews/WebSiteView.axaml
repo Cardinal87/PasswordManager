@@ -63,7 +63,7 @@
 								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
 						<TextBlock Text="{Binding Password}" Grid.Column="0" Grid.Row="4"
 								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
+						
 						<Button x:Name="CopyLogin" Grid.Row="2" Grid.Column="2"
 								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
 								Command="{Binding CopyToClipboard}" CommandParameter="login"/>

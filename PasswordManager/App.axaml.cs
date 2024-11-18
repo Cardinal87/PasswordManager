@@ -61,7 +61,7 @@ public partial class App : Application
     }
     private void SetUpContainer(ContainerBuilder builder)
     {
-        builder.RegisterType<ClipBoardService>().As<IClipboardService>();
+        builder.RegisterType<ClipboardService>().As<IClipboardService>();
         builder.RegisterType<DialogService>().As<IDialogService>().SingleInstance();
         builder.RegisterType<DataBaseClient>().As<IDatabaseClient>().InstancePerDependency();
         builder.RegisterType<MainViewModel>().AsSelf().SingleInstance();

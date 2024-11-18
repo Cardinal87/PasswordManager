@@ -32,7 +32,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         
         private string owner;
         private string number;
-        private string cvc;
+        private int cvc;
         private int month;
         private int year;
         private bool isFavourite;
@@ -41,7 +41,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         public RelayCommand AddToFavouriteCommand { get; }
       
 
-
+        
         public string Owner 
         { 
             get => owner;
@@ -63,7 +63,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             }
         }
 
-        public string Cvc 
+        public int Cvc 
         { 
             get => cvc;
             [MemberNotNull(nameof(cvc))]
@@ -134,9 +134,9 @@ namespace PasswordManager.ViewModels.CardViewModels
             Name = model.Name;
             Owner = model.Owner;
             Number = model.Number;
-            Cvc = model.CVC;
-            Month = model.ValidUntil.Month;
-            Year = model.ValidUntil.Year;
+            Cvc = model.Cvc;
+            Month = model.Month;
+            Year = model.Year;
             IsFavourite = model.IsFavourite;
 
         }

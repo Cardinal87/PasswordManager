@@ -20,8 +20,6 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
             Items = new ObservableCollection<ItemViewModelBase>(items);
         }
         
-        
-        
         public ObservableCollection<ItemViewModelBase> Items { get; private set; } = new ObservableCollection<ItemViewModelBase>();
         private ItemViewModelBase? currentItem;
         public ItemViewModelBase? CurrentItem
@@ -34,7 +32,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
                 OnPropertyChanged(nameof(CurrentItem));
             }
         }
-        public void LoadViewModelList(object? sender, NotifyCollectionChangedEventArgs e)
+        public void UpdateViewModelList(object? sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {

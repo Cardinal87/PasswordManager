@@ -19,7 +19,7 @@
 		<Button Content="AllEntries" Grid.Column="0" Grid.Row="1" Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding AllEntriesVm}"
 				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 				HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-		<Button Content="WebSites" Grid.Column="0" Grid.Row="2" Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding WebSitesVm}" 
+		<Button Content="WebSites" Grid.Column="0" Grid.Row="2" Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding WebSiteVm}" 
 				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 		<Button Content="Apps" Grid.Column="0" Grid.Row="3" 

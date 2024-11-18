@@ -3,6 +3,7 @@ using PasswordManager.DataConnectors;
 using PasswordManager.Factories;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
+using PasswordManager.ViewModels.Interfaces;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         private IDialogService dialogService;
         private IItemViewModelFactory itemFactory;
         public CardItemViewModel? currentItem;
-
+        public CardDialogViewModel? Dialog { get; private set; }
         public CardItemViewModel? CurrentItem
         {
 
@@ -50,7 +51,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             CurrentItem = vm;
         }
 
-        private void Delete(WebSite model)
+        private void Delete(Card model)
         {
             var a = Cards.FirstOrDefault(x => x.Id == model.Id);
             if (a != null)
@@ -61,14 +62,60 @@ namespace PasswordManager.ViewModels.CardViewModels
             dbClient.Save();
         }
 
-        
+        private void ShowDialog()
+        {
+            if (Dialog != null)
+            {
+                Dialog.dialogResultRequest += GetDialogResult;
+                dialogService.OpenDialog(Dialog!);
+            }
+        }
+        private void ShowChangeDialog(Card model)
+        {
+            Dialog = new CardDialogViewModel(model);
+            ShowDialog();
+        }
+
+        private void ShowAddNewDialog()
+        {
+            Dialog = new CardDialogViewModel();
+            ShowDialog();
+        }
+
+        private void GetDialogResult(object? sender, DialogResultEventArgs e)
+        {
+            if (e.DialogResult && sender != null)
+            {
+                CardDialogViewModel vm = (CardDialogViewModel)sender;
+                Card model = vm.Model!;
+
+                if (vm.IsNew)
+                {
+                    dbClient.Insert(model);
+                    dbClient.Save();
+                    CardItemViewModel item = itemFactory.CreateCardItem(model, new RelayCommand(() => Delete(model)), new RelayCommand(() => ShowChangeDialog(model)), ShowDataOfItem);
+                    Cards.Add(item);
+                }
+                else
+                {
+                    dbClient.Replace(model);
+                    var a = Cards.FirstOrDefault(x => x.Id == model.Id);
+                    a?.UpdateModel(model);
+                    dbClient.Save();
+                }
+
+            }
+            dialogService.CloseDialog(Dialog!);
+            Dialog = null;
+        }
+
         private void LoadViewModelsList()
         {
             foreach (var a in dbClient.GetListOfType<Card>())
             {
-                
-                //var item = itemFactory.CreateWebSiteItem(a, new RelayCommand(() => Delete(a)), new RelayCommand(() => ShowChangeDialog(a)), ShowDataOfItem);
-                //Cards.Add(item);
+
+                var item = itemFactory.CreateCardItem(a, new RelayCommand(() => Delete(a)), new RelayCommand(() => ShowChangeDialog(a)), ShowDataOfItem);
+                Cards.Add(item);
             }
 
         }

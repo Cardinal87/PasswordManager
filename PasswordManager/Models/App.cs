@@ -9,11 +9,9 @@ namespace PasswordManager.Models
 {
     internal class App : ModelBase
     {
-        public App(string name, string password, bool isFavourite) 
+        public App(string name, string password, bool isFavourite) : base (name, isFavourite)
         {
-            Name = name;
             Password = password;
-            IsFavourite = isFavourite;
         }
         
         public string Password { get;private set; }

@@ -26,8 +26,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             Model = item;
-            id = item.Id;
-            Name = item.Name;
+            Id = item.Id;
+            Name = item.Name!;
             WebAddress = item.WebAddress;
             Login = item.Login;
             Password = item.Password;
@@ -37,7 +37,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
         
         public WebSite? Model { get; private set; }
-        private int id;
+        
         private string password = "";
         public string login = "";
         public string webAdress = ""; 
@@ -113,7 +113,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         protected override void Close()
         {
-            dialogResult = false;
+            dialogResult = true;
             if (CanClose())
             {
                 Model = new WebSite(Name, Login, Password, WebAddress, IsFavourite);

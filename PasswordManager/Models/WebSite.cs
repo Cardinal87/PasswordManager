@@ -9,14 +9,14 @@ namespace PasswordManager.Models
 {
     internal class WebSite : ModelBase
     {
-        public WebSite(string name, string login, string password, string webAddress, bool isFavourite)
+        public WebSite(string name, string login, string password, string webAddress, bool isFavourite) : base(name, isFavourite)
         {
-            Name = name;
+            
             Login = login;
             Password = password;
             
             WebAddress = webAddress;
-            IsFavourite = isFavourite;
+            
         }
         
         public string Login { get;  set; }

@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Net;
 using PasswordManager.DataConnectors;
 using PasswordManager.Factories;
+using PasswordManager.ViewModels.CardViewModels;
 
 
 namespace PasswordManager.ViewModels;
@@ -19,8 +20,8 @@ namespace PasswordManager.ViewModels;
 internal partial class MainViewModel : ViewModelBase
 {
 
-    private ViewModelBase currentPage;
-    public ViewModelBase CurrentPage {
+    private ViewModelBase? currentPage;
+    public ViewModelBase? CurrentPage {
 
         get { return currentPage; }
         [MemberNotNull(nameof(currentPage))]
@@ -31,45 +32,44 @@ internal partial class MainViewModel : ViewModelBase
     }
     public MainViewModel(IViewModelFactory factory)
     {
-        SetCurrentPageCommand = new RelayCommand<ViewModelBase>(SetCurrentPage!);
+        SetCurrentPageCommand = new RelayCommand<ViewModelBase>(SetCurrentPage);
 
-
-        WebSitesVm = factory.CreateWebSiteVM();
+        WebSiteVm = factory.CreateWebSiteVM();
         AppVm = factory.CreateAppVM();
-        list.Add(WebSitesVm);
-        list.Add(AppVm);
-        items.AddRange(WebSitesVm.WebSites);
+        CardVm = factory.CreateCardVM();
+
+        items.AddRange(WebSiteVm.WebSites);
         items.AddRange(AppVm.Apps);
+        items.AddRange(CardVm.Cards);
 
-
-        AllEntriesVm = new AllEntriesViewModel(items);
-        WebSitesVm.WebSites.CollectionChanged += AllEntriesVm.LoadViewModelList;
-        AppVm.Apps.CollectionChanged += AllEntriesVm.LoadViewModelList;
+        AllEntriesVm = factory.CreateAllEntriesVM(items);
 
         CurrentPage = AllEntriesVm;
-
         Subscribe();
     }
     public RelayCommand<ViewModelBase> SetCurrentPageCommand { get; set; }
-
-
-    private List<ObservableObject> list = new List<ObservableObject>();
     private List<ItemViewModelBase> items = new List<ItemViewModelBase>();
     public AllEntriesViewModel AllEntriesVm { get; }
     public AppViewModel AppVm { get; }
-    public WebSiteViewModel WebSitesVm { get; }
-
+    public WebSiteViewModel WebSiteVm { get; }
+    public CardViewModel CardVm { get; }
     
-    private void SetCurrentPage(ViewModelBase vm)
+    private void SetCurrentPage(ViewModelBase? vm)
     {
         CurrentPage = vm;
     }
+
     private void Subscribe()
     {
-        foreach (var item in list)
-        {
-            item.PropertyChanged += AllEntriesVm.SetItem;
-        }
+        WebSiteVm.PropertyChanged += AllEntriesVm.SetItem;
+        AppVm.PropertyChanged += AllEntriesVm.SetItem;
+        CardVm.PropertyChanged += AllEntriesVm.SetItem;
+
+        WebSiteVm.WebSites.CollectionChanged += AllEntriesVm.UpdateViewModelList;
+        AppVm.Apps.CollectionChanged += AllEntriesVm.UpdateViewModelList;
+        CardVm.Cards.CollectionChanged += AllEntriesVm.UpdateViewModelList;
+
+
     }
 
 }

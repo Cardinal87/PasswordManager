@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PasswordManager.ViewModels.CardViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +9,22 @@ namespace PasswordManager.Models
 {
     internal class Card : ModelBase
     {
-        public Card(string number, int month, int year, string cVC, string owner)
+        
+        
+        public Card(string number, int month, int year, int cvc, string owner, string name, bool isFavourite) : base(name, isFavourite)
         {
             Number = number;
-            ValidUntil = new DateTime(year, month, 1);
-            CVC = cVC;
+            Year = year;
+            Month = month;
+            Cvc = cvc;
             Owner = owner;
         }
 
         public string Number { get; set; }
-        public DateTime ValidUntil { get; set; }
-        public string CVC { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Cvc { get; set; }
         public string Owner { get; set; }
+        
     }
 }
