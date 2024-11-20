@@ -11,7 +11,7 @@
 	
 	
 	
-	<Grid ColumnDefinitions="*,50,320" RowDefinitions="100,50,*" >
+	<Grid ColumnDefinitions="*,50,320" RowDefinitions="100,50,*" ShowGridLines="True">
 		
 		
 
