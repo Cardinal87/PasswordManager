@@ -24,7 +24,8 @@
 				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 		<Button Content="Apps" Grid.Column="0" Grid.Row="3" 
 				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+				Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding AppVm}"/>
 		
 	</Grid>
 	

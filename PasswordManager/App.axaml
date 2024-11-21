@@ -7,8 +7,50 @@
 	<Application.DataTemplates>
 		<local:ViewLocator/>
 	</Application.DataTemplates>
+	
     <Application.Styles>
         <FluentTheme />
+		<StyleInclude Source="Icons.axaml"/>
     </Application.Styles>
+	
+	<Application.Resources>
+
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DeleteButton">
+			<Setter Property="Content" Value=""/>
+			<Setter Property="Template">
+				<ControlTemplate TargetType="Button">
+					<PathIcon Data="{StaticResource delete_icon}" Foreground="DarkRed"/>
+					
+				</ControlTemplate>
+			</Setter>
+			<Style Selector="^:pointerover">
+				<Setter Property="Background" Value="Red"/>
+			</Style>
+		</ControlTheme>
+		
+		<ControlTheme x:Key="RoundButton" TargetType="Button">
+			<Setter Property="Background" Value="Gray"/>
+			<Setter Property="Template">
+				<ControlTemplate TargetType="Button">
+					<Border CornerRadius="20"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Background="{TemplateBinding Background}">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+											Content="{TemplateBinding Content}"/>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		
+		<ControlTheme x:Key="BaseButton" TargetType="Button">
+			<Setter Property="Background" Value="White"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</ControlTheme>
+	</Application.Resources>
+	
 </Application>
     
