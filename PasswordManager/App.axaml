@@ -11,44 +11,172 @@
     <Application.Styles>
         <FluentTheme />
 		<StyleInclude Source="Icons.axaml"/>
+
     </Application.Styles>
 	
 	<Application.Resources>
 
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DeleteButton">
-			<Setter Property="Content" Value=""/>
+			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
-					<PathIcon Data="{StaticResource delete_icon}" Foreground="DarkRed"/>
-					
+					<PathIcon x:Name="icon" Data="{StaticResource delete_icon}" Foreground="Red"/>
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
-				<Setter Property="Background" Value="Red"/>
+				<Setter Property="Opacity" Value="0.5"/>
+			</Style>
+			<Style Selector="^:disabled /template/ PathIcon#icon">
+				<Setter Property="Foreground" Value="DarkRed"/>
 			</Style>
 		</ControlTheme>
-		
-		<ControlTheme x:Key="RoundButton" TargetType="Button">
-			<Setter Property="Background" Value="Gray"/>
+
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="ChangeButton">
+			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
-					<Border CornerRadius="20"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							Background="{TemplateBinding Background}">
-						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
-											Content="{TemplateBinding Content}"/>
+					<PathIcon x:Name="icon" Data="{StaticResource change_icon}" Foreground="Green"/>
+				</ControlTemplate>
+			</Setter>
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.5"/>
+			</Style>
+			<Style Selector="^:disabled /template/ PathIcon#icon">
+				<Setter Property="Foreground" Value="DarkGreen"/>
+			</Style>
+		</ControlTheme>
+
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddToFavouriteButton">
+			<Setter Property="Background" Value="White"/>
+			<Setter Property="Template">
+				<ControlTemplate TargetType="Button">
+					<PathIcon x:Name="icon" Data="{StaticResource favourite_icon}"/>
+				</ControlTemplate>
+			</Setter>
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.5"/>
+			</Style>
+			<Style Selector="^:disabled /template/ PathIcon#icon">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
+		</ControlTheme>
+
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddButton">
+			<Setter Property="Margin" Value="25,0,0,0"/>
+			<Setter Property="CornerRadius" Value="10"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Background" Value="Green"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border CornerRadius="10" Background="{TemplateBinding Background}"
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5">
+						<StackPanel Orientation="Horizontal" Background="{TemplateBinding Background}">
+							<PathIcon Data="{StaticResource add_icon}"  Foreground="{TemplateBinding Foreground}"
+									  Background="{TemplateBinding Background}" DockPanel.Dock="Left" Height="10" Width="10"/>
+							<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" DockPanel.Dock="Left"
+									   Margin="5,0,0,0"/>
+						</StackPanel>
 					</Border>
 				</ControlTemplate>
 			</Setter>
+			<Style Selector="^:pointerover">
+				<Setter Property="Background" Value="LightGreen"/>
+			</Style>		
 		</ControlTheme>
 		
 		<ControlTheme x:Key="BaseButton" TargetType="Button">
-			<Setter Property="Background" Value="White"/>
+			<Setter Property="Background" Value="Gray"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Stretch"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</ControlTheme>
+
+		<ControlTheme x:Key="SearchBox" TargetType="TextBox" >
+			<Setter Property="Background" Value="Gray"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Watermark" Value="Find(Crtl + F)"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			
+			<Setter Property="Template">
+				<ControlTemplate>
+					<DataValidationErrors>
+						<Panel>
+							<Border
+							  Name="PART_BorderElement"
+							  Background="{TemplateBinding Background}"
+							  BorderBrush="{TemplateBinding BorderBrush}"
+							  BorderThickness="{TemplateBinding BorderThickness}"
+							  CornerRadius="10"
+							  MinWidth="{TemplateBinding MinWidth}"
+							  MinHeight="{TemplateBinding MinHeight}">
+							</Border>
+
+							<Border
+							  Margin="{TemplateBinding BorderThickness}" Padding="5">
+								
+								<Grid ColumnDefinitions="Auto,*,Auto" >
+									<PathIcon Data="{StaticResource search_icon}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}"/>
+									
+									<DockPanel x:Name="PART_InnerDockPanel"
+												Grid.Column="1"
+												Grid.ColumnSpan="1"
+												Cursor="IBeam"
+												Margin="10,0,0,0" >
+										
+										<TextBlock Name="PART_FloatingWatermark"
+													Foreground="{DynamicResource SystemAccentColor}"
+													FontSize="{TemplateBinding FontSize}"
+													IsVisible="False"
+													Text="{TemplateBinding Watermark}"
+													DockPanel.Dock="Top" />
+										<Panel>
+											<TextBlock Name="PART_Watermark"
+													Opacity="0.5"
+													Text="Search here"
+													TextAlignment="{TemplateBinding TextAlignment}"
+													TextWrapping="{TemplateBinding TextWrapping}"
+													IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+													HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+													VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+											</TextBlock>
+											<TextPresenter Name="PART_TextPresenter"
+															Text="{TemplateBinding Text, Mode=TwoWay}"
+															CaretIndex="{TemplateBinding CaretIndex}"
+															SelectionStart="{TemplateBinding SelectionStart}"
+															SelectionEnd="{TemplateBinding SelectionEnd}"
+															TextAlignment="{TemplateBinding TextAlignment}"
+															TextWrapping="{TemplateBinding TextWrapping}"
+															LineHeight="{TemplateBinding LineHeight}"
+															LetterSpacing="{TemplateBinding LetterSpacing}"
+															PasswordChar="{TemplateBinding PasswordChar}"
+															RevealPassword="{TemplateBinding RevealPassword}"
+															SelectionBrush="{TemplateBinding SelectionBrush}"
+															SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+															CaretBrush="{TemplateBinding CaretBrush}"
+															HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+															VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+										</Panel>
+										
+									</DockPanel>
+									<ContentPresenter Grid.Column="2" Grid.ColumnSpan="1" Content="{TemplateBinding InnerRightContent}"/>
+								</Grid>
+							</Border>
+						</Panel>
+					</DataValidationErrors>
+				</ControlTemplate>
+			</Setter>
+			<Style Selector="^:focus">
+				<Setter Property="BorderThickness" Value="2"/>
+				<Setter Property="BorderBrush" Value="Green"/>
+			</Style>
+			
 		</ControlTheme>
 	</Application.Resources>
 	

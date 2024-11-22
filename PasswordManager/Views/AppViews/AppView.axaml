@@ -7,52 +7,52 @@
 			 Height="700" Width="900"
              x:Class="PasswordManager.Views.AppViews.AppView"
 			 x:DataType="vm:AppViewModel" >
-	<Grid RowDefinitions="45,*" ColumnDefinitions="350, *" ShowGridLines="True">
-		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="300,*,250" ShowGridLines="True">
-			<Button Grid.Column="0" Margin="25,0,25,0" 
-					HorizontalAlignment="Left" VerticalAlignment="Center"
-					Content="Add App" VerticalContentAlignment="Center"
+	<Grid RowDefinitions="45,*" >
+		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" >
+			<Button Grid.Column="0" Theme="{StaticResource AddButton}"
+					Content="Add App"
 					Command="{Binding AddNewCommand}"/>
+			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,10,10,5"
+					 KeyDown="EnterPressed"/>
+				
 			
-			<TextBox x:Name="SearchBox" Grid.Column="2" Watermark="Find" VerticalContentAlignment="Center"
-					 HorizontalContentAlignment="Left"
-					 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" KeyDown="EnterPressed"/>
 		</Grid>
-		
-		<ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Apps}">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<Grid RowDefinitions="60">
-						<TextBlock Margin="20,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-								   Text="{Binding Name}" TextAlignment="Center"/>
+		<Grid Grid.Row="1" ColumnDefinitions="325,*" >
+			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid RowDefinitions="60">
+							<TextBlock Margin="20,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+									   Text="{Binding Name}" TextAlignment="Center"/>
 						
-					</Grid>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
 
-		<Grid Grid.Column="1" Grid.Row="1" RowDefinitions="50,100,*" >
-			<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Margin="0,10,0,0" >
-				<TextBlock Text="{Binding CurrentItem}"/>
-				<Button x:Name="Change" Command="{Binding CurrentItem.ChangeCommand}"
-						HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-						Grid.Column="2"/>
-				<Button x:Name="Delete" Command="{Binding CurrentItem.DeleteCommand}"
-						Theme="{StaticResource DeleteButton}"
-						Grid.Column="3"/>
-				<Button x:Name="AddToFavourite" Command="{Binding CurrentItem.AddToFavouriteCommand}"
-						HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-						Grid.Column="4">
-					<PathIcon />
-				</Button>
-			</Grid>
-			<Border Background="LightGray" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0">
-				<DockPanel>
-					<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top"/>
-					<TextBlock x:Name="Password" DockPanel.Dock="Bottom" Text="{Binding CurrentItem.Password}" Margin="20,15,0,0"/>
-				</DockPanel>
-			</Border>
+			<Grid Grid.Column="1" RowDefinitions="50,100,*" ShowGridLines="True">
+				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Margin="0,10,0,0" >
+					<TextBlock Text="{Binding CurrentItem}"/>
+					<Button x:Name="Change" Command="{Binding CurrentItem.ChangeCommand}" 
+							Theme="{StaticResource ChangeButton}" 
+							Grid.Column="2"/>
+					<Button x:Name="Delete" Command="{Binding CurrentItem.DeleteCommand}"
+							Theme="{StaticResource DeleteButton}"
+							Grid.Column="3"/>
+					<Button x:Name="AddToFavourite" Command="{Binding CurrentItem.AddToFavouriteCommand}"
+							Theme="{StaticResource AddToFavouriteButton}"
+							Grid.Column="4">
+						<PathIcon />
+					</Button>
+				</Grid>
+				<Border Background="LightGray" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0">
+					<DockPanel>
+						<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top"/>
+						<TextBlock x:Name="Password" DockPanel.Dock="Bottom" Text="{Binding CurrentItem.Password}" Margin="20,15,0,0"/>
+					</DockPanel>
+				</Border>
 			
+			</Grid>
 		</Grid>
 		
 	</Grid>

@@ -32,12 +32,29 @@ namespace PasswordManager.ViewModels.AppViewModels
         IDatabaseClient dbClient;
         IDialogService dialogService;
         private AppItemViewModel? currentItem;
+        private string searchKey = "";
         public ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
-        
+        public IEnumerable<AppItemViewModel> FilteredCollection
+        {
+            get => Apps.Where(x => x.Name!.Contains(SearchKey));
+        }
 
         AppDialogViewModel? dialogVM;
 
         public RelayCommand AddNewCommand { get; set; }
+        public string SearchKey
+        {
+            get => searchKey;
+            set
+            {
+                if (value != searchKey)
+                {
+                    searchKey = value;
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(SearchKey));
+                }
+            }
+        }
 
         public AppItemViewModel? CurrentItem
         {
