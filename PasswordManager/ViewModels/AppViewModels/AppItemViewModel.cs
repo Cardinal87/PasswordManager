@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
+using PasswordManager.ViewModels.BaseClasses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

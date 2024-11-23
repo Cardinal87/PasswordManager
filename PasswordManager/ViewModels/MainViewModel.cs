@@ -13,6 +13,7 @@ using System.Net;
 using PasswordManager.DataConnectors;
 using PasswordManager.Factories;
 using PasswordManager.ViewModels.CardViewModels;
+using PasswordManager.ViewModels.BaseClasses;
 
 
 namespace PasswordManager.ViewModels;

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Models;
+using PasswordManager.ViewModels.BaseClasses;
 using PasswordManager.ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;

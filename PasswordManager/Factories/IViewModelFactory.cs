@@ -1,8 +1,8 @@
 ﻿using PasswordManager.DataConnectors;
 using PasswordManager.Helpers;
-using PasswordManager.ViewModels;
 using PasswordManager.ViewModels.AllEntriesViewModels;
 using PasswordManager.ViewModels.AppViewModels;
+using PasswordManager.ViewModels.BaseClasses;
 using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using PasswordManager.Views.AllEntriesViews;

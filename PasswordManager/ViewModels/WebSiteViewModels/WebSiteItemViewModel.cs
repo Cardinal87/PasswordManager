@@ -13,6 +13,7 @@ using PasswordManager.Helpers;
 using PasswordManager.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using PasswordManager.ViewModels.BaseClasses;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {

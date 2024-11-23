@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Helpers;
+using PasswordManager.ViewModels.BaseClasses;
 using PasswordManager.ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,12 @@ namespace PasswordManager.ViewModels.AppViewModels
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             IsNew = true;
+            
         }
         public AppDialogViewModel(Models.App model)
         {
             Model = model;
-            Name = model.Name;
+            Name = model.Name!;
             Password = model.Password;
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using PasswordManager.Models;
+using PasswordManager.ViewModels.BaseClasses;
 using PasswordManager.ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             CloseCommand = new RelayCommand(Close);
             IsFavourite = false;
             IsNew = true;
+            
         }
 
         public WebSiteDialogViewModel(WebSite item)

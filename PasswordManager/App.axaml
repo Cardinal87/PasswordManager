@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="PasswordManager.App"
 			 xmlns:local="using:PasswordManager.Helpers"
+			 xmlns:converters="using:PasswordManager.Converters"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 	<Application.DataTemplates>
@@ -11,10 +12,19 @@
     <Application.Styles>
         <FluentTheme />
 		<StyleInclude Source="Icons.axaml"/>
-
+		<Style Selector="TextBox:focus">
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="BorderBrush" Value="#176e4e"/>
+		</Style>
+		<Style Selector="TextBox:pointerover:not(:focus)">
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="BorderBrush" Value="#545151"/>
+			<Setter Property="Background" Value="#545151"/>
+		</Style>
     </Application.Styles>
 	
 	<Application.Resources>
+		<converters:StringToDefaultConverter x:Key="StringToDefaultConverter"/>
 
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DeleteButton">
 			<Setter Property="Background" Value="White"/>
@@ -39,7 +49,7 @@
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.5"/>
+				<Setter Property="Opacity" Value="0.5 "/>
 			</Style>
 			<Style Selector="^:disabled /template/ PathIcon#icon">
 				<Setter Property="Foreground" Value="DarkGreen"/>
@@ -82,12 +92,41 @@
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
-				<Setter Property="Background" Value="LightGreen"/>
+				<Setter Property="Background" Value="#015402"/>
 			</Style>		
+		</ControlTheme>
+
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="CheckmarkButton">
+			<Setter Property="Background" Value="#1b2026"/>
+			<Setter Property="Foreground" Value="#176e4e"/>
+			<Setter Property="Template">
+				<ControlTemplate>	
+					<PathIcon Data="{StaticResource checkmark_icon}" Background="{TemplateBinding Background}"
+							  Foreground="{TemplateBinding Foreground}"/>
+				</ControlTemplate>
+			</Setter>
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
+		</ControlTheme>
+
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DismissButton">
+			<Setter Property="Background" Value="#1b2026"/>
+			<Setter Property="Foreground" Value="#961414"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<PathIcon Data="{StaticResource dismiss_icon}" Background="{TemplateBinding Background}"
+							  Foreground="{TemplateBinding Foreground}" Height="17" Width="17"/>
+				</ControlTemplate>
+			</Setter>
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
 		</ControlTheme>
 		
 		<ControlTheme x:Key="BaseButton" TargetType="Button">
 			<Setter Property="Background" Value="Gray"/>
+			
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Stretch"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -102,7 +141,8 @@
 			<Setter Property="HorizontalContentAlignment" Value="Left"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="Watermark" Value="Find(Crtl + F)"/>
-			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="BorderBrush" Value="Gray"/>
 			
 			<Setter Property="Template">
 				<ControlTemplate>
@@ -172,11 +212,6 @@
 					</DataValidationErrors>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:focus">
-				<Setter Property="BorderThickness" Value="2"/>
-				<Setter Property="BorderBrush" Value="Green"/>
-			</Style>
-			
 		</ControlTheme>
 	</Application.Resources>
 	
