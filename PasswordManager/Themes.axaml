@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Add Resources Here -->
+
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Dark">
+			<SolidColorBrush x:Key="FontBrush" Color="White"/>
+			<SolidColorBrush x:Key="MainBackgroundBrush" Color="#060c14"/>
+			<SolidColorBrush x:Key="AdditionalBackgroundBrush" Color="#1b2026"/>
+			<SolidColorBrush x:Key="SearchBoxBorderBrush" Color="#176e4e"/>
+			<SolidColorBrush x:Key="SearchBoxBackgroundBrush" Color="#060c14"/>
+			<SolidColorBrush x:Key="SearchBoxHighLightedBrush" Color="#545151"/>
+			<SolidColorBrush x:Key="MainGreenBrush" Color="#176e4e"/>
+			<SolidColorBrush x:Key="MainRedBrush" Color="#961414"/>
+			<SolidColorBrush x:Key="DataBoxBorderBrush" Color="#545151"/>
+			<SolidColorBrush x:Key="DataBoxHighLightedBrush" Color="#827e7e"/>
+			<SolidColorBrush x:Key="DataBoxBackgroundBrush" Color="#060c14"/>
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

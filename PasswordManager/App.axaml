@@ -3,7 +3,7 @@
              x:Class="PasswordManager.App"
 			 xmlns:local="using:PasswordManager.Helpers"
 			 xmlns:converters="using:PasswordManager.Converters"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 	<Application.DataTemplates>
 		<local:ViewLocator/>
@@ -12,20 +12,39 @@
     <Application.Styles>
         <FluentTheme />
 		<StyleInclude Source="Icons.axaml"/>
-		<Style Selector="TextBox:focus">
-			<Setter Property="BorderThickness" Value="2"/>
-			<Setter Property="BorderBrush" Value="#176e4e"/>
-		</Style>
-		<Style Selector="TextBox:pointerover:not(:focus)">
-			<Setter Property="BorderThickness" Value="2"/>
-			<Setter Property="BorderBrush" Value="#545151"/>
-			<Setter Property="Background" Value="#545151"/>
+		
+		
+		<!--Style for data boxes-->
+		<Style Selector="TextBox.dataBox">
+			<Style Selector="^:focus /template/ Border#PART_BorderElement">
+				<Setter Property="BorderBrush" Value="{DynamicResource MainGreenBrush}"/>
+				<Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}"/>
+			</Style>
+			<Style Selector="^ /template/ TextBlock#PART_Watermark">
+				<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			</Style>
+			<Style Selector="^:pointerover:not(:focus)">
+				<Style Selector="^ /template/ TextBlock#PART_Watermark">
+					<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ Border#PART_BorderElement">
+					<Setter Property="BorderBrush" Value="{DynamicResource DataBoxHighLightedBrush}"/>
+					<Setter Property="Background" Value="{DynamicResource DataBoxBackgroundBrush}"/>
+				</Style>
+			</Style>
 		</Style>
     </Application.Styles>
-	
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<MergeResourceInclude Source="/Themes.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
 	<Application.Resources>
 		<converters:StringToDefaultConverter x:Key="StringToDefaultConverter"/>
-
+		
+		<!--Delete button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DeleteButton">
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
@@ -37,25 +56,30 @@
 				<Setter Property="Opacity" Value="0.5"/>
 			</Style>
 			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Foreground" Value="DarkRed"/>
+				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
 		</ControlTheme>
-
+	
+		
+		<!--Change button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="ChangeButton">
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
-					<PathIcon x:Name="icon" Data="{StaticResource change_icon}" Foreground="Green"/>
+					<PathIcon x:Name="icon" Data="{StaticResource change_icon}" Foreground="Green"
+							  Height="15" Width="15"/>
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
 				<Setter Property="Opacity" Value="0.5 "/>
 			</Style>
 			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Foreground" Value="DarkGreen"/>
+				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
 		</ControlTheme>
-
+		
+		
+		<!--Add to favourite button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddToFavouriteButton">
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
@@ -70,7 +94,9 @@
 				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
 		</ControlTheme>
-
+		
+		
+		<!--Add button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddButton">
 			<Setter Property="Margin" Value="25,0,0,0"/>
 			<Setter Property="CornerRadius" Value="10"/>
@@ -95,35 +121,64 @@
 				<Setter Property="Background" Value="#015402"/>
 			</Style>		
 		</ControlTheme>
-
+		
+		
+		
+		<!--Checkmark button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="CheckmarkButton">
-			<Setter Property="Background" Value="#1b2026"/>
-			<Setter Property="Foreground" Value="#176e4e"/>
-			<Setter Property="Template">
-				<ControlTemplate>	
-					<PathIcon Data="{StaticResource checkmark_icon}" Background="{TemplateBinding Background}"
-							  Foreground="{TemplateBinding Foreground}"/>
-				</ControlTemplate>
-			</Setter>
-			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
-		</ControlTheme>
-
-		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DismissButton">
-			<Setter Property="Background" Value="#1b2026"/>
-			<Setter Property="Foreground" Value="#961414"/>
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource MainGreenBrush}"/>
 			<Setter Property="Template">
 				<ControlTemplate>
-					<PathIcon Data="{StaticResource dismiss_icon}" Background="{TemplateBinding Background}"
+					<Border Background="{TemplateBinding Background}" Padding="2" VerticalAlignment="Center">
+						<PathIcon Data="{StaticResource checkmark_icon}" Background="{TemplateBinding Background}"
 							  Foreground="{TemplateBinding Foreground}" Height="17" Width="17"/>
+					</Border>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover">
+			<Style Selector="^:pointerover /template/ PathIcon">
 				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
 		</ControlTheme>
 		
+		
+		<!--Dismiss button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DismissButton">
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource MainRedBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Background="{TemplateBinding Background}" Padding="2" VerticalAlignment="Center">
+						<PathIcon Data="{StaticResource dismiss_icon}" Background="{TemplateBinding Background}"
+								  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"/>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+			<Style Selector="^:pointerover /template/ PathIcon">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
+		</ControlTheme>
+		
+		
+		<!--Confirm button-->
+		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="ConfirmButton">
+			<Setter Property="Background" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Content" Value="Confirm"/>
+			<Setter Property="CornerRadius" Value="5"/>
+			
+		</ControlTheme>
+
+		<!--Cancel button-->
+		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="CancelButton">
+			<Setter Property="Background" Value="{DynamicResource MainRedBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Content" Value="Cancel"/>
+			<Setter Property="CornerRadius" Value="5"/>
+			
+		</ControlTheme>
+		
+		<!--Base template for button-->
 		<ControlTheme x:Key="BaseButton" TargetType="Button">
 			<Setter Property="Background" Value="Gray"/>
 			
@@ -132,10 +187,12 @@
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 		</ControlTheme>
-
+		
+		
+		<!--Template for search box-->
 		<ControlTheme x:Key="SearchBox" TargetType="TextBox" >
-			<Setter Property="Background" Value="Gray"/>
-			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="Background" Value="{DynamicResource MainBackGroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Stretch"/>
 			<Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -212,6 +269,7 @@
 					</DataValidationErrors>
 				</ControlTemplate>
 			</Setter>
+			
 		</ControlTheme>
 	</Application.Resources>
 	

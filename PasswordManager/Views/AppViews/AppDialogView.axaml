@@ -3,50 +3,76 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="using:PasswordManager.ViewModels.AppViewModels"
-        mc:Ignorable="d" d:DesignWidth="525" d:DesignHeight="300"
-		Width="500" Height="300"
+		xmlns:local="using:PasswordManager.Views.AppViews"
+        mc:Ignorable="d" d:DesignWidth="525" d:DesignHeight="325"
+		Width="500" Height="325"
 		CanResize="False"
         x:Class="PasswordManager.Views.AppViews.AppDialogView"
 		x:DataType="vm:AppDialogViewModel"
-        Title="AppDialogView">
-	<Grid RowDefinitions="55,*,50" >
-		<DockPanel Grid.Row="0" Background="#1b2026" x:Name="ShowName" IsVisible="False">
-			<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewApp}" Foreground="White" DockPanel.Dock="Left" VerticalAlignment="Center"  Margin="20,0,0,0"/>
-			<Button Background="#1b2026" Margin="5,0,0,0" 
-					DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
-					HorizontalAlignment="Left"/>
-				
-		</DockPanel>
-		<Button Margin="5,0,0,0" Theme="{StaticResource CheckmarkButton}"
-						DockPanel.Dock="Right"/>
-		<DockPanel Grid.Row="0" Background="#1b2026" x:Name="SetName">
-			<Button Margin="7,0,7,0" Theme="{StaticResource DismissButton}" 
-					DockPanel.Dock="Right" Padding="3"/>
-			<Button Margin="7,0,7,0" Theme="{StaticResource CheckmarkButton}"
-					DockPanel.Dock="Right"/>
-			<TextBox Watermark="Name" Foreground="White" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="15,0,0,0"
-					 Background="#1b2026" BorderThickness="0"/>
-			
+        Title="AppDialogView"
+		
+		ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="Default"
+		ExtendClientAreaTitleBarHeightHint="25"
+		WindowStartupLocation="CenterOwner">
 
-		</DockPanel>
-		<Grid Grid.Row="1" ShowGridLines="True" Background="#060c14">
-			<Border Background="#1b2026" Margin="25,40" CornerRadius="20" >
-				<StackPanel>
-					<TextBlock Text="Account" Foreground="White" Margin="15,10,0,0"/>
-					<Separator Margin="0,5,0,0"/>
-					<DockPanel Margin="15,20,0,0">
-						<TextBlock Text="Password" Foreground="White" VerticalAlignment="Center"/>
-						<TextBox Watermark="EnterPassword" Margin="15,0,15,0"
-								 Background="#060c14" Foreground="White"
-								 HorizontalContentAlignment="Left" CornerRadius="15"/>
-					</DockPanel>
-				</StackPanel>
-			</Border>
+	<Window.Styles>
+		<Style Selector="local|AppDialogView /template/ Button#PART_MaximizeButton">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+	</Window.Styles>
+
+
+	<Label PointerPressed="MoveWindow" Padding="0">
+		<Grid RowDefinitions="55,*,50">
+		
+		
+			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="ShowName" IsVisible="True">
+				<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewApp}"
+						   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"  Margin="20,0,0,0"/>
+				<Button Background="#1b2026" Margin="5,0,0,0"
+						DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
+						HorizontalAlignment="Left" Click="ShowSetNameTemplate"/>
+
+			</DockPanel>
+			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="SetName" IsVisible="False">
+				<Button Margin="15,0,15,0" Theme="{StaticResource DismissButton}"
+						DockPanel.Dock="Right" Padding="3" Click="CloseTemplate"/>
+				<Button Margin="10,0,5,0" Theme="{StaticResource CheckmarkButton}"
+						DockPanel.Dock="Right" Click="ConfirmName"/>
+				<TextBox Watermark="Name" Foreground="{DynamicResource FontBrush}" x:Name="NameBox" 
+						 DockPanel.Dock="Right" VerticalAlignment="Center" Margin="15,0,0,0"
+						 Background="{DynamicResource DataBoxBackgroundBrush}" BorderThickness="0"
+						 Classes="dataBox" CornerRadius="5"/>
+
+
+			</DockPanel>
+			<Grid Grid.Row="1" ShowGridLines="True" Background="{DynamicResource MainBackgroundBrush}">
+				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Margin="25,40" CornerRadius="20" >
+					<StackPanel>
+						<TextBlock Text="Account" Foreground="White" Margin="15,10,0,0"/>
+						<Separator Margin="0,5,0,0" Background="{DynamicResource DataBoxBorderBrush}"/>
+						<DockPanel Margin="15,30,0,0">
+							<TextBlock Text="Password" Foreground="White" VerticalAlignment="Center"/>
+							<TextBox Watermark="EnterPassword" Margin="15,0,15,0" BorderThickness="1"
+									 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
+									 BorderBrush="{DynamicResource DataBoxBorderBrush}"
+									 Classes="dataBox"
+									 HorizontalContentAlignment="Left" CornerRadius="15"/>
+						</DockPanel>
+					</StackPanel>
+				</Border>
+			</Grid>
+			<Grid Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="2" 
+				  ColumnDefinitions="*,100,100">
+				<Button Theme="{StaticResource CancelButton}" Grid.Column="2" 
+						Margin="15,10"/>
+				<Button Theme="{StaticResource ConfirmButton}" Grid.Column="1"
+						Margin="30,10,0,10"/>
+			</Grid>
+
+
+
 		</Grid>
-		
-		
-		
-		
-	</Grid>
-	
+	</Label>
 </Window>

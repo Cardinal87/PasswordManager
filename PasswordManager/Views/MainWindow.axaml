@@ -11,7 +11,11 @@
         Title="PasswordManager"
 		Height="700" Width="1100"
 		MinHeight="700" MinWidth="1100" 
-		x:DataType="vm:MainViewModel">
+		x:DataType="vm:MainViewModel"
+		ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="Default"
+		
+		>
 
 	<Grid RowDefinitions="100,50,50,50,50,50,*" ColumnDefinitions="200,*" ShowGridLines="True">
 		
