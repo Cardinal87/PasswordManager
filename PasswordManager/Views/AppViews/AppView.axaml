@@ -8,17 +8,20 @@
              x:Class="PasswordManager.Views.AppViews.AppView"
 			 x:DataType="vm:AppViewModel" >
 	<Grid RowDefinitions="45,*" >
-		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" >
+		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}">
 			<Button Grid.Column="0" Theme="{StaticResource AddButton}"
 					Content="Add App"
 					Command="{Binding AddNewCommand}"/>
-			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,10,10,5"
-					 KeyDown="EnterPressed"/>
+			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Center"
+					 KeyDown="EnterPressed" Classes="searchBox"/>
 				
 			
 		</Grid>
+		
+		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
+		
 		<Grid Grid.Row="1" ColumnDefinitions="325,*" >
-			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}">
+			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Grid RowDefinitions="60">
@@ -30,8 +33,10 @@
 				</ListBox.ItemTemplate>
 			</ListBox>
 
-			<Grid Grid.Column="1" RowDefinitions="50,100,*" ShowGridLines="True">
-				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Margin="0,10,0,0" >
+			
+			
+			<Grid Grid.Column="1" RowDefinitions="50,100,*" Background="{DynamicResource MainBackgroundBrush}">
+				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Background="{DynamicResource AdditionalBackgroundBrush}">
 					<TextBlock Text="{Binding CurrentItem}"/>
 					<Button x:Name="Change" Command="{Binding CurrentItem.ChangeCommand}" 
 							Theme="{StaticResource ChangeButton}" 
@@ -42,10 +47,11 @@
 					<Button x:Name="AddToFavourite" Command="{Binding CurrentItem.AddToFavouriteCommand}"
 							Theme="{StaticResource AddToFavouriteButton}"
 							Grid.Column="4">
-						<PathIcon />
+						
 					</Button>
 				</Grid>
-				<Border Background="LightGray" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0">
+				<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,50,0,0"/>
+				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0" >
 					<DockPanel>
 						<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top"/>
 						<TextBlock x:Name="Password" DockPanel.Dock="Bottom" Text="{Binding CurrentItem.Password}" Margin="20,15,0,0"/>

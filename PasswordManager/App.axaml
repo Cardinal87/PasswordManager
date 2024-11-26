@@ -14,6 +14,8 @@
 		<StyleInclude Source="Icons.axaml"/>
 		
 		
+		
+		
 		<!--Style for data boxes-->
 		<Style Selector="TextBox.dataBox">
 			<Style Selector="^:focus /template/ Border#PART_BorderElement">
@@ -33,6 +35,9 @@
 				</Style>
 			</Style>
 		</Style>
+		
+		
+		<!--Themes-->
     </Application.Styles>
 	<Application.Resources>
 		<ResourceDictionary>
@@ -53,10 +58,10 @@
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.5"/>
+				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
 			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Opacity" Value="0.7"/>
+				<Setter Property="Opacity" Value="0.3 "/>
 			</Style>
 		</ControlTheme>
 	
@@ -71,10 +76,10 @@
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.5 "/>
+				<Setter Property="Opacity" Value="0.7 "/>
 			</Style>
 			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Opacity" Value="0.7"/>
+				<Setter Property="Opacity" Value="0.3"/>
 			</Style>
 		</ControlTheme>
 		
@@ -88,10 +93,10 @@
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.5"/>
+				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
 			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Opacity" Value="0.7"/>
+				<Setter Property="Opacity" Value="0.3"/>
 			</Style>
 		</ControlTheme>
 		
@@ -102,8 +107,8 @@
 			<Setter Property="CornerRadius" Value="10"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="Background" Value="Green"/>
-			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="Background" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Border CornerRadius="10" Background="{TemplateBinding Background}"
@@ -139,6 +144,9 @@
 			<Style Selector="^:pointerover /template/ PathIcon">
 				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
+			<Style Selector="^:disabled /template/ PathIcon">
+				<Setter Property="Opacity" Value="0.3"/>
+			</Style>
 		</ControlTheme>
 		
 		
@@ -166,7 +174,9 @@
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Content" Value="Confirm"/>
 			<Setter Property="CornerRadius" Value="5"/>
-			
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
 		</ControlTheme>
 
 		<!--Cancel button-->
@@ -175,7 +185,9 @@
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Content" Value="Cancel"/>
 			<Setter Property="CornerRadius" Value="5"/>
-			
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
 		</ControlTheme>
 		
 		<!--Base template for button-->
@@ -186,20 +198,21 @@
 			<Setter Property="VerticalAlignment" Value="Stretch"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			
 		</ControlTheme>
 		
 		
 		<!--Template for search box-->
-		<ControlTheme x:Key="SearchBox" TargetType="TextBox" >
-			<Setter Property="Background" Value="{DynamicResource MainBackGroundBrush}"/>
+		<ControlTheme x:Key="SearchBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+			<Setter Property="Background" Value="{DynamicResource SearchBoxBackgroundBrush}"/>
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="HorizontalContentAlignment" Value="Left"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="Watermark" Value="Find(Crtl + F)"/>
 			<Setter Property="BorderThickness" Value="2"/>
-			<Setter Property="BorderBrush" Value="Gray"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource SearchBoxBackgroundBrush}"/>
 			
 			<Setter Property="Template">
 				<ControlTemplate>
@@ -216,10 +229,11 @@
 							</Border>
 
 							<Border
-							  Margin="{TemplateBinding BorderThickness}" Padding="5">
+								Margin="{TemplateBinding Margin}" Padding="3">
 								
 								<Grid ColumnDefinitions="Auto,*,Auto" >
-									<PathIcon Data="{StaticResource search_icon}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}"/>
+									<PathIcon Data="{StaticResource search_icon}" Foreground="{TemplateBinding Foreground}" 
+											  Background="{TemplateBinding Background}"/>
 									
 									<DockPanel x:Name="PART_InnerDockPanel"
 												Grid.Column="1"
@@ -236,7 +250,8 @@
 										<Panel>
 											<TextBlock Name="PART_Watermark"
 													Opacity="0.5"
-													Text="Search here"
+													Foreground="{TemplateBinding Foreground}"
+													Text="{TemplateBinding Watermark}"
 													TextAlignment="{TemplateBinding TextAlignment}"
 													TextWrapping="{TemplateBinding TextWrapping}"
 													IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
@@ -268,8 +283,36 @@
 						</Panel>
 					</DataValidationErrors>
 				</ControlTemplate>
+				
 			</Setter>
+
+			<!--Style for search boxes-->
+			<Style Selector="^:focus">
+				<Style Selector="^ /template/ Border#PART_BorderElement">
+					<Setter Property="BorderBrush" Value="{DynamicResource MainGreenBrush}"/>
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ PathIcon">
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ TextBlock#PART_Watermark">
+					<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+				</Style>
+			</Style>
 			
+			<Style Selector="^:pointerover:not(:focus)">
+				<Style Selector="^ /template/ TextBlock#PART_Watermark">
+					<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ Border#PART_BorderElement">
+					<Setter Property="BorderBrush" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ PathIcon">
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+			</Style>
+
 		</ControlTheme>
 	</Application.Resources>
 	

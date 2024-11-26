@@ -7,14 +7,15 @@
 			<SolidColorBrush x:Key="FontBrush" Color="White"/>
 			<SolidColorBrush x:Key="MainBackgroundBrush" Color="#060c14"/>
 			<SolidColorBrush x:Key="AdditionalBackgroundBrush" Color="#1b2026"/>
-			<SolidColorBrush x:Key="SearchBoxBorderBrush" Color="#176e4e"/>
-			<SolidColorBrush x:Key="SearchBoxBackgroundBrush" Color="#060c14"/>
-			<SolidColorBrush x:Key="SearchBoxHighLightedBrush" Color="#545151"/>
+			<SolidColorBrush x:Key="SearchBoxBackgroundBrush" Color="#3e3f4a"/>
+			<SolidColorBrush x:Key="SearchBoxHighLightedBrush" Color="#41424f"/>
 			<SolidColorBrush x:Key="MainGreenBrush" Color="#176e4e"/>
 			<SolidColorBrush x:Key="MainRedBrush" Color="#961414"/>
 			<SolidColorBrush x:Key="DataBoxBorderBrush" Color="#545151"/>
 			<SolidColorBrush x:Key="DataBoxHighLightedBrush" Color="#827e7e"/>
 			<SolidColorBrush x:Key="DataBoxBackgroundBrush" Color="#060c14"/>
+			<SolidColorBrush x:Key="CloseButtonHighLightedBrush" Color="#4f4f4f"/>
+			<SolidColorBrush x:Key="WarningBrush" Color="#de1818"/>
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

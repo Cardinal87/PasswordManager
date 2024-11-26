@@ -17,8 +17,18 @@
 		WindowStartupLocation="CenterOwner">
 
 	<Window.Styles>
-		<Style Selector="local|AppDialogView /template/ Button#PART_MaximizeButton">
+		<Style Selector="CaptionButtons /template/ Button#PART_MinimizeButton">
 			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+		<Style Selector="CaptionButtons /template/ Button#PART_RestoreButton">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+		<Style Selector="CaptionButtons /template/ Button#PART_CloseButton">
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Style Selector="^:pointerover">
+				<Setter Property="Background" Value="{DynamicResource CloseButtonHighLightedBrush}"/>
+			</Style>
+			
 		</Style>
 	</Window.Styles>
 
@@ -36,14 +46,18 @@
 
 			</DockPanel>
 			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="SetName" IsVisible="False">
-				<Button Margin="15,0,15,0" Theme="{StaticResource DismissButton}"
+				<Button Margin="15,0,15,1" Theme="{StaticResource DismissButton}"
 						DockPanel.Dock="Right" Padding="3" Click="CloseTemplate"/>
-				<Button Margin="10,0,5,0" Theme="{StaticResource CheckmarkButton}"
+				<Button Margin="10,0,5,1" Theme="{StaticResource CheckmarkButton}" x:Name="ConfirmNameButton"
 						DockPanel.Dock="Right" Click="ConfirmName"/>
-				<TextBox Watermark="Name" Foreground="{DynamicResource FontBrush}" x:Name="NameBox" 
-						 DockPanel.Dock="Right" VerticalAlignment="Center" Margin="15,0,0,0"
-						 Background="{DynamicResource DataBoxBackgroundBrush}" BorderThickness="0"
-						 Classes="dataBox" CornerRadius="5"/>
+				<StackPanel  Margin="15,11,0,0">
+					<TextBox Watermark="Name" Foreground="{DynamicResource FontBrush}" x:Name="NameBox" 
+							 DockPanel.Dock="Right" VerticalAlignment="Center"
+							 Background="{DynamicResource DataBoxBackgroundBrush}" BorderThickness="0"
+							 Classes="dataBox" CornerRadius="5" TextChanged="NameChanged"/>
+					<TextBlock Text="Name should be filled" Foreground="{DynamicResource WarningBrush}" FontSize="10" 
+							   Margin="5,0,0,0" IsVisible="False" x:Name="NameWarning"/>
+				</StackPanel>
 
 
 			</DockPanel>
