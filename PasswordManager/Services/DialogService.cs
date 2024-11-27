@@ -14,7 +14,7 @@ namespace PasswordManager.Helpers
 {
     internal class DialogService : IDialogService
     {
-        private List<Window?> openWindows = [];
+        private List<Window?> openedWindows = [];
         
         private void RegisterView(DialogViewModelBase viewmodel, Window dialog) => dialog.DataContext = viewmodel;
         
@@ -22,8 +22,9 @@ namespace PasswordManager.Helpers
         public void OpenDialog(DialogViewModelBase DialogVm)
         {
             Window owner = ((IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!)!.MainWindow!;
+           
             Window dialog = CreateWindow(DialogVm);
-            openWindows.Add(dialog);
+            openedWindows.Add(dialog);
             RegisterView(DialogVm, dialog);
             dialog.ShowDialog(owner);
         }
@@ -42,11 +43,11 @@ namespace PasswordManager.Helpers
 
         public void CloseDialog(DialogViewModelBase dialogVM)
         {
-            Window? win = openWindows.FirstOrDefault(x => x!.DataContext == dialogVM);
+            Window? win = openedWindows.FirstOrDefault(x => x!.DataContext == dialogVM);
             if (win != null)
             {
                 win.Close();
-                openWindows.Remove(win);
+                openedWindows.Remove(win);
                 
             }
         }

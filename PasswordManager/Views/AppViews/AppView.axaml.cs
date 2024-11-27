@@ -21,4 +21,6 @@ public partial class AppView : UserControl
             if (text != null) vm.SearchKey = text;
         }
     }
+
+    
 }

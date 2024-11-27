@@ -8,4 +8,10 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
     }
+
+    private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        BeginMoveDrag(e);
+    }
+    
 }

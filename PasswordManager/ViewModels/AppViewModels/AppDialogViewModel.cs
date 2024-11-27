@@ -31,14 +31,14 @@ namespace PasswordManager.ViewModels.AppViewModels
             IsFavourite = model.IsFavourite;
             IsNew = false;
         }
-
+        
         public bool dialogResult;
         private string name = "";
         private string password = "";
         public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
 
-        RelayCommand AddCommand;
-        RelayCommand CloseCommand;
+        public RelayCommand AddCommand { get; set; }
+        public RelayCommand CloseCommand { get; set; }
         public Models.App? Model { get; set; }
         public string Name
         {
@@ -62,30 +62,36 @@ namespace PasswordManager.ViewModels.AppViewModels
             {
                 password = value;
                 OnPropertyChanged(nameof(password));
+                OnPropertyChanged(nameof(CanClose));
             }
         }
 
         public bool IsFavourite { get; private set; }
         public bool IsNew { get; private set; }
-        protected override bool CanClose()
+        
+        public override bool CanClose
         {
-            return true;
-        }
+            get
+            {
+                return Password != string.Empty;
+            }
+        } 
+
 
         private void Add()
         {
-            dialogResult = true;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            if (CanClose)
+            {
+                dialogResult = true;
+                Model = new Models.App(Name, Password, IsFavourite);
+                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            }
         }
 
         protected override void Close()
         {
-            dialogResult = true;
-            if (CanClose())
-            {
-                Model = new Models.App(Name,Password,IsFavourite);
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
-            }
+            dialogResult = false;
+            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
         
     }

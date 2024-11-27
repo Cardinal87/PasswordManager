@@ -13,7 +13,7 @@ namespace PasswordManager.DataConnectors
     {
        public DataBaseClient() 
        {
-            
+            Database.EnsureCreated();
        }
         
         

@@ -131,15 +131,19 @@ namespace PasswordManager.ViewModels.CardViewModels
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
-        protected override bool CanClose()
+        public override bool CanClose
         {
-            return true;
+            get
+            {
+                return Owner != string.Empty;
+            }
         }
+
 
         protected override void Close()
         {
             dialogResult = false;
-            if (CanClose())
+            if (CanClose)
             {
                 Model = new Card(Number, Month, Year, Cvc, Owner, Name, IsFavourite);
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));

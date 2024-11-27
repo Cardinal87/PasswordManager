@@ -108,15 +108,19 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
-        protected override bool CanClose()
+        public override bool CanClose
         {
-            return true;
+            get
+            {
+                return Password != string.Empty;
+            }
         }
+
 
         protected override void Close()
         {
             dialogResult = true;
-            if (CanClose())
+            if (CanClose)
             {
                 Model = new WebSite(Name, Login, Password, WebAddress, IsFavourite);
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));

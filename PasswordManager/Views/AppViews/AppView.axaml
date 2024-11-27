@@ -2,17 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="700"
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.AppViewModels"
-			 Height="700" Width="900"
              x:Class="PasswordManager.Views.AppViews.AppView"
 			 x:DataType="vm:AppViewModel" >
 	<Grid RowDefinitions="45,*" >
 		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}">
-			<Button Grid.Column="0" Theme="{StaticResource AddButton}"
+			<Button Grid.Column="0" Theme="{StaticResource AddButton}" Margin="25,0,0,2"
 					Content="Add App"
 					Command="{Binding AddNewCommand}"/>
-			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Center"
+			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,2" VerticalAlignment="Center"
 					 KeyDown="EnterPressed" Classes="searchBox"/>
 				
 			
@@ -20,7 +19,7 @@
 		
 		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
 		
-		<Grid Grid.Row="1" ColumnDefinitions="325,*" >
+		<Grid Grid.Row="1" ColumnDefinitions="325,*">
 			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
@@ -33,7 +32,8 @@
 				</ListBox.ItemTemplate>
 			</ListBox>
 
-			
+			<Rectangle Width="1" Margin="325,0,0,0"  Fill="{DynamicResource DataBoxBorderBrush}"
+					   VerticalAlignment="Stretch" />
 			
 			<Grid Grid.Column="1" RowDefinitions="50,100,*" Background="{DynamicResource MainBackgroundBrush}">
 				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Background="{DynamicResource AdditionalBackgroundBrush}">
@@ -46,11 +46,14 @@
 							Grid.Column="3"/>
 					<Button x:Name="AddToFavourite" Command="{Binding CurrentItem.AddToFavouriteCommand}"
 							Theme="{StaticResource AddToFavouriteButton}"
-							Grid.Column="4">
+							Grid.Column="4"
+							Content="{Binding CurrentItem.IsFavourite, Converter={StaticResource BoolToImageConverter}} ">
 						
 					</Button>
 				</Grid>
 				<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,50,0,0"/>
+				
+				
 				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0" >
 					<DockPanel>
 						<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top"/>

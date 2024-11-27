@@ -14,22 +14,45 @@
 		x:DataType="vm:MainViewModel"
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="Default"
-		
+		ExtendClientAreaTitleBarHeightHint="25"
 		>
+	
+	
+	
+	<Window.Styles>
+		<Style Selector="CaptionButtons /template/ Button">
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Style Selector="^:pointerover">
+				<Setter Property="Background" Value="{DynamicResource CloseButtonHighLightedBrush}"/>
+			</Style>
+		</Style>
+	</Window.Styles>
 
-	<Grid RowDefinitions="100,50,50,50,50,50,*" ColumnDefinitions="200,*" ShowGridLines="True">
+	<Grid RowDefinitions="25,75,*" ColumnDefinitions="150,*" 
+		  Background="{DynamicResource MainWindowBrush}"
+		  x:Name="MainGrid">
 		
-		<ContentControl Content="{Binding CurrentPage}" Grid.Column="1" Grid.RowSpan="7" Grid.Row="0"/>
-		<Button Content="AllEntries" Grid.Column="0" Grid.Row="1" Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding AllEntriesVm}"
-				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-				HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-		<Button Content="WebSites" Grid.Column="0" Grid.Row="2" Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding WebSiteVm}" 
-				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-		<Button Content="Apps" Grid.Column="0" Grid.Row="3" 
-				HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-				HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-				Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding AppVm}"/>
+		<Label PointerPressed="MoveWindow" Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="0" Grid.ColumnSpan="2"/>
+		
+		<ContentControl Content="{Binding CurrentPage}" Grid.Column="1" Grid.RowSpan="7" Grid.Row="1"
+						HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+		<StackPanel Grid.Row="2" Margin="10,0,0,0">
+			<Button Content="AllEntries" Grid.Column="0" Grid.Row="2"
+					Command="{Binding SetCurrentPageCommand}" 
+					CommandParameter="{Binding AllEntriesVm}"
+					Theme="{StaticResource TabButton}"
+					Width="100" Height="50"
+					HorizontalAlignment="Left"/>
+			<Button Content="WebSites" Grid.Column="0" Grid.Row="3" 
+					Command="{Binding SetCurrentPageCommand}" 
+					CommandParameter="{Binding WebSiteVm}" 
+					Theme="{StaticResource TabButton}"
+					Width="75" Height="50"/>
+			<Button Content="Apps" Grid.Column="0" Grid.Row="4" 
+					Theme="{StaticResource TabButton}"
+					Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding AppVm}"
+					Width="75" Height="50"/>
+		</StackPanel>
 		
 	</Grid>
 	

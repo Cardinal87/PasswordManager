@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using PasswordManager.ViewModels.AppViewModels;
 using System;
@@ -14,6 +15,8 @@ public partial class AppDialogView : Window
     }
     private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
+        if (!MainBorder.IsFocused)
+            MainBorder.Focus();
         BeginMoveDrag(e);
     }
 
@@ -22,7 +25,7 @@ public partial class AppDialogView : Window
         ShowName.IsVisible = false;
         SetName.IsVisible = true;
         ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome;
-        SetName.Focus();
+        NameBox.Focus();
     }
 
     private void CloseTemplate(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -52,6 +55,24 @@ public partial class AppDialogView : Window
         {
             ConfirmNameButton.IsEnabled = true;
             NameWarning.IsVisible = false;
+            
         }
+    }
+
+    private void QuickConfirmName(object? sender, Avalonia.Input.KeyEventArgs e)
+    {
+        if(e.Key == Key.Enter) 
+            ConfirmName(sender, e);
+    }
+
+    private void ConfirmPassword(object? sender, Avalonia.Input.KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+            MainBorder.Focus();
+    }
+    private void QuickCloseDialog(object? sender, Avalonia.Input.KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter && MainBorder.IsFocused)
+            ((AppDialogViewModel)DataContext!).AddCommand.Execute(this);
     }
 }

@@ -12,8 +12,8 @@
     <Application.Styles>
         <FluentTheme />
 		<StyleInclude Source="Icons.axaml"/>
-		
-		
+
+
 		
 		
 		<!--Style for data boxes-->
@@ -48,13 +48,16 @@
 	</Application.Resources>
 	<Application.Resources>
 		<converters:StringToDefaultConverter x:Key="StringToDefaultConverter"/>
+		<converters:BoolToImageConverter x:Key="BoolToImageConverter"/>
+		
+		
 		
 		<!--Delete button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DeleteButton">
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
-					<PathIcon x:Name="icon" Data="{StaticResource delete_icon}" Foreground="Red"/>
+					<PathIcon x:Name="icon" Data="{StaticResource delete_icon}" Foreground="{DynamicResource DeleteButtonBrush}"/>
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
@@ -71,7 +74,7 @@
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
-					<PathIcon x:Name="icon" Data="{StaticResource change_icon}" Foreground="Green"
+					<PathIcon x:Name="icon" Data="{StaticResource change_icon}" Foreground="{DynamicResource MainGreenBrush}"
 							  Height="15" Width="15"/>
 				</ControlTemplate>
 			</Setter>
@@ -89,7 +92,7 @@
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
-					<PathIcon x:Name="icon" Data="{StaticResource favourite_icon}"/>
+					<PathIcon x:Name="icon" Data="{TemplateBinding Content}" Foreground="{DynamicResource FontBrush}"/>
 				</ControlTemplate>
 			</Setter>
 			<Style Selector="^:pointerover">
@@ -103,7 +106,6 @@
 		
 		<!--Add button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddButton">
-			<Setter Property="Margin" Value="25,0,0,0"/>
 			<Setter Property="CornerRadius" Value="10"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
@@ -177,6 +179,9 @@
 			<Style Selector="^:pointerover">
 				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
+			<Style Selector="^:disabled">
+				<Setter Property="Opacity" Value="0.4"/>
+			</Style>
 		</ControlTheme>
 
 		<!--Cancel button-->
@@ -185,6 +190,26 @@
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Content" Value="Cancel"/>
 			<Setter Property="CornerRadius" Value="5"/>
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
+		</ControlTheme>
+		
+		
+		<!--TabButtons-->
+		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="TabButton">
+			<Setter Property="Background" Value="{DynamicResource MainWindowBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource MainWindowBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}"
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+						<TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Left" VerticalAlignment="Center"
+							   Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" />
+					</Border>
+				</ControlTemplate>
+			</Setter>
 			<Style Selector="^:pointerover">
 				<Setter Property="Opacity" Value="0.7"/>
 			</Style>
