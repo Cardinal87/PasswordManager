@@ -14,24 +14,20 @@ namespace PasswordManager.ViewModels.AppViewModels
 {
     internal partial class AppItemViewModel : ItemViewModelBase
     {
-        public AppItemViewModel(Models.App app, RelayCommand delete, RelayCommand change, Action<AppItemViewModel> ShowDataOfItem, IClipboardService clipboard)
+        public AppItemViewModel(AppModel app,IClipboardService clipboard)
         {
             
             UpdateModel(app);
             clipBoard = clipboard;
-            ShowDataCommand = new RelayCommand(() => ShowDataOfItem(this));
-            DeleteCommand = delete;
-            ChangeCommand = change;
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipBoard);
-            AddToFavouriteCommand = new RelayCommand(AddToFavourite);
+            
         }
         
         public RelayCommand<string> CopyToClipboardCommand { get; }
-        public RelayCommand AddToFavouriteCommand { get; }
         IClipboardService clipBoard;
 
 
-        Models.App model;
+        public AppModel Model { get; private set; }
         string password;
         bool isFavourite;
         
@@ -68,17 +64,13 @@ namespace PasswordManager.ViewModels.AppViewModels
             if (text != null)
                 clipBoard.SaveToClipBoard(text);
         }
-        private void AddToFavourite()
-        {
-            if (IsFavourite) IsFavourite = false;
-            else IsFavourite = true;
-        }
+        
         
         [MemberNotNull(nameof(password))]
-        [MemberNotNull(nameof(model))]
-        public void UpdateModel(Models.App model)
+        [MemberNotNull(nameof(Model))]
+        public void UpdateModel(AppModel model)
         {
-            this.model = model;
+            Model = model;
             Id = model.Id;
             Name = model.Name;
             Password = model.Password;

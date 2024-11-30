@@ -16,7 +16,7 @@ namespace PasswordManager.DataConnectors
         public void Insert<TEntity>(TEntity model) where TEntity : ModelBase; 
         public void Delete<TEntity>(TEntity model) where TEntity : ModelBase;
         public void Replace<TEntity>(TEntity model) where TEntity : ModelBase;
-
+        public T? GetById<T>(int id) where T : ModelBase;
         public void Save();
         
     }

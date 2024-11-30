@@ -12,6 +12,7 @@ using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -21,13 +22,21 @@ namespace PasswordManager.ViewModels.AppViewModels
 {
     internal partial class AppViewModel : ViewModelBase
     {
-        public AppViewModel(IDatabaseClient dbclient, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public AppViewModel(IDatabaseClient dbClient, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             this.itemFactory = itemFactory;
-            this.dbClient = dbclient;
+            this.dbClient = dbClient;
             this.dialogService = dialogService;
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
+            AddToFavouriteCommand = new RelayCommand<AppItemViewModel>(AddToFavourite);
+            DeleteCommand = new RelayCommand<AppItemViewModel>(Delete);
+            ChangeCommand = new RelayCommand<AppItemViewModel>(ShowChangeDialog);
+            
             LoadViewModelList();
+            if (Apps.Count != 0) CurrentItem = Apps[0];
+            Apps.CollectionChanged += CollectionChanged;
+            OnPropertyChanged(nameof(FilteredCollection));
+
         }
         IItemViewModelFactory itemFactory;
         IDatabaseClient dbClient;
@@ -37,12 +46,12 @@ namespace PasswordManager.ViewModels.AppViewModels
         public ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
         public IEnumerable<AppItemViewModel> FilteredCollection
         {
-            get => Apps.Where(x => x.Name!.Contains(SearchKey));
+            get => Apps.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
         }
-
-        AppDialogViewModel? dialogVM;
-
+        public RelayCommand<AppItemViewModel> AddToFavouriteCommand { get; set; }
         public RelayCommand AddNewCommand { get; set; }
+        public RelayCommand<AppItemViewModel> DeleteCommand { get; set; }
+        public RelayCommand<AppItemViewModel> ChangeCommand { get; set; }
         public string SearchKey
         {
             get => searchKey;
@@ -69,33 +78,29 @@ namespace PasswordManager.ViewModels.AppViewModels
         }
 
         
-        private void Delete(Models.App model)
+        private void Delete(AppItemViewModel? appItem)
         {
-            var a = Apps.FirstOrDefault(x => x.Id == model.Id);
-            if (a != null)
+            if (appItem != null)
             {
-                dbClient.Delete(model);
-                Apps.Remove(a);
+                dbClient.Delete(appItem.Model);
+                Apps.Remove(appItem);
+                if (Apps.Count > 0) CurrentItem = Apps[0];
             }
             dbClient.Save();
 
         }
-        private void ShowDataOfItem(AppItemViewModel vm)
+        
+        private void ShowChangeDialog(AppItemViewModel? appItem)
         {
-            CurrentItem = vm;
-        }
-        private void ShowChangeDialog(Models.App app)
-        {
-            dialogVM = new AppDialogViewModel(app);
-            ShowDialog();
+            if (appItem != null && appItem.Model != null)
+                ShowDialog(new AppDialogViewModel(appItem.Model));
         }
         private void ShowAddNewDialog()
         {
-            dialogVM = new AppDialogViewModel();
-            ShowDialog();
+            ShowDialog(new AppDialogViewModel());
         }
 
-        private void ShowDialog()
+        private void ShowDialog(AppDialogViewModel? dialogVM)
         {
             if (dialogVM != null)
             {
@@ -105,38 +110,54 @@ namespace PasswordManager.ViewModels.AppViewModels
         }
         private void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (e.DialogResult && sender != null)
+            if (sender is AppDialogViewModel vm)
             {
-                AppDialogViewModel vm = (AppDialogViewModel)sender;
-                Models.App model = new(vm.Name ,vm.Password, false);
-                if (vm.IsNew)
+                
+                if (vm.IsNew && e.DialogResult)
                 {
-                    dbClient.Insert(model);
+                    dbClient.Insert(vm.Model);
                     dbClient.Save();
-                    AppItemViewModel item = itemFactory.CreateAppItem(model, new RelayCommand(() => Delete(model)), new RelayCommand(() => ShowChangeDialog(model)), ShowDataOfItem);
+                    AppItemViewModel item = itemFactory.CreateAppItem(vm.Model);
                     Apps.Add(item);
+                    
 
                 }
-                else
+                else if (e.DialogResult)
                 {
-                    dbClient.Replace(model);
-                    var a = Apps.FirstOrDefault(x => x.Id == model.Id);
-                    a?.UpdateModel(model);
+                    dbClient.Replace(vm.Model);
+                    dbClient.Save();
+                    var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
+                    a?.UpdateModel(vm.Model);
                 }
-
-
+                dialogService.CloseDialog(vm);
             }
-            dialogService.CloseDialog(dialogVM!);
-            dialogVM = null;
+            
         }
-
+        private void AddToFavourite(AppItemViewModel? appItem)
+        {
+            if (appItem != null)
+            {
+                AppModel? el = dbClient.GetById<AppModel>(appItem.Id);
+                if (el != null)
+                {
+                    appItem.IsFavourite = !appItem.IsFavourite;
+                    el.IsFavourite = !el.IsFavourite;
+                    dbClient.Save();
+                }
+                
+            }
+        }
         private void LoadViewModelList()
         {
-            foreach (var model in dbClient.GetListOfType<Models.App>())
+            foreach (var model in dbClient.GetListOfType<AppModel>())
             {
-                var item = itemFactory.CreateAppItem(model, new RelayCommand(() => Delete(model)), new RelayCommand(() => ShowChangeDialog(model)), ShowDataOfItem);
+                var item = itemFactory.CreateAppItem(model);
                 Apps.Add(item);
             }
+        }
+        private void CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(FilteredCollection));
         }
     }
 }

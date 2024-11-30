@@ -1,8 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using PasswordManager.ViewModels.AppViewModels;
+using System;
 
 namespace PasswordManager.Views.AppViews;
 
@@ -22,5 +24,26 @@ public partial class AppView : UserControl
         }
     }
 
+    private void ListBox_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+    {
+        
+        var list = sender as ListBox;
+        ((AppViewModel)DataContext!).CurrentItem = (AppItemViewModel)list?.SelectedItem!;
+    }
+
+    private void ChangePasswordVisibility(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var button = (Button)sender!;
+        button.Tag = !(bool)button.Tag!;
+        PasswordGrid.Tag = !(bool)PasswordGrid.Tag!;
+
+
+    }
+
+    private void TextCopied(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        TextCopiedMessage.Tag = false;
+        TextCopiedMessage.Tag = true;
+    }
     
 }

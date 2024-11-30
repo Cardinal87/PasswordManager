@@ -25,10 +25,13 @@
 		</Style>
 		<Style Selector="CaptionButtons /template/ Button#PART_CloseButton">
 			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Command" Value="{Binding CloseCommand}"/>
 			<Style Selector="^:pointerover">
 				<Setter Property="Background" Value="{DynamicResource CloseButtonHighLightedBrush}"/>
 			</Style>
-			
+			<Style Selector="^:pressed">
+				<Setter Property="Background" Value="{DynamicResource CloseButtonHighLightedBrush}"/>
+			</Style>
 		</Style>
 	</Window.Styles>
 
@@ -40,10 +43,12 @@
 		
 			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="ShowName" IsVisible="True">
 				<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewApp}"
-						   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"  Margin="20,0,0,0"/>
+						   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"
+						   Margin="20,0,0,0"
+						   MaxWidth="400"/>
 				<Button Background="#1b2026" Margin="5,0,0,0"
 						DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
-						HorizontalAlignment="Left" Click="ShowSetNameTemplate"/>
+						HorizontalAlignment="Left" Click="ShowSetNameTemplate" />
 
 			</DockPanel>
 			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="SetName" IsVisible="False">

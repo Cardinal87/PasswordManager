@@ -14,14 +14,11 @@ namespace PasswordManager.ViewModels.CardViewModels
 {
     class CardItemViewModel : ItemViewModelBase
     {
-        public CardItemViewModel(Card model, IClipboardService clipboardService, RelayCommand delete, RelayCommand change, Action<CardItemViewModel> ShowDataOfItem) 
+        public CardItemViewModel(CardModel model, IClipboardService clipboardService) 
         {
             this.clipboardService = clipboardService;
-            DeleteCommand = delete;
-            ChangeCommand = change;
-            ShowDataCommand = new RelayCommand(() => ShowDataOfItem.Invoke(this));
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);
-            AddToFavouriteCommand = new RelayCommand(AddToFavourite);
+            
             
             
             UpdateModel(model);
@@ -29,7 +26,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         }
         private IClipboardService clipboardService;
 
-        private Card model;
+        public CardModel Model { get; private set; }
         
         private string owner;
         private string number;
@@ -39,10 +36,6 @@ namespace PasswordManager.ViewModels.CardViewModels
         private bool isFavourite;
 
         public RelayCommand<string> CopyToClipboardCommand { get; }
-        public RelayCommand AddToFavouriteCommand { get; }
-      
-
-        
         public string Owner 
         { 
             get => owner;
@@ -114,12 +107,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                 clipboardService.SaveToClipBoard(text);
         }
 
-        private void AddToFavourite()
-        {
-            if (IsFavourite) IsFavourite = false;
-            else IsFavourite = true;
-        }
-
+        
 
         [MemberNotNull(nameof(owner))]
         [MemberNotNull(nameof(number))]
@@ -127,10 +115,10 @@ namespace PasswordManager.ViewModels.CardViewModels
         [MemberNotNull(nameof(month))]
         [MemberNotNull(nameof(year))]
         [MemberNotNull(nameof(isFavourite))]
-        [MemberNotNull(nameof(model))]
-        public void UpdateModel(Card model)
+        [MemberNotNull(nameof(Model))]
+        public void UpdateModel(CardModel model)
         {
-            this.model = model;
+            Model = model;
             Id = model.Id;
             Name = model.Name;
             Owner = model.Owner;

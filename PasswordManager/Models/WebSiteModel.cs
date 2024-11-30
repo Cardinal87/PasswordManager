@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Models
 {
-    internal class WebSite : ModelBase
+    internal class WebSiteModel : ModelBase
     {
-        public WebSite(string name, string login, string password, string webAddress, bool isFavourite) : base(name, isFavourite)
+        public WebSiteModel(string name, string login, string password, string webAddress, bool isFavourite) : base(name, isFavourite)
         {
             
             Login = login;

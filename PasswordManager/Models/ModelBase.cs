@@ -14,8 +14,8 @@ namespace PasswordManager.Models
             Name = name;
             IsFavourite = isFavourite;
         }
-        public int Id { get; protected set; }
-        public string? Name { get; protected set; }
-        public bool IsFavourite { get; protected set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public bool IsFavourite { get; set; }
     }
 }

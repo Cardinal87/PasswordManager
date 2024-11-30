@@ -17,8 +17,8 @@ namespace PasswordManager.Factories
     internal interface IItemViewModelFactory
     {
         public IClipboardService Clipboard { get; }
-        public WebSiteItemViewModel CreateWebSiteItem(WebSite model, RelayCommand delete, RelayCommand change, Action<WebSiteItemViewModel> showData);
-        public AppItemViewModel CreateAppItem(Models.App model, RelayCommand delete, RelayCommand change, Action<AppItemViewModel> showData);
-        public CardItemViewModel CreateCardItem(Card model, RelayCommand delete, RelayCommand change, Action<CardItemViewModel> showData);
+        public WebSiteItemViewModel CreateWebSiteItem(WebSiteModel model);
+        public AppItemViewModel CreateAppItem(AppModel model);
+        public CardItemViewModel CreateCardItem(CardModel model);
     }
 }

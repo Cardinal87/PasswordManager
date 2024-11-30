@@ -6,11 +6,18 @@
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.AppViewModels"
              x:Class="PasswordManager.Views.AppViews.AppView"
 			 x:DataType="vm:AppViewModel" >
+	
+	
 	<Grid RowDefinitions="45,*" >
+		
+		
+		
 		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}">
 			<Button Grid.Column="0" Theme="{StaticResource AddButton}" Margin="25,0,0,2"
 					Content="Add App"
-					Command="{Binding AddNewCommand}"/>
+					Command="{Binding AddNewCommand}">
+				
+			</Button>
 			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,2" VerticalAlignment="Center"
 					 KeyDown="EnterPressed" Classes="searchBox"/>
 				
@@ -19,35 +26,37 @@
 		
 		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
 		
-		<Grid Grid.Row="1" ColumnDefinitions="325,*">
-			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}">
+		<Grid Grid.Row="1" ColumnDefinitions="250,*">
+			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}"
+					 SelectedItem="{Binding CurrentItem}" SelectionChanged="ListBox_SelectionChanged">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<Grid RowDefinitions="60">
-							<TextBlock Margin="20,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-									   Text="{Binding Name}" TextAlignment="Center"/>
-						
-						</Grid>
+						<TextBlock Margin="20,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+									Text="{Binding Name}" TextAlignment="Left"/>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>
 
-			<Rectangle Width="1" Margin="325,0,0,0"  Fill="{DynamicResource DataBoxBorderBrush}"
+			<Rectangle Width="1" Margin="250,0,0,0"  Fill="{DynamicResource DataBoxBorderBrush}"
 					   VerticalAlignment="Stretch" />
 			
-			<Grid Grid.Column="1" RowDefinitions="50,100,*" Background="{DynamicResource MainBackgroundBrush}">
+			<Grid Grid.Column="1" RowDefinitions="50,100,*,40" Background="{DynamicResource MainBackgroundBrush}">
 				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Background="{DynamicResource AdditionalBackgroundBrush}">
-					<TextBlock Text="{Binding CurrentItem}"/>
-					<Button x:Name="Change" Command="{Binding CurrentItem.ChangeCommand}" 
+					<TextBlock Text="{Binding CurrentItem.Name}" HorizontalAlignment="Left" VerticalAlignment="Center"
+							   Margin="10,0,0,0"/>
+					<Button x:Name="Change" Command="{Binding ChangeCommand}" 
+							CommandParameter="{Binding CurrentItem}"
 							Theme="{StaticResource ChangeButton}" 
 							Grid.Column="2"/>
-					<Button x:Name="Delete" Command="{Binding CurrentItem.DeleteCommand}"
+					<Button x:Name="Delete" Command="{Binding DeleteCommand}"
 							Theme="{StaticResource DeleteButton}"
+							CommandParameter="{Binding CurrentItem}"
 							Grid.Column="3"/>
-					<Button x:Name="AddToFavourite" Command="{Binding CurrentItem.AddToFavouriteCommand}"
+					<Button x:Name="AddToFavourite" Command="{Binding AddToFavouriteCommand}"
+							CommandParameter="{Binding CurrentItem}"
 							Theme="{StaticResource AddToFavouriteButton}"
 							Grid.Column="4"
-							Content="{Binding CurrentItem.IsFavourite, Converter={StaticResource BoolToImageConverter}} ">
+							Tag="{Binding CurrentItem.IsFavourite}">
 						
 					</Button>
 				</Grid>
@@ -56,10 +65,35 @@
 				
 				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0" >
 					<DockPanel>
-						<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top"/>
-						<TextBlock x:Name="Password" DockPanel.Dock="Bottom" Text="{Binding CurrentItem.Password}" Margin="20,15,0,0"/>
+						<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top" 
+								   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+						<DockPanel DockPanel.Dock="Bottom" Margin="0,10,20,30">
+							<Grid Tag="{x:True}" DockPanel.Dock="Left" Margin="20,0,0,0" 
+								  VerticalAlignment="Center" x:Name="PasswordGrid">
+								<TextBlock Text="{Binding CurrentItem.Password,
+										   Converter={StaticResource ToPasswordCharConverter}}"
+										   IsVisible="{Binding $parent.Tag}" FontSize="14" />
+								<TextBlock Text="{Binding CurrentItem.Password}"
+										   IsVisible="{Binding $parent.Tag, Converter={StaticResource ReverseBoolConverter}}"
+										   FontSize="14" />
+							</Grid>
+							<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+									Command="{Binding CurrentItem.CopyToClipboardCommand}"
+									CommandParameter="{Binding CurrentItem.Password}"
+									Click="TextCopied"/>
+							<Button Theme="{StaticResource ShowPasswordButton}" DockPanel.Dock="Right" Tag="{x:False}"
+									Margin="10,0,15,0" Click="ChangePasswordVisibility" />
+						</DockPanel>
+
+
 					</DockPanel>
 				</Border>
+				
+				<ContentControl ContentTemplate="{StaticResource TextCopiedMessage}"
+								Content="{Binding $self}"
+								Grid.Row="3" Margin="0,0,0,10" x:Name="TextCopiedMessage"
+								Tag="{x:False}"/>
+				
 			
 			</Grid>
 		</Grid>

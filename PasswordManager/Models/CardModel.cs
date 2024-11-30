@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Models
 {
-    internal class Card : ModelBase
+    internal class CardModel : ModelBase
     {
         
         
-        public Card(string number, int month, int year, int cvc, string owner, string name, bool isFavourite) : base(name, isFavourite)
+        public CardModel(string number, int month, int year, int cvc, string owner, string name, bool isFavourite) : base(name, isFavourite)
         {
             Number = number;
             Year = year;

@@ -23,16 +23,16 @@ namespace PasswordManager.Factories
         }
 
 
-        public AppItemViewModel CreateAppItem(Models.App model, RelayCommand delete, RelayCommand change, Action<AppItemViewModel> showData) =>
-            new AppItemViewModel(model, delete, change, showData, Clipboard);
+        public AppItemViewModel CreateAppItem(AppModel model) =>
+            new AppItemViewModel(model, Clipboard);
         
 
-        public WebSiteItemViewModel CreateWebSiteItem(WebSite model, RelayCommand delete, RelayCommand change, Action<WebSiteItemViewModel> showData) =>
-            new WebSiteItemViewModel(model, Clipboard, delete, change, showData);
+        public WebSiteItemViewModel CreateWebSiteItem(WebSiteModel model) =>
+            new WebSiteItemViewModel(model, Clipboard);
 
 
-        public CardItemViewModel CreateCardItem(Card model, RelayCommand delete, RelayCommand change, Action<CardItemViewModel> showData) =>
-            new CardItemViewModel(model,Clipboard, delete, change, showData);
+        public CardItemViewModel CreateCardItem(CardModel model) =>
+            new CardItemViewModel(model,Clipboard);
         
     }
 }

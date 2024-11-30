@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Data.Converters;
+﻿using Avalonia.Data.Converters;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,18 +8,22 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Converters
 {
-    class BoolToImageConverter : IValueConverter
+    internal class ToPasswordCharConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            var dict = App.Current?.Resources;
-            if (dict != null)
+            if (targetType == typeof(string))
             {
-                if (value is bool b && b)
-                    return dict["favourite_icon"];
-                else return dict["favourite_off_icon"];
+                if (value?.GetType() != typeof(string)) throw new InvalidOperationException("The value must be a string");
+                var str = (string)value;
+                return new String('*', str.Length);
+
+
             }
-            return dict["favourite_off_icon"];
+            else
+            {
+                throw new InvalidOperationException("The target must be a string");
+            }
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

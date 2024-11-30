@@ -18,14 +18,16 @@ namespace PasswordManager.ViewModels.AppViewModels
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
+            id = 0;
             IsNew = true;
             
         }
-        public AppDialogViewModel(Models.App model)
+        public AppDialogViewModel(Models.AppModel model)
         {
             Model = model;
             Name = model.Name!;
             Password = model.Password;
+            id = model.Id;
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             IsFavourite = model.IsFavourite;
@@ -39,7 +41,8 @@ namespace PasswordManager.ViewModels.AppViewModels
 
         public RelayCommand AddCommand { get; set; }
         public RelayCommand CloseCommand { get; set; }
-        public Models.App? Model { get; set; }
+        public Models.AppModel Model { get; set; }
+        private int id;
         public string Name
         {
             get
@@ -83,7 +86,9 @@ namespace PasswordManager.ViewModels.AppViewModels
             if (CanClose)
             {
                 dialogResult = true;
-                Model = new Models.App(Name, Password, IsFavourite);
+                Model = new Models.AppModel(Name, Password, IsFavourite);
+                Model.Id = id;
+
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
             }
         }

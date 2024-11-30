@@ -17,9 +17,9 @@ namespace PasswordManager.DataConnectors
        }
         
         
-        public DbSet<WebSite> WebSites { get; set; }
-        public DbSet<Models.App> Apps { get; set; }
-        public DbSet<Card> Cards { get; set; }
+        public DbSet<WebSiteModel> WebSites { get; set; }
+        public DbSet<Models.AppModel> Apps { get; set; }
+        public DbSet<CardModel> Cards { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -29,11 +29,11 @@ namespace PasswordManager.DataConnectors
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<WebSite>().ToTable("WebSites").HasKey(e => e.Id);
+            modelBuilder.Entity<WebSiteModel>().ToTable("WebSites").HasKey(e => e.Id);
 
-            modelBuilder.Entity<Models.App>().ToTable("Apps").HasKey(e => e.Id);
+            modelBuilder.Entity<Models.AppModel>().ToTable("Apps").HasKey(e => e.Id);
             
-            modelBuilder.Entity<Card>().ToTable("Cards").HasKey(e => e.Id);
+            modelBuilder.Entity<CardModel>().ToTable("Cards").HasKey(e => e.Id);
            
 
 
@@ -62,11 +62,15 @@ namespace PasswordManager.DataConnectors
             var excist = list.FirstOrDefault(x => x.Id == model.Id);
             if (excist != null)
             {
-                list.Remove(list.First(x => x.Id == model.Id));
+                list.Remove(excist);
                 list.Add(model);
             }
         }
-
+        public T? GetById<T>(int id) where T : ModelBase
+        {
+            var list = Set<T>();
+            return list.FirstOrDefault(x => x.Id == id);
+        }
         public void Save()
         {
             SaveChanges();

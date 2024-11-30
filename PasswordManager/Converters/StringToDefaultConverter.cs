@@ -12,16 +12,26 @@ namespace PasswordManager.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is string str && string.IsNullOrEmpty(str) && parameter is string def)
+            if (targetType == typeof(string))
             {
-                return def;
+                if (value is string str)
+                {
+                    if (parameter is string def)
+                    {
+                        if (string.IsNullOrEmpty(str))
+                            return def;
+                        else return str;
+                    }
+                    else throw new ArgumentException("parameter must be string");
+                }
+                else throw new ArgumentException("value must be string");
             }
-            return value;
+            else throw new InvalidOperationException("The target must be a string");
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return value;
+            throw new NotSupportedException();
         }
     }
 }

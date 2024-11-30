@@ -5,6 +5,7 @@
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Dark">
 			<SolidColorBrush x:Key="FontBrush" Color="White"/>
+			<SolidColorBrush x:Key="SecondFontBrush" Color="#949292"/>
 			<SolidColorBrush x:Key="MainBackgroundBrush" Color="#060c14"/>
 			<SolidColorBrush x:Key="AdditionalBackgroundBrush" Color="#1b2026"/>
 			<SolidColorBrush x:Key="SearchBoxBackgroundBrush" Color="#3e3f4a"/>
@@ -18,6 +19,10 @@
 			<SolidColorBrush x:Key="WarningBrush" Color="#de1818"/>
 			<SolidColorBrush x:Key="MainWindowBrush" Color="#2d2d38"/>
 			<SolidColorBrush x:Key="DeleteButtonBrush" Color="#7a0000"/>
+			<SolidColorBrush x:Key="ListBoxItemSelectedBrush" Color="#2d3238"/>
+			<SolidColorBrush x:Key="ListBoxItemPointOverBrush" Color="#3b414a"/>
+			
+			
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

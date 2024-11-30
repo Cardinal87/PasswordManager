@@ -20,24 +20,22 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     internal partial class WebSiteItemViewModel : ItemViewModelBase
     {
         
-        private WebSite model;
+        public WebSiteModel Model { get; private set; }
         private IClipboardService clipBoardService;
         
-        public WebSiteItemViewModel(WebSite model, IClipboardService clipBoardService, RelayCommand delete, RelayCommand change, Action<WebSiteItemViewModel> ShowDataOfItem) 
+        public WebSiteItemViewModel(WebSiteModel model, IClipboardService clipBoardService) 
         {
             
             UpdateModel(model);
             this.clipBoardService = clipBoardService;
-            ShowDataCommand = new RelayCommand(() => ShowDataOfItem.Invoke(this));
-            DeleteCommand = delete;
-            ChangeCommand = change;
+            
             GoTowebSiteCommand = new RelayCommand(GoToWebSite);
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);
-            AddToFavouriteCommand = new RelayCommand(AddToFavourite);
+            
             
         }
         public RelayCommand<string> CopyToClipboardCommand { get; }
-        public RelayCommand AddToFavouriteCommand { get; }
+        
         public RelayCommand GoTowebSiteCommand { get; }
 
         
@@ -121,11 +119,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         [MemberNotNull(nameof(webAddress))]
         [MemberNotNull(nameof(login))]
         [MemberNotNull(nameof(password))]
-        [MemberNotNull(nameof(model))]
-        public void UpdateModel(WebSite model)
+        [MemberNotNull(nameof(Model))]
+        public void UpdateModel(WebSiteModel model)
         {
             
-            this.model = model;
+            Model = model;
             Id = model.Id;
             Name = model.Name;
             Password = model.Password;

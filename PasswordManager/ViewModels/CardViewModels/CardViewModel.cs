@@ -3,6 +3,7 @@ using PasswordManager.DataConnectors;
 using PasswordManager.Factories;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
+using PasswordManager.ViewModels.AppViewModels;
 using PasswordManager.ViewModels.BaseClasses;
 using PasswordManager.ViewModels.Interfaces;
 using PasswordManager.ViewModels.WebSiteViewModels;
@@ -22,6 +23,10 @@ namespace PasswordManager.ViewModels.CardViewModels
             this.dbClient = dbClient;
             this.dialogService = dialogService;
             this.itemFactory = itemFactory;
+            AddToFavouriteCommand = new RelayCommand<CardItemViewModel>(AddToFavourite);
+            DeleteCommand = new RelayCommand<CardItemViewModel>(Delete);
+            ChangeCommand = new RelayCommand<CardItemViewModel>(ShowChangeDialog);
+            AddNewCommand = new RelayCommand(ShowAddNewDialog);
 
             Cards = new ObservableCollection<CardItemViewModel>();
             LoadViewModelsList();
@@ -30,7 +35,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         private IDialogService dialogService;
         private IItemViewModelFactory itemFactory;
         public CardItemViewModel? currentItem;
-        public CardDialogViewModel? Dialog { get; private set; }
+        
         public CardItemViewModel? CurrentItem
         {
 
@@ -42,59 +47,56 @@ namespace PasswordManager.ViewModels.CardViewModels
             }
         }
 
-
         public ObservableCollection<CardItemViewModel> Cards { get; set; }
+        public RelayCommand<CardItemViewModel> AddToFavouriteCommand { get; set; }
+        public RelayCommand<CardItemViewModel> DeleteCommand { get; set; }
+        public RelayCommand<CardItemViewModel> ChangeCommand { get; set; }
+        public RelayCommand AddNewCommand { get; set; }
+
         
-
-
-        private void ShowDataOfItem(CardItemViewModel vm)
+        private void Delete(CardItemViewModel? cardItem)
         {
-            CurrentItem = vm;
-        }
-
-        private void Delete(Card model)
-        {
-            var a = Cards.FirstOrDefault(x => x.Id == model.Id);
-            if (a != null)
+            if (cardItem != null)
             {
-                dbClient.Delete(model);
-                Cards.Remove(a);
+                dbClient.Delete(cardItem.Model);
+                Cards.Remove(cardItem);
+                if (Cards.Count > 0) CurrentItem = Cards[0];
             }
             dbClient.Save();
         }
 
-        private void ShowDialog()
+        private void ShowDialog(CardDialogViewModel? Dialog)
         {
             if (Dialog != null)
             {
                 Dialog.dialogResultRequest += GetDialogResult;
-                dialogService.OpenDialog(Dialog!);
+                dialogService.OpenDialog(Dialog);
             }
         }
-        private void ShowChangeDialog(Card model)
+        private void ShowChangeDialog(CardItemViewModel? cardItem)
         {
-            Dialog = new CardDialogViewModel(model);
-            ShowDialog();
+            if (cardItem != null && cardItem.Model != null)
+                ShowDialog(new CardDialogViewModel(cardItem.Model));
         }
 
         private void ShowAddNewDialog()
         {
-            Dialog = new CardDialogViewModel();
-            ShowDialog();
+            var Dialog = new CardDialogViewModel();
+            ShowDialog(Dialog);
         }
 
         private void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (e.DialogResult && sender != null)
+            if (e.DialogResult && sender is CardDialogViewModel vm)
             {
-                CardDialogViewModel vm = (CardDialogViewModel)sender;
-                Card model = vm.Model!;
+                
+                CardModel model = vm.Model!;
 
                 if (vm.IsNew)
                 {
                     dbClient.Insert(model);
                     dbClient.Save();
-                    CardItemViewModel item = itemFactory.CreateCardItem(model, new RelayCommand(() => Delete(model)), new RelayCommand(() => ShowChangeDialog(model)), ShowDataOfItem);
+                    CardItemViewModel item = itemFactory.CreateCardItem(model);
                     Cards.Add(item);
                 }
                 else
@@ -104,18 +106,32 @@ namespace PasswordManager.ViewModels.CardViewModels
                     a?.UpdateModel(model);
                     dbClient.Save();
                 }
-
+                dialogService.CloseDialog(vm!);
             }
-            dialogService.CloseDialog(Dialog!);
-            Dialog = null;
+            
+            
         }
 
+        private void AddToFavourite(CardItemViewModel? cardItem)
+        {
+            if (cardItem != null)
+            {
+                CardModel? el = dbClient.GetById<CardModel>(cardItem.Id);
+                if (el != null)
+                {
+                    cardItem.IsFavourite = !cardItem.IsFavourite;
+                    el.IsFavourite = !el.IsFavourite;
+                    dbClient.Save();
+                }
+
+            }
+        }
         private void LoadViewModelsList()
         {
-            foreach (var a in dbClient.GetListOfType<Card>())
+            foreach (var a in dbClient.GetListOfType<CardModel>())
             {
 
-                var item = itemFactory.CreateCardItem(a, new RelayCommand(() => Delete(a)), new RelayCommand(() => ShowChangeDialog(a)), ShowDataOfItem);
+                var item = itemFactory.CreateCardItem(a);
                 Cards.Add(item);
             }
 

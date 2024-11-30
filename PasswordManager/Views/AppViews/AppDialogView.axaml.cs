@@ -33,6 +33,7 @@ public partial class AppDialogView : Window
         ShowName.IsVisible = true;
         SetName.IsVisible = false;
         ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.Default;
+        MainBorder.Focus();
     }
 
     private void ConfirmName(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -61,14 +62,20 @@ public partial class AppDialogView : Window
 
     private void QuickConfirmName(object? sender, Avalonia.Input.KeyEventArgs e)
     {
-        if(e.Key == Key.Enter) 
+        if (e.Key == Key.Enter)
+        {
             ConfirmName(sender, e);
+            e.Handled = true;
+        }
     }
 
     private void ConfirmPassword(object? sender, Avalonia.Input.KeyEventArgs e)
     {
         if (e.Key == Key.Enter)
+        {
+            e.Handled = true;
             MainBorder.Focus();
+        }
     }
     private void QuickCloseDialog(object? sender, Avalonia.Input.KeyEventArgs e)
     {

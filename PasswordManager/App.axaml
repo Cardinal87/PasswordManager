@@ -37,8 +37,32 @@
 		</Style>
 		
 		
-		<!--Themes-->
+		<!--ListBox for items-->
+		<Style Selector="ListBoxItem">
+			<Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListBoxItemSelectedBrush}"/>
+				
+			</Style>
+			<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListBoxItemPointOverBrush}"/>
+			</Style>
+		</Style>
+
+		<!--Button styles-->
+		<Style Selector="Button">
+			
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
+			<Style Selector="^:disabled /template/ PathIcon#icon">
+				<Setter Property="Opacity" Value="0.3 "/>
+			</Style>
+			
+		</Style>
     </Application.Styles>
+
+
+	<!--Themes-->
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -46,10 +70,44 @@
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
+	
+	
+	
 	<Application.Resources>
 		<converters:StringToDefaultConverter x:Key="StringToDefaultConverter"/>
-		<converters:BoolToImageConverter x:Key="BoolToImageConverter"/>
+		<converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+		<converters:ToPasswordCharConverter x:Key="ToPasswordCharConverter"/>
+
 		
+		<!--Text copied message-->
+		<DataTemplate x:Key="TextCopiedMessage" DataType="{x:Type ContentControl}">
+			<Border CornerRadius="10" Background="{DynamicResource AdditionalBackgroundBrush}"
+					IsEnabled="{Binding Tag}" Padding="5" Opacity="0" HorizontalAlignment="Center"
+					VerticalAlignment="Center" Classes="TextCopiedMessage">
+
+				<ContentPresenter Content="Text Copied" Foreground="{DynamicResource FontBrush}"/>
+
+				<Border.Styles>
+					<Style Selector="Border.TextCopiedMessage:not(:disabled)">
+						<Style.Animations>
+							<Animation Duration="0:0:2">
+								<KeyFrame Cue="0%">
+									<Setter Property="Opacity" Value="0"/>
+								</KeyFrame>
+								<KeyFrame Cue="2%">
+									<Setter Property="Opacity" Value="1"/>
+								</KeyFrame>
+								<KeyFrame Cue="100%">
+									<Setter Property="Opacity" Value="0"/>
+								</KeyFrame>
+							</Animation>
+						</Style.Animations>
+					</Style>
+				</Border.Styles>
+			</Border>
+		</DataTemplate>
+
+
 		
 		
 		<!--Delete button-->
@@ -60,12 +118,7 @@
 					<PathIcon x:Name="icon" Data="{StaticResource delete_icon}" Foreground="{DynamicResource DeleteButtonBrush}"/>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
-			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Opacity" Value="0.3 "/>
-			</Style>
+			
 		</ControlTheme>
 	
 		
@@ -78,12 +131,7 @@
 							  Height="15" Width="15"/>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.7 "/>
-			</Style>
-			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Opacity" Value="0.3"/>
-			</Style>
+		
 		</ControlTheme>
 		
 		
@@ -91,16 +139,16 @@
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddToFavouriteButton">
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="Template">
-				<ControlTemplate TargetType="Button">
-					<PathIcon x:Name="icon" Data="{TemplateBinding Content}" Foreground="{DynamicResource FontBrush}"/>
+				<ControlTemplate>
+					<Grid>
+						<PathIcon x:Name="icon_off" Data="{StaticResource favourite_off_icon}" Foreground="{DynamicResource SecondFontBrush}"
+								  IsVisible="{TemplateBinding Tag, Converter={StaticResource ReverseBoolConverter}}"/>
+						<PathIcon x:Name="icon" Data="{StaticResource favourite_icon}" Foreground="{DynamicResource SecondFontBrush}"
+								  IsVisible="{TemplateBinding Tag}"/>
+						
+					</Grid>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
-			<Style Selector="^:disabled /template/ PathIcon#icon">
-				<Setter Property="Opacity" Value="0.3"/>
-			</Style>
 		</ControlTheme>
 		
 		
@@ -115,18 +163,15 @@
 				<ControlTemplate>
 					<Border CornerRadius="10" Background="{TemplateBinding Background}"
 							HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5">
-						<StackPanel Orientation="Horizontal" Background="{TemplateBinding Background}">
-							<PathIcon Data="{StaticResource add_icon}"  Foreground="{TemplateBinding Foreground}"
-									  Background="{TemplateBinding Background}" DockPanel.Dock="Left" Height="10" Width="10"/>
-							<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" DockPanel.Dock="Left"
-									   Margin="5,0,0,0"/>
-						</StackPanel>
+						<ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" DockPanel.Dock="Left"
+									      Margin="5,0,0,0"/>
+						
 					</Border>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover">
-				<Setter Property="Background" Value="#015402"/>
-			</Style>		
+			
+			
+			
 		</ControlTheme>
 		
 		
@@ -143,12 +188,7 @@
 					</Border>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover /template/ PathIcon">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
-			<Style Selector="^:disabled /template/ PathIcon">
-				<Setter Property="Opacity" Value="0.3"/>
-			</Style>
+			
 		</ControlTheme>
 		
 		
@@ -164,9 +204,7 @@
 					</Border>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover /template/ PathIcon">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
+			
 		</ControlTheme>
 		
 		
@@ -176,9 +214,7 @@
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Content" Value="Confirm"/>
 			<Setter Property="CornerRadius" Value="5"/>
-			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
+			
 			<Style Selector="^:disabled">
 				<Setter Property="Opacity" Value="0.4"/>
 			</Style>
@@ -190,9 +226,6 @@
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Content" Value="Cancel"/>
 			<Setter Property="CornerRadius" Value="5"/>
-			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
 		</ControlTheme>
 		
 		
@@ -210,10 +243,46 @@
 					</Border>
 				</ControlTemplate>
 			</Setter>
-			<Style Selector="^:pointerover">
-				<Setter Property="Opacity" Value="0.7"/>
-			</Style>
+			
 		</ControlTheme>
+		
+		
+		<!--Copy button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button"
+					  x:Key="CopyButton">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource SecondFontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<PathIcon Data="{StaticResource copy_icon}" Background="{TemplateBinding Background}"
+							  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"/>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		
+		<!--Show password button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button"
+					  x:Key="ShowPasswordButton">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource SecondFontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid>
+						<PathIcon Data="{StaticResource show_icon}" Background="{TemplateBinding Background}"
+								  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"
+								  IsVisible="{TemplateBinding Tag, Converter={StaticResource ReverseBoolConverter}}"/>
+						<PathIcon Data="{StaticResource hide_icon}" Background="{TemplateBinding Background}"
+								  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"
+								  IsVisible="{TemplateBinding Tag}"/>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+
 		
 		<!--Base template for button-->
 		<ControlTheme x:Key="BaseButton" TargetType="Button">

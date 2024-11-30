@@ -23,7 +23,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             
         }
 
-        public WebSiteDialogViewModel(WebSite item)
+        public WebSiteDialogViewModel(WebSiteModel item)
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
@@ -38,7 +38,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         }
         
-        public WebSite? Model { get; private set; }
+        public WebSiteModel? Model { get; private set; }
         
         private string password = "";
         public string login = "";
@@ -122,7 +122,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             dialogResult = true;
             if (CanClose)
             {
-                Model = new WebSite(Name, Login, Password, WebAddress, IsFavourite);
+                Model = new WebSiteModel(Name, Login, Password, WebAddress, IsFavourite);
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
                 
             }

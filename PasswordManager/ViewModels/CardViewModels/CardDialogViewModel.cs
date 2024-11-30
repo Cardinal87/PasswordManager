@@ -20,7 +20,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             isFavourite = false;
             IsNew = true;
         }
-        public CardDialogViewModel(Card model)
+        public CardDialogViewModel(CardModel model)
         {
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
@@ -42,7 +42,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         public RelayCommand AddCommand;
         public RelayCommand CloseCommand;
 
-        public Card? Model { get; private set; }
+        public CardModel? Model { get; private set; }
         private string name = "";
         private string owner = "";
         private string number = "";
@@ -145,7 +145,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             dialogResult = false;
             if (CanClose)
             {
-                Model = new Card(Number, Month, Year, Cvc, Owner, Name, IsFavourite);
+                Model = new CardModel(Number, Month, Year, Cvc, Owner, Name, IsFavourite);
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
 
             }

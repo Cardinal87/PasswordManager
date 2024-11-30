@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Models
 {
-    internal class App : ModelBase
+    internal class AppModel : ModelBase
     {
-        public App(string name, string password, bool isFavourite) : base (name, isFavourite)
+        public AppModel(string name, string password, bool isFavourite) : base (name, isFavourite)
         {
             Password = password;
         }
         
-        public string Password { get;private set; }
+        public string Password { get; set; }
         
     }
 }
