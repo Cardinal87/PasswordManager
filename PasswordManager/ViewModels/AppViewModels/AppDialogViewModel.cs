@@ -41,7 +41,7 @@ namespace PasswordManager.ViewModels.AppViewModels
 
         public RelayCommand AddCommand { get; set; }
         public RelayCommand CloseCommand { get; set; }
-        public Models.AppModel Model { get; set; }
+        public Models.AppModel? Model { get; set; }
         private int id;
         public string Name
         {

@@ -25,10 +25,9 @@ internal partial class MainViewModel : ViewModelBase
     public ViewModelBase? CurrentPage {
 
         get { return currentPage; }
-        [MemberNotNull(nameof(currentPage))]
         set {
             currentPage = value;
-            OnPropertyChanged("CurrentPage");
+            OnPropertyChanged(nameof(CurrentPage));
         }
     }
     public MainViewModel(IViewModelFactory factory)
@@ -49,7 +48,7 @@ internal partial class MainViewModel : ViewModelBase
         Subscribe();
     }
     public RelayCommand<ViewModelBase> SetCurrentPageCommand { get; set; }
-    private List<ItemViewModelBase> items = new List<ItemViewModelBase>();
+    private List<ItemViewModelBase> items = new();
     public AllEntriesViewModel AllEntriesVm { get; }
     public AppViewModel AppVm { get; }
     public WebSiteViewModel WebSiteVm { get; }
@@ -57,6 +56,7 @@ internal partial class MainViewModel : ViewModelBase
     
     private void SetCurrentPage(ViewModelBase? vm)
     {
+        CurrentPage = null;
         CurrentPage = vm;
     }
 

@@ -25,7 +25,6 @@
 		</Style>
 		<Style Selector="CaptionButtons /template/ Button#PART_CloseButton">
 			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
-			<Setter Property="Command" Value="{Binding CloseCommand}"/>
 			<Style Selector="^:pointerover">
 				<Setter Property="Background" Value="{DynamicResource CloseButtonHighLightedBrush}"/>
 			</Style>

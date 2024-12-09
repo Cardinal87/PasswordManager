@@ -26,11 +26,12 @@ public partial class AppView : UserControl
 
     private void ListBox_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
     {
-        
-        var list = sender as ListBox;
-        ((AppViewModel)DataContext!).CurrentItem = (AppItemViewModel)list?.SelectedItem!;
+        if (DataContext != null)
+        {
+            var list = sender as ListBox;
+            ((AppViewModel)DataContext!).CurrentItem = (AppItemViewModel)list?.SelectedItem!;
+        }
     }
-
     private void ChangePasswordVisibility(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var button = (Button)sender!;

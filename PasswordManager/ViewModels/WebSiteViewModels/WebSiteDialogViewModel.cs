@@ -97,8 +97,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public bool IsFavourite { get; private set; }
         public bool IsNew { get; set; }
 
-        RelayCommand AddCommand;
-        RelayCommand CloseCommand;
+        public RelayCommand AddCommand { get; set; }
+        public RelayCommand CloseCommand { get; set; }
 
         public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
 
