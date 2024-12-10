@@ -33,7 +33,7 @@ namespace PasswordManager.ViewModels.AppViewModels
             ChangeCommand = new RelayCommand<AppItemViewModel>(ShowChangeDialog);
             
             LoadViewModelList();
-            if (Apps.Count != 0) CurrentItem = Apps[0];
+            CurrentItem = Apps.Count != 0 ? Apps[0]: null;
             Apps.CollectionChanged += CollectionChanged;
             OnPropertyChanged(nameof(FilteredCollection));
 
@@ -84,7 +84,7 @@ namespace PasswordManager.ViewModels.AppViewModels
             {
                 dbClient.Delete(appItem.Model);
                 Apps.Remove(appItem);
-                if (Apps.Count > 0) CurrentItem = Apps[0];
+                CurrentItem = Apps.Count != 0 ? Apps[0] : null;
             }
             dbClient.Save();
 
@@ -110,7 +110,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         }
         private void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (sender is AppDialogViewModel vm)
+            if (sender is AppDialogViewModel vm && vm.Model != null)
             {
                 
                 if (vm.IsNew && e.DialogResult)

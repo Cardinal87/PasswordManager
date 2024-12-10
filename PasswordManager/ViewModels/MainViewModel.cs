@@ -56,7 +56,6 @@ internal partial class MainViewModel : ViewModelBase
     
     private void SetCurrentPage(ViewModelBase? vm)
     {
-        CurrentPage = null;
         CurrentPage = vm;
     }
 

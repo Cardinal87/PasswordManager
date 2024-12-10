@@ -83,7 +83,7 @@
 		<DataTemplate x:Key="TextCopiedMessage" DataType="{x:Type ContentControl}">
 			<Border CornerRadius="10" Background="{DynamicResource AdditionalBackgroundBrush}"
 					IsEnabled="{Binding Tag}" Padding="5" Opacity="0" HorizontalAlignment="Center"
-					VerticalAlignment="Center" Classes="TextCopiedMessage">
+					VerticalAlignment="Center" Classes="TextCopiedMessage" >
 
 				<ContentPresenter Content="Text Copied" Foreground="{DynamicResource FontBrush}"/>
 
@@ -107,12 +107,12 @@
 			</Border>
 		</DataTemplate>
 
-
+		
 		
 		
 		<!--Delete button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DeleteButton">
-			<Setter Property="Background" Value="White"/>
+			<Setter Property="Background" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
 					<PathIcon x:Name="icon" Data="{StaticResource delete_icon}" Foreground="{DynamicResource DeleteButtonBrush}"/>
@@ -124,7 +124,7 @@
 		
 		<!--Change button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="ChangeButton">
-			<Setter Property="Background" Value="White"/>
+			<Setter Property="Background" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Template">
 				<ControlTemplate TargetType="Button">
 					<PathIcon x:Name="icon" Data="{StaticResource change_icon}" Foreground="{DynamicResource MainGreenBrush}"
@@ -137,7 +137,7 @@
 		
 		<!--Add to favourite button-->
 		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddToFavouriteButton">
-			<Setter Property="Background" Value="White"/>
+			<Setter Property="Background" Value="{DynamicResource FontBrush}"/>
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Grid>
@@ -149,6 +149,7 @@
 					</Grid>
 				</ControlTemplate>
 			</Setter>
+			
 		</ControlTheme>
 		
 		
