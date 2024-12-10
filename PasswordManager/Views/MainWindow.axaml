@@ -50,7 +50,8 @@
 					Width="75" Height="50"/>
 			<Button Content="Apps" Grid.Column="0" Grid.Row="4" 
 					Theme="{StaticResource TabButton}"
-					Command="{Binding SetCurrentPageCommand}" CommandParameter="{Binding AppVm}"
+					Command="{Binding SetCurrentPageCommand}"
+					CommandParameter="{Binding AppVm}"
 					Width="75" Height="50"/>
 		</StackPanel>
 		

@@ -65,7 +65,7 @@ public partial class App : Application
     {
         builder.RegisterType<ClipboardService>().As<IClipboardService>();
         builder.RegisterType<DialogService>().As<IDialogService>().SingleInstance();
-        builder.RegisterType<DataBaseClient>().As<IDatabaseClient>().InstancePerDependency();
+        builder.RegisterType<ContextFactory>().As<IContextFactory>().InstancePerLifetimeScope();
         builder.RegisterType<MainViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>().SingleInstance();
         builder.RegisterType<ItemViewModelFactory>().As<IItemViewModelFactory>().SingleInstance();

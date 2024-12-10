@@ -14,6 +14,7 @@ using PasswordManager.DataConnectors;
 using PasswordManager.Factories;
 using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.BaseClasses;
+using System.Threading.Tasks;
 
 
 namespace PasswordManager.ViewModels;
@@ -22,6 +23,8 @@ internal partial class MainViewModel : ViewModelBase
 {
 
     private ViewModelBase? currentPage;
+    private IViewModelFactory _factory;
+
     public ViewModelBase? CurrentPage {
 
         get { return currentPage; }
@@ -32,31 +35,23 @@ internal partial class MainViewModel : ViewModelBase
     }
     public MainViewModel(IViewModelFactory factory)
     {
+        _factory = factory;
         SetCurrentPageCommand = new RelayCommand<ViewModelBase>(SetCurrentPage);
 
-        WebSiteVm = factory.CreateWebSiteVM();
-        AppVm = factory.CreateAppVM();
-        CardVm = factory.CreateCardVM();
-
-        items.AddRange(WebSiteVm.WebSites);
-        items.AddRange(AppVm.Apps);
-        items.AddRange(CardVm.Cards);
-
-        AllEntriesVm = factory.CreateAllEntriesVM(items);
+        InizializeViewModelsAsync();
 
         CurrentPage = AllEntriesVm;
         Subscribe();
     }
     public RelayCommand<ViewModelBase> SetCurrentPageCommand { get; set; }
     private List<ItemViewModelBase> items = new();
-    public AllEntriesViewModel AllEntriesVm { get; }
-    public AppViewModel AppVm { get; }
-    public WebSiteViewModel WebSiteVm { get; }
-    public CardViewModel CardVm { get; }
+    public AllEntriesViewModel? AllEntriesVm { get; private set; }
+    public AppViewModel? AppVm { get; private set; }
+    public WebSiteViewModel? WebSiteVm { get; private set; }
+    public CardViewModel? CardVm { get; private set; }
     
     private void SetCurrentPage(ViewModelBase? vm)
     {
-        CurrentPage = null;
         CurrentPage = vm;
     }
 
@@ -70,6 +65,21 @@ internal partial class MainViewModel : ViewModelBase
         AppVm.Apps.CollectionChanged += AllEntriesVm.UpdateViewModelList;
         CardVm.Cards.CollectionChanged += AllEntriesVm.UpdateViewModelList;
 
+
+    }
+    
+    
+    private async void InizializeViewModelsAsync()
+    {
+        var appTask =  _factory.CreateAppVMAsync();
+        var cardTask = _factory.CreateCardVMAsync();
+        var webTask = _factory.CreateWebSiteVMAsync();
+        var allEntriesTask = _factory.CreateAllEntriesVMAsync();
+        
+        AppVm = await appTask;
+        CardVm = await cardTask;
+        WebSiteVm = await webTask;
+        AllEntriesVm = await allEntriesTask;
 
     }
 

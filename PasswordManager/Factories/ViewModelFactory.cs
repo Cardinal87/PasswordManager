@@ -15,31 +15,41 @@ namespace PasswordManager.Factories
 {
     internal class ViewModelFactory : IViewModelFactory
     {
-        public ViewModelFactory(IItemViewModelFactory itemFac, IDialogService dialogService, IDatabaseClient databaseClient)
+        public ViewModelFactory(IItemViewModelFactory itemFac, IDialogService dialogService, IContextFactory contextFactory)
         {
             ItemFac = itemFac;
             DialogService = dialogService;
-            DatabaseClient = databaseClient;
+            ContextFactory = contextFactory;
         }
 
         public IItemViewModelFactory ItemFac { get; }
 
         public IDialogService DialogService { get; }
 
-        public IDatabaseClient DatabaseClient { get; }
+        public IContextFactory ContextFactory { get; }
 
-        public AllEntriesViewModel CreateAllEntriesVM(List<ItemViewModelBase> list) =>
-            new AllEntriesViewModel(list);
-        
+        public Task<AllEntriesViewModel> CreateAllEntriesVMAsync()
+        {
+            var vm = new AllEntriesViewModel();
+            return Task.FromResult(vm);
+        }
+        public Task<AppViewModel> CreateAppVMAsync()
+        {
+            var vm = new AppViewModel(ContextFactory, DialogService, ItemFac);
+            return Task.FromResult(vm);
+        }
 
-        public AppViewModel CreateAppVM() =>
-             new AppViewModel(DatabaseClient, DialogService, ItemFac);
+        public Task<CardViewModel> CreateCardVMAsync()
+        {
+            var vm = new CardViewModel(ContextFactory, DialogService, ItemFac);
+            return Task.FromResult(vm);
+        }
 
-        public CardViewModel CreateCardVM() =>
-            new CardViewModel(DatabaseClient, DialogService, ItemFac);
-
-        public WebSiteViewModel CreateWebSiteVM() =>
-            new WebSiteViewModel(DatabaseClient, DialogService, ItemFac);
+        public Task<WebSiteViewModel> CreateWebSiteVMAsync() 
+        { 
+            var vm = new WebSiteViewModel(ContextFactory, DialogService, ItemFac);
+            return Task.FromResult(vm);
+        }
         
     }
 }

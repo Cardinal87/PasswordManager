@@ -5,6 +5,8 @@ using PasswordManager.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace PasswordManager.DataConnectors
@@ -31,7 +33,7 @@ namespace PasswordManager.DataConnectors
         {
             modelBuilder.Entity<WebSiteModel>().ToTable("WebSites").HasKey(e => e.Id);
 
-            modelBuilder.Entity<Models.AppModel>().ToTable("Apps").HasKey(e => e.Id);
+            modelBuilder.Entity<AppModel>().ToTable("Apps").HasKey(e => e.Id);
             
             modelBuilder.Entity<CardModel>().ToTable("Cards").HasKey(e => e.Id);
            
@@ -42,6 +44,13 @@ namespace PasswordManager.DataConnectors
         {
             var list = Set<T>();
             return list;
+        }
+
+        public async Task<IEnumerable<TEntity>> GetListOfTypeAsync<TEntity>() where TEntity : ModelBase
+        {
+            var list = await Set<TEntity>().ToListAsync();
+            return list;
+
         }
 
         public void Insert<T>(T model) where T : ModelBase
@@ -66,19 +75,26 @@ namespace PasswordManager.DataConnectors
                 list.Add(model);
             }
         }
-        public T? GetById<T>(int id) where T : ModelBase
+        
+        public async Task<T?> GetByIdAsync<T>(int id) where T : ModelBase
         {
             var list = Set<T>();
-            return list.FirstOrDefault(x => x.Id == id);
+            return await list.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public void Save()
+
+        public async Task SaveChangesAsync()
         {
-            SaveChanges();
+            
+            await base.SaveChangesAsync();
         }
 
         private new DbSet<TEntity> Set<TEntity>() where TEntity : ModelBase
         {
             return base.Set<TEntity>();
         }
+
+        
+
+        
     }
 }

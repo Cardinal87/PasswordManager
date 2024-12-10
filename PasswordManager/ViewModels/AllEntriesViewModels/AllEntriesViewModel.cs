@@ -16,9 +16,9 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
     internal class AllEntriesViewModel : ViewModelBase
     {
         
-        public AllEntriesViewModel(List<ItemViewModelBase> items) 
+        public AllEntriesViewModel() 
         {
-            Items = new ObservableCollection<ItemViewModelBase>(items);
+            Items = new ObservableCollection<ItemViewModelBase>();
         }
         
         public ObservableCollection<ItemViewModelBase> Items { get; private set; } = new ObservableCollection<ItemViewModelBase>();

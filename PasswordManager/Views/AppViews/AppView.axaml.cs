@@ -40,11 +40,11 @@ public partial class AppView : UserControl
 
 
     }
-
     private void TextCopied(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         TextCopiedMessage.Tag = false;
         TextCopiedMessage.Tag = true;
     }
-    
+
+
 }

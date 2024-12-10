@@ -10,14 +10,15 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.DataConnectors
 {
-    internal interface IDatabaseClient
+    internal interface IDatabaseClient : IDisposable
     {
-        public IEnumerable<TEntity> GetListOfType<TEntity>() where TEntity : ModelBase;
-        public void Insert<TEntity>(TEntity model) where TEntity : ModelBase; 
+        
+        public Task<IEnumerable<TEntity>> GetListOfTypeAsync<TEntity>() where TEntity : ModelBase;
+        public void Insert<TEntity>(TEntity model) where TEntity : ModelBase;
         public void Delete<TEntity>(TEntity model) where TEntity : ModelBase;
         public void Replace<TEntity>(TEntity model) where TEntity : ModelBase;
-        public T? GetById<T>(int id) where T : ModelBase;
-        public void Save();
-        
+        public Task<T?> GetByIdAsync<T>(int id) where T : ModelBase;
+        public Task SaveChangesAsync();
+
     }
 }

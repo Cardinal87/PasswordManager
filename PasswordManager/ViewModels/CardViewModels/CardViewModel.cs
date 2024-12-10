@@ -18,20 +18,20 @@ namespace PasswordManager.ViewModels.CardViewModels
 {
     internal class CardViewModel : ViewModelBase
     {
-        public CardViewModel(IDatabaseClient dbClient, IDialogService dialogService, IItemViewModelFactory itemFactory) 
+        public CardViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory) 
         { 
-            this.dbClient = dbClient;
+            this.contextFactory = contextFactory;
             this.dialogService = dialogService;
             this.itemFactory = itemFactory;
-            AddToFavouriteCommand = new RelayCommand<CardItemViewModel>(AddToFavourite);
-            DeleteCommand = new RelayCommand<CardItemViewModel>(Delete);
+            AddToFavouriteCommand = new AsyncRelayCommand<CardItemViewModel>(AddToFavourite);
+            DeleteCommand = new AsyncRelayCommand<CardItemViewModel>(Delete);
             ChangeCommand = new RelayCommand<CardItemViewModel>(ShowChangeDialog);
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
 
             Cards = new ObservableCollection<CardItemViewModel>();
             LoadViewModelsList();
         }
-        private IDatabaseClient dbClient;
+        private IContextFactory contextFactory;
         private IDialogService dialogService;
         private IItemViewModelFactory itemFactory;
         public CardItemViewModel? currentItem;
@@ -48,21 +48,24 @@ namespace PasswordManager.ViewModels.CardViewModels
         }
 
         public ObservableCollection<CardItemViewModel> Cards { get; set; }
-        public RelayCommand<CardItemViewModel> AddToFavouriteCommand { get; set; }
-        public RelayCommand<CardItemViewModel> DeleteCommand { get; set; }
+        public AsyncRelayCommand<CardItemViewModel> AddToFavouriteCommand { get; set; }
+        public AsyncRelayCommand<CardItemViewModel> DeleteCommand { get; set; }
         public RelayCommand<CardItemViewModel> ChangeCommand { get; set; }
         public RelayCommand AddNewCommand { get; set; }
 
         
-        private void Delete(CardItemViewModel? cardItem)
+        private async Task Delete(CardItemViewModel? cardItem)
         {
-            if (cardItem != null)
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
-                dbClient.Delete(cardItem.Model);
-                Cards.Remove(cardItem);
-                if (Cards.Count > 0) CurrentItem = Cards[0];
+                if (cardItem != null)
+                {
+                    dbClient.Delete(cardItem.Model);
+                    Cards.Remove(cardItem);
+                    if (Cards.Count > 0) CurrentItem = Cards[0];
+                }
+                await dbClient.SaveChangesAsync();
             }
-            dbClient.Save();
         }
 
         private void ShowDialog(CardDialogViewModel? Dialog)
@@ -85,54 +88,66 @@ namespace PasswordManager.ViewModels.CardViewModels
             ShowDialog(Dialog);
         }
 
-        private void GetDialogResult(object? sender, DialogResultEventArgs e)
+        private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (e.DialogResult && sender is CardDialogViewModel vm)
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
-                
-                CardModel model = vm.Model!;
+                if (e.DialogResult && sender is CardDialogViewModel vm)
+                {
 
-                if (vm.IsNew)
-                {
-                    dbClient.Insert(model);
-                    dbClient.Save();
-                    CardItemViewModel item = itemFactory.CreateCardItem(model);
-                    Cards.Add(item);
+                    CardModel model = vm.Model!;
+
+                    if (vm.IsNew)
+                    {
+                        dbClient.Insert(model);
+                        await dbClient.SaveChangesAsync();
+                        CardItemViewModel item = itemFactory.CreateCardItem(model);
+                        Cards.Add(item);
+                    }
+                    else
+                    {
+                        dbClient.Replace(model);
+                        var a = Cards.FirstOrDefault(x => x.Id == model.Id);
+                        a?.UpdateModel(model);
+                        await dbClient.SaveChangesAsync();
+                    }
+                    dialogService.CloseDialog(vm!);
                 }
-                else
-                {
-                    dbClient.Replace(model);
-                    var a = Cards.FirstOrDefault(x => x.Id == model.Id);
-                    a?.UpdateModel(model);
-                    dbClient.Save();
-                }
-                dialogService.CloseDialog(vm!);
             }
             
             
         }
 
-        private void AddToFavourite(CardItemViewModel? cardItem)
+        private async Task AddToFavourite(CardItemViewModel? cardItem)
         {
-            if (cardItem != null)
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
-                CardModel? el = dbClient.GetById<CardModel>(cardItem.Id);
-                if (el != null)
+                if (cardItem != null)
                 {
-                    cardItem.IsFavourite = !cardItem.IsFavourite;
-                    el.IsFavourite = !el.IsFavourite;
-                    dbClient.Save();
-                }
+                    CardModel? el = await dbClient.GetByIdAsync<CardModel>(cardItem.Id);
+                    if (el != null)
+                    {
+                        cardItem.IsFavourite = !cardItem.IsFavourite;
+                        el.IsFavourite = !el.IsFavourite;
+                        await dbClient.SaveChangesAsync();
+                    }
 
+                }
             }
         }
-        private void LoadViewModelsList()
+        private async void LoadViewModelsList()
         {
-            foreach (var a in dbClient.GetListOfType<CardModel>())
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
-
-                var item = itemFactory.CreateCardItem(a);
-                Cards.Add(item);
+                var models = await dbClient.GetListOfTypeAsync<CardModel>();
+                var viewmodels = new ObservableCollection<CardItemViewModel>();
+                await foreach (var model in models.ToAsyncEnumerable())
+                {
+                    var item = itemFactory.CreateCardItem(model);
+                    viewmodels.Add(item);
+                }
+                if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
+                Cards = viewmodels;
             }
 
         }

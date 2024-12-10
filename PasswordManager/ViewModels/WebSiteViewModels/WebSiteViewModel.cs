@@ -24,25 +24,25 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     internal partial class WebSiteViewModel : ViewModelBase
     {
 
-        public WebSiteViewModel(IDatabaseClient dbClient, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public WebSiteViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             this.itemFactory = itemFactory;
-            this.dbClient = dbClient;
+            this.contextFactory = contextFactory;
             this.dialogService = dialogService;
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
-            AddToFavouriteCommand = new RelayCommand<WebSiteItemViewModel>(AddToFavourite);
-            DeleteCommand = new RelayCommand<WebSiteItemViewModel>(Delete);
+            AddToFavouriteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(AddToFavourite);
+            DeleteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(Delete);
             ChangeCommand = new RelayCommand<WebSiteItemViewModel>(ShowChangeDialog);
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
             LoadViewModelsList();  
         }
         private IItemViewModelFactory itemFactory;
         private IDialogService dialogService;
-        private IDatabaseClient dbClient;
+        private IContextFactory contextFactory;
         private WebSiteItemViewModel? currentItem;
         public RelayCommand AddNewCommand { get; }
-        public RelayCommand<WebSiteItemViewModel> AddToFavouriteCommand { get; set; }
-        public RelayCommand<WebSiteItemViewModel> DeleteCommand { get; set; }
+        public AsyncRelayCommand<WebSiteItemViewModel> AddToFavouriteCommand { get; set; }
+        public AsyncRelayCommand<WebSiteItemViewModel> DeleteCommand { get; set; }
         public RelayCommand<WebSiteItemViewModel> ChangeCommand { get; set; }
 
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
@@ -70,15 +70,18 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             ShowDialog(Dialog);
         }
         
-        private void Delete(WebSiteItemViewModel? webSiteItem)
+        private async Task Delete(WebSiteItemViewModel? webSiteItem)
         {
-            if (webSiteItem != null)
-            {
-                dbClient.Delete(webSiteItem.Model);
-                WebSites.Remove(webSiteItem);
-                if (WebSites.Count > 0) CurrentItem = WebSites[0];
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            {    
+                if (webSiteItem != null)
+                {
+                    dbClient.Delete(webSiteItem.Model);
+                    WebSites.Remove(webSiteItem);
+                    if (WebSites.Count > 0) CurrentItem = WebSites[0];
+                }
+                await dbClient.SaveChangesAsync();
             }
-            dbClient.Save();
         }
 
         private void ShowDialog(WebSiteDialogViewModel? Dialog)
@@ -91,51 +94,65 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
 
 
-        private void GetDialogResult(object? sender, DialogResultEventArgs e)
+        private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (e.DialogResult && sender is WebSiteDialogViewModel vm)
-            {
-                WebSiteModel model = vm.Model!;
-                
-                if (vm.IsNew)
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            { 
+                if (e.DialogResult && sender is WebSiteDialogViewModel vm)
                 {
-                    dbClient.Insert(model);
-                    dbClient.Save();
-                    WebSiteItemViewModel item = itemFactory.CreateWebSiteItem(model);
-                    WebSites.Add(item);
+                    WebSiteModel model = vm.Model!;
+
+                    if (vm.IsNew)
+                    {
+                        dbClient.Insert(model);
+                        await dbClient.SaveChangesAsync();
+                        WebSiteItemViewModel item = itemFactory.CreateWebSiteItem(model);
+                        WebSites.Add(item);
+                    }
+                    else
+                    {
+                        dbClient.Replace(model);
+                        var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
+                        a?.UpdateModel(model);
+                        await dbClient.SaveChangesAsync();
+                    }
+                    dialogService.CloseDialog(vm!);
                 }
-                else
-                {
-                    dbClient.Replace(model);
-                    var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
-                    a?.UpdateModel(model);
-                    dbClient.Save();
-                }
-                dialogService.CloseDialog(vm!);
             }
             
            
         }
-        private void AddToFavourite(WebSiteItemViewModel? webSiteItem)
+        private async Task AddToFavourite(WebSiteItemViewModel? webSiteItem)
         {
-            if (webSiteItem != null)
-            {
-                WebSiteModel? el = dbClient.GetById<WebSiteModel>(webSiteItem.Id);
-                if (el != null)
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            {   
+                if (webSiteItem != null)
                 {
-                    webSiteItem.IsFavourite = !webSiteItem.IsFavourite;
-                    el.IsFavourite = !el.IsFavourite;
-                    dbClient.Save();
-                }
+                    WebSiteModel? el = await dbClient.GetByIdAsync<WebSiteModel>(webSiteItem.Id);
+                    if (el != null)
+                    {
+                        webSiteItem.IsFavourite = !webSiteItem.IsFavourite;
+                        el.IsFavourite = !el.IsFavourite;
+                        await dbClient.SaveChangesAsync();
+                    }
 
+                }
             }
         }
-        private void LoadViewModelsList()
+        private async void LoadViewModelsList()
         {
-            foreach (var a in dbClient.GetListOfType<WebSiteModel>())
+
+            using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
-                var item = itemFactory.CreateWebSiteItem(a);
-                WebSites.Add(item);
+                var models = await dbClient.GetListOfTypeAsync<WebSiteModel>();
+                var viewmodels = new ObservableCollection<WebSiteItemViewModel>();
+                await foreach (var model in models.ToAsyncEnumerable())
+                {
+                    var item = itemFactory.CreateWebSiteItem(model);
+                    viewmodels.Add(item);
+                }
+                if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
+                WebSites = viewmodels;
             }
 
         }

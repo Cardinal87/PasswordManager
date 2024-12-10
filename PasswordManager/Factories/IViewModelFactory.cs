@@ -18,11 +18,11 @@ namespace PasswordManager.Factories
     {
         public IItemViewModelFactory ItemFac { get; }
         public IDialogService DialogService { get; }
-        public IDatabaseClient DatabaseClient { get; }
-        public WebSiteViewModel CreateWebSiteVM();
-        public AppViewModel CreateAppVM();
-        public CardViewModel CreateCardVM();
-        public AllEntriesViewModel CreateAllEntriesVM(List<ItemViewModelBase> list);
+        public IContextFactory ContextFactory { get; }
+        public Task<WebSiteViewModel> CreateWebSiteVMAsync();
+        public Task<AppViewModel> CreateAppVMAsync();
+        public Task<CardViewModel> CreateCardVMAsync();
+        public Task<AllEntriesViewModel> CreateAllEntriesVMAsync();
 
     }
 }
