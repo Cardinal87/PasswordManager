@@ -16,6 +16,8 @@
 
 		
 		
+		
+		
 		<!--Style for data boxes-->
 		<Style Selector="TextBox.dataBox">
 			<Style Selector="^:focus /template/ Border#PART_BorderElement">
@@ -77,6 +79,7 @@
 		<converters:StringToDefaultConverter x:Key="StringToDefaultConverter"/>
 		<converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
 		<converters:ToPasswordCharConverter x:Key="ToPasswordCharConverter"/>
+		<converters:StringToIntConverter x:Key="StringToIntConverter"/>
 
 		
 		<!--Text copied message-->

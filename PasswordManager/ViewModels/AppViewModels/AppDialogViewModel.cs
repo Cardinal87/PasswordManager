@@ -85,6 +85,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         {
             if (CanClose)
             {
+                if (Name == "") Name = "NewApp";
                 dialogResult = true;
                 Model = new Models.AppModel(Name, Password, IsFavourite);
                 Model.Id = id;

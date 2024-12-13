@@ -112,7 +112,9 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             get
             {
-                return Password != string.Empty;
+                return Password != string.Empty && 
+                       Login != string.Empty &&
+                       WebAddress != string.Empty;
             }
         }
 
@@ -122,6 +124,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             dialogResult = true;
             if (CanClose)
             {
+                if (Name == "") Name = "NewWebSite";
                 Model = new WebSiteModel(Name, Login, Password, WebAddress, IsFavourite);
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
                 

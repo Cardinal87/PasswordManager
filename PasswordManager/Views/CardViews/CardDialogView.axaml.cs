@@ -2,17 +2,20 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+
 using PasswordManager.ViewModels.AppViewModels;
-using System;
+using PasswordManager.ViewModels.CardViewModels;
 
-namespace PasswordManager.Views.AppViews;
+namespace PasswordManager.Views.CardViews;
 
-public partial class AppDialogView : Window
+public partial class CardDialogView : Window
 {
-    public AppDialogView()
+    public CardDialogView()
     {
         InitializeComponent();
     }
+
+
     private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
         if (!MainBorder.IsFocused)
@@ -57,11 +60,11 @@ public partial class AppDialogView : Window
         {
             ConfirmNameButton.IsEnabled = true;
             NameWarning.IsVisible = false;
-            
+
         }
     }
 
-    private void QuickConfirmName(object? sender, Avalonia.Input.KeyEventArgs e)
+    private void QuickConfirmName(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter)
         {
@@ -70,7 +73,7 @@ public partial class AppDialogView : Window
         }
     }
 
-    private void ConfirmPassword(object? sender, Avalonia.Input.KeyEventArgs e)
+    private void ConfirmData(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter)
         {
@@ -78,9 +81,25 @@ public partial class AppDialogView : Window
             MainBorder.Focus();
         }
     }
-    private void QuickCloseDialog(object? sender, Avalonia.Input.KeyEventArgs e)
+    private void QuickCloseDialog(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter && MainBorder.IsFocused)
             ((AppDialogViewModel)DataContext!).AddCommand.Execute(this);
+    }
+
+    private void Month_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        int month = ((ComboBox)sender!).SelectedIndex;
+        if (((CardDialogViewModel)DataContext!).Month != month)
+        {
+            ((CardDialogViewModel)DataContext!).Month = month;
+        }
+    }
+
+    private void Digit_Validation(object? sender, KeyEventArgs e)
+    {
+        ConfirmData(sender, e);
+        if (!e.Handled && !char.IsDigit(e.KeySymbol![0])) e.Handled = true;
+        
     }
 }

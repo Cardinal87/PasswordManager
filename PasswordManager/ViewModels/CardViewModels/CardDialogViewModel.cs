@@ -39,16 +39,16 @@ namespace PasswordManager.ViewModels.CardViewModels
         
         public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
         public bool IsNew { get; private set; }
-        public RelayCommand AddCommand;
-        public RelayCommand CloseCommand;
+        public RelayCommand AddCommand { get; private set; }
+        public RelayCommand CloseCommand { get; private set; }
 
         public CardModel? Model { get; private set; }
         private string name = "";
         private string owner = "";
         private string number = "";
-        private int cvc;
-        private int month;
-        private int year;
+        private int? cvc;
+        private int? month;
+        private int? year;
         private bool isFavourite;
 
         public int Id { get; private set; }
@@ -82,20 +82,18 @@ namespace PasswordManager.ViewModels.CardViewModels
             }
         }
 
-        public int Cvc
+        public int? Cvc
         {
             get => cvc;
-            [MemberNotNull(nameof(cvc))]
             set
             {
                 cvc = value;
                 OnPropertyChanged(nameof(Cvc));
             }
         }
-        public int Month
+        public int? Month
         {
             get => month;
-            [MemberNotNull(nameof(month))]
             set
             {
                 month = value;
@@ -103,14 +101,14 @@ namespace PasswordManager.ViewModels.CardViewModels
             }
 
         }
-        public int Year
+        public int? Year
         {
             get => year;
-            [MemberNotNull(nameof(year))]
             set
             {
                 year = value;
                 OnPropertyChanged(nameof(Year));
+                OnPropertyChanged(nameof(IsValidYear));
             }
 
         }
@@ -131,11 +129,28 @@ namespace PasswordManager.ViewModels.CardViewModels
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
+
+        
         public override bool CanClose
+        {
+            [MemberNotNullWhen(true, nameof(Cvc))]
+            [MemberNotNullWhen(true, nameof(Month))]
+            [MemberNotNullWhen(true, nameof(Year))]
+            get
+            {
+                return Owner != string.Empty &&
+                       Cvc != null &&
+                       Month != null &&
+                       Year != null &&
+                       IsValidYear;
+            }
+        }
+        public bool IsValidYear
         {
             get
             {
-                return Owner != string.Empty;
+                return (Year >= DateTime.Today.Year - 1 && Year <= DateTime.Today.Year + 10) ||
+                       Year == null;
             }
         }
 
@@ -145,7 +160,8 @@ namespace PasswordManager.ViewModels.CardViewModels
             dialogResult = false;
             if (CanClose)
             {
-                Model = new CardModel(Number, Month, Year, Cvc, Owner, Name, IsFavourite);
+                if (Name == "") Name = "NewCard";
+                Model = new CardModel(Number, Month.Value, Year.Value, Cvc.Value, Owner, Name, IsFavourite);
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
 
             }
