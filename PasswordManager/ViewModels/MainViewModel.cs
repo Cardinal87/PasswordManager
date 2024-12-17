@@ -33,15 +33,21 @@ internal partial class MainViewModel : ViewModelBase
             OnPropertyChanged(nameof(CurrentPage));
         }
     }
-    public MainViewModel(IViewModelFactory factory)
+
+    public async static Task<MainViewModel> CreateAsync(IViewModelFactory factory)
+    {
+        var main = new MainViewModel(factory);
+        await main.InizializeViewModelsAsync();
+        return main;
+    }
+
+    private MainViewModel(IViewModelFactory factory)
     {
         _factory = factory;
         SetCurrentPageCommand = new RelayCommand<ViewModelBase>(SetCurrentPage);
 
-        InizializeViewModelsAsync();
-
         CurrentPage = AllEntriesVm;
-        Subscribe();
+        
     }
     public RelayCommand<ViewModelBase> SetCurrentPageCommand { get; set; }
     private List<ItemViewModelBase> items = new();
@@ -69,7 +75,7 @@ internal partial class MainViewModel : ViewModelBase
     }
     
     
-    private async void InizializeViewModelsAsync()
+    private async Task InizializeViewModelsAsync()
     {
         var appTask =  _factory.CreateAppVMAsync();
         var cardTask = _factory.CreateCardVMAsync();

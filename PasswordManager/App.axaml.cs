@@ -25,7 +25,7 @@ public partial class App : Application
         
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public async override void OnFrameworkInitializationCompleted()
     {
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
@@ -36,16 +36,13 @@ public partial class App : Application
         var container = builder.Build();
         
         
-        IDatabaseClient dataBaseClient = new DataBaseClient();
-        IClipboardService clipboard = new ClipboardService();
-        IDialogService dialogService = new DialogService();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             using (var a = container.BeginLifetimeScope())
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = container.Resolve<MainViewModel>()
+                    DataContext = await MainViewModel.CreateAsync(container.Resolve<IViewModelFactory>())
                 };
             }
             
@@ -66,7 +63,6 @@ public partial class App : Application
         builder.RegisterType<ClipboardService>().As<IClipboardService>();
         builder.RegisterType<DialogService>().As<IDialogService>().SingleInstance();
         builder.RegisterType<ContextFactory>().As<IContextFactory>().InstancePerLifetimeScope();
-        builder.RegisterType<MainViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>().SingleInstance();
         builder.RegisterType<ItemViewModelFactory>().As<IItemViewModelFactory>().SingleInstance();
         

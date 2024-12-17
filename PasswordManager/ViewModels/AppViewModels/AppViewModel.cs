@@ -23,20 +23,25 @@ namespace PasswordManager.ViewModels.AppViewModels
 {
     internal partial class AppViewModel : ViewModelBase
     {
-        public AppViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        
+        public static async Task<AppViewModel> CreateAsync(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
-            this.itemFactory = itemFactory;
+            var appVm = new AppViewModel(contextFactory,dialogService,itemFactory);
+            await appVm.LoadViewModelListAsync();
+            return appVm;
+        }
+        
+        private AppViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        {
             this.contextFactory = contextFactory;
             this.dialogService = dialogService;
+            this.itemFactory = itemFactory;
+            
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
-            AddToFavouriteCommand = new AsyncRelayCommand<AppItemViewModel>(AddToFavourite);
-            DeleteCommand = new AsyncRelayCommand<AppItemViewModel>(Delete);
+            AddToFavouriteCommand = new AsyncRelayCommand<AppItemViewModel>(AddToFavouriteAsync);
+            DeleteCommand = new AsyncRelayCommand<AppItemViewModel>(DeleteAsync);
             ChangeCommand = new RelayCommand<AppItemViewModel>(ShowChangeDialog);
             
-            LoadViewModelListAsync();
-            
-            
-
         }
         IItemViewModelFactory itemFactory;
         IContextFactory contextFactory;
@@ -79,7 +84,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         }
 
         
-        private async Task Delete(AppItemViewModel? appItem)
+        private async Task DeleteAsync(AppItemViewModel? appItem)
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext()) 
             {
@@ -88,6 +93,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                     dbClient.Delete(appItem.Model);
                     Apps.Remove(appItem);
                     CurrentItem = Apps.Count != 0 ? Apps[0] : null;
+                    OnPropertyChanged(nameof(FilteredCollection));
                 }
                 await dbClient.SaveChangesAsync();
             }
@@ -117,10 +123,10 @@ namespace PasswordManager.ViewModels.AppViewModels
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
                 
-                if (sender is AppDialogViewModel vm && vm.Model != null)
+                if (sender is AppDialogViewModel vm && vm.Model != null && e.DialogResult)
                 {
 
-                    if (vm.IsNew && e.DialogResult)
+                    if (vm.IsNew)
                     {
                         dbClient.Insert(vm.Model);
                         await dbClient.SaveChangesAsync();
@@ -129,19 +135,20 @@ namespace PasswordManager.ViewModels.AppViewModels
 
 
                     }
-                    else if (e.DialogResult)
+                    else
                     {
                         dbClient.Replace(vm.Model);
                         var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
                         a?.UpdateModel(vm.Model);
                         await dbClient.SaveChangesAsync();
                     }
+                    OnPropertyChanged(nameof(FilteredCollection));
                     dialogService.CloseDialog(vm);
                 }
             }
             
         }
-        private async Task AddToFavourite(AppItemViewModel? appItem)
+        private async Task AddToFavouriteAsync(AppItemViewModel? appItem)
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
@@ -158,8 +165,9 @@ namespace PasswordManager.ViewModels.AppViewModels
                 }
             }
             }
-        private async void LoadViewModelListAsync()
+        private async Task LoadViewModelListAsync()
         {
+            
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
                 var models = await dbClient.GetListOfTypeAsync<AppModel>();

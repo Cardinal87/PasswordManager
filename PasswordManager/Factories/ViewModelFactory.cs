@@ -33,22 +33,22 @@ namespace PasswordManager.Factories
             var vm = new AllEntriesViewModel();
             return Task.FromResult(vm);
         }
-        public Task<AppViewModel> CreateAppVMAsync()
+        public async Task<AppViewModel> CreateAppVMAsync()
         {
-            var vm = new AppViewModel(ContextFactory, DialogService, ItemFac);
-            return Task.FromResult(vm);
+            var vm = await AppViewModel.CreateAsync(ContextFactory, DialogService, ItemFac);
+            return vm;
         }
 
-        public Task<CardViewModel> CreateCardVMAsync()
+        public async Task<CardViewModel> CreateCardVMAsync()
         {
-            var vm = new CardViewModel(ContextFactory, DialogService, ItemFac);
-            return Task.FromResult(vm);
+            var vm = await CardViewModel.CreateAsync(ContextFactory, DialogService, ItemFac);
+            return vm;
         }
 
-        public Task<WebSiteViewModel> CreateWebSiteVMAsync() 
-        { 
-            var vm = new WebSiteViewModel(ContextFactory, DialogService, ItemFac);
-            return Task.FromResult(vm);
+        public async Task<WebSiteViewModel> CreateWebSiteVMAsync() 
+        {
+            var vm = await WebSiteViewModel.CreateAsync(ContextFactory, DialogService, ItemFac);
+            return vm;
         }
         
     }

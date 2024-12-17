@@ -24,17 +24,25 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     internal partial class WebSiteViewModel : ViewModelBase
     {
 
-        public WebSiteViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public static async Task<WebSiteViewModel> CreateAsync(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        {
+            var webVm = new WebSiteViewModel(contextFactory, dialogService, itemFactory);
+            await webVm.LoadViewModelsListAsync();
+            return webVm;
+        }
+        
+        
+        private WebSiteViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             this.itemFactory = itemFactory;
             this.contextFactory = contextFactory;
             this.dialogService = dialogService;
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
-            AddToFavouriteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(AddToFavourite);
-            DeleteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(Delete);
+            AddToFavouriteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(AddToFavouriteAsync);
+            DeleteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(DeleteAsync);
             ChangeCommand = new RelayCommand<WebSiteItemViewModel>(ShowChangeDialog);
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
-            LoadViewModelsList();  
+              
         }
         private IItemViewModelFactory itemFactory;
         private IDialogService dialogService;
@@ -70,7 +78,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             ShowDialog(Dialog);
         }
         
-        private async Task Delete(WebSiteItemViewModel? webSiteItem)
+        private async Task DeleteAsync(WebSiteItemViewModel? webSiteItem)
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {    
@@ -122,7 +130,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             
            
         }
-        private async Task AddToFavourite(WebSiteItemViewModel? webSiteItem)
+        private async Task AddToFavouriteAsync(WebSiteItemViewModel? webSiteItem)
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {   
@@ -139,7 +147,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                 }
             }
         }
-        private async void LoadViewModelsList()
+        private async Task LoadViewModelsListAsync()
         {
 
             using (IDatabaseClient dbClient = contextFactory.CreateContext())

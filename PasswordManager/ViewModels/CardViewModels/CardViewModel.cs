@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,18 +19,26 @@ namespace PasswordManager.ViewModels.CardViewModels
 {
     internal class CardViewModel : ViewModelBase
     {
-        public CardViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory) 
+        
+        public static async Task<CardViewModel> CreateAsync(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        {
+            var cardVm = new CardViewModel(contextFactory,dialogService, itemFactory);
+            await cardVm.LoadViewModelsListAsync();
+            return cardVm;
+        }
+        
+        
+        private CardViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory) 
         { 
             this.contextFactory = contextFactory;
             this.dialogService = dialogService;
             this.itemFactory = itemFactory;
-            AddToFavouriteCommand = new AsyncRelayCommand<CardItemViewModel>(AddToFavourite);
-            DeleteCommand = new AsyncRelayCommand<CardItemViewModel>(Delete);
+            AddToFavouriteCommand = new AsyncRelayCommand<CardItemViewModel>(AddToFavouriteAsync);
+            DeleteCommand = new AsyncRelayCommand<CardItemViewModel>(DeleteAsync);
             ChangeCommand = new RelayCommand<CardItemViewModel>(ShowChangeDialog);
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
-
             Cards = new ObservableCollection<CardItemViewModel>();
-            LoadViewModelsList();
+            
         }
         private IContextFactory contextFactory;
         private IDialogService dialogService;
@@ -54,7 +63,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         public RelayCommand AddNewCommand { get; set; }
 
         
-        private async Task Delete(CardItemViewModel? cardItem)
+        private async Task DeleteAsync(CardItemViewModel? cardItem)
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
@@ -118,7 +127,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             
         }
 
-        private async Task AddToFavourite(CardItemViewModel? cardItem)
+        private async Task AddToFavouriteAsync(CardItemViewModel? cardItem)
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
@@ -135,7 +144,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                 }
             }
         }
-        private async void LoadViewModelsList()
+        private async Task LoadViewModelsListAsync()
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
