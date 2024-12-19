@@ -61,32 +61,18 @@ internal partial class MainViewModel : ViewModelBase
         CurrentPage = vm;
     }
 
-    private void Subscribe()
-    {
-        WebSiteVm.PropertyChanged += AllEntriesVm.SetItem;
-        AppVm.PropertyChanged += AllEntriesVm.SetItem;
-        CardVm.PropertyChanged += AllEntriesVm.SetItem;
-
-        WebSiteVm.WebSites.CollectionChanged += AllEntriesVm.UpdateViewModelList;
-        AppVm.Apps.CollectionChanged += AllEntriesVm.UpdateViewModelList;
-        CardVm.Cards.CollectionChanged += AllEntriesVm.UpdateViewModelList;
-
-
-    }
-    
     
     private async Task InizializeViewModelsAsync()
     {
         var appTask =  _factory.CreateAppVMAsync();
         var cardTask = _factory.CreateCardVMAsync();
         var webTask = _factory.CreateWebSiteVMAsync();
-        var allEntriesTask = _factory.CreateAllEntriesVMAsync();
         
         AppVm = await appTask;
         CardVm = await cardTask;
         WebSiteVm = await webTask;
-        AllEntriesVm = await allEntriesTask;
 
+        var allEntriesTask = _factory.CreateAllEntriesVM(WebSiteVm, CardVm, AppVm);
     }
 
 }

@@ -33,7 +33,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         private int cvc;
         private int month;
         private int year;
-        private bool isFavourite;
+        
 
         public RelayCommand<string> CopyToClipboardCommand { get; }
         public string Owner 
@@ -89,17 +89,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             }
                 
         }
-        public bool IsFavourite
-        {
-            get => isFavourite;
-            [MemberNotNull(nameof(isFavourite))]
-            set
-            {
-                isFavourite = value;
-                OnPropertyChanged(nameof(IsFavourite));
-            }
-        }
-
+        
 
         private void CopyToClipboard(string? text)
         {
@@ -114,7 +104,6 @@ namespace PasswordManager.ViewModels.CardViewModels
         [MemberNotNull(nameof(cvc))]
         [MemberNotNull(nameof(month))]
         [MemberNotNull(nameof(year))]
-        [MemberNotNull(nameof(isFavourite))]
         [MemberNotNull(nameof(Model))]
         public void UpdateModel(CardModel model)
         {

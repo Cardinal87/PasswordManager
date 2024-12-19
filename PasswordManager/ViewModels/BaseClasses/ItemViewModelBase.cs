@@ -11,6 +11,8 @@ namespace PasswordManager.ViewModels.BaseClasses
     internal partial class ItemViewModelBase : ViewModelBase
     {
         private string? name;
+        private bool isFavourite;
+        
         public int Id { get; protected set; }
         
         
@@ -26,7 +28,18 @@ namespace PasswordManager.ViewModels.BaseClasses
                 OnPropertyChanged(nameof(Name));
             }
         }
-        
+        public bool IsFavourite
+        {
+            get
+            {
+                return isFavourite;
+            }
+            set
+            {
+                isFavourite = value;
+                OnPropertyChanged(nameof(IsFavourite));
+            }
+        }
 
     }
 }

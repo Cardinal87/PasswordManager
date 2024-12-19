@@ -22,7 +22,7 @@ namespace PasswordManager.Factories
         public Task<WebSiteViewModel> CreateWebSiteVMAsync();
         public Task<AppViewModel> CreateAppVMAsync();
         public Task<CardViewModel> CreateCardVMAsync();
-        public Task<AllEntriesViewModel> CreateAllEntriesVMAsync();
+        public AllEntriesViewModel CreateAllEntriesVM(WebSiteViewModel webVm, CardViewModel cardVm,  AppViewModel appVm);
 
     }
 }

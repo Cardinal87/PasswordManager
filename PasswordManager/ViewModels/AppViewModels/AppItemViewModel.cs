@@ -29,7 +29,7 @@ namespace PasswordManager.ViewModels.AppViewModels
 
         public AppModel Model { get; private set; }
         string password;
-        bool isFavourite;
+        
         
         
         public string Password
@@ -43,18 +43,6 @@ namespace PasswordManager.ViewModels.AppViewModels
             {
                 password = value;
                 OnPropertyChanged(nameof(Password));
-            }
-        }
-        public bool IsFavourite
-        {
-            get
-            {
-                return isFavourite;
-            }
-            set
-            {
-                isFavourite = value;
-                OnPropertyChanged(nameof(IsFavourite));
             }
         }
         

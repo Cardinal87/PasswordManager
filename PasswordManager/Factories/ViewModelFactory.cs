@@ -28,10 +28,10 @@ namespace PasswordManager.Factories
 
         public IContextFactory ContextFactory { get; }
 
-        public Task<AllEntriesViewModel> CreateAllEntriesVMAsync()
+        public AllEntriesViewModel CreateAllEntriesVM(WebSiteViewModel webVm, CardViewModel cardVm, AppViewModel appVm)
         {
-            var vm = new AllEntriesViewModel();
-            return Task.FromResult(vm);
+            var vm = new AllEntriesViewModel(appVm, cardVm, webVm);
+            return vm;
         }
         public async Task<AppViewModel> CreateAppVMAsync()
         {
