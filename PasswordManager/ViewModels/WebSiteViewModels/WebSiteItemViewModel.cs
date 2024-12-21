@@ -42,7 +42,6 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private string login;
         private string password;
         private string webAddress;
-        private bool isFavourite;
         
         
         public string Login {
@@ -72,19 +71,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             }
         }
         
-        public bool IsFavourite 
-        {
-            get
-            {
-                return isFavourite;
-            }
-            [MemberNotNull(nameof(isFavourite))]
-            set
-            {
-                isFavourite = value;
-                OnPropertyChanged(nameof(IsFavourite));
-            }
-        }
+        
         
         public string WebAddress 
         {

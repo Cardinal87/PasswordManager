@@ -1,12 +1,16 @@
-﻿using PasswordManager.Helpers;
+﻿using CommunityToolkit.Mvvm.Input;
+using PasswordManager.Helpers;
 using PasswordManager.Models;
+using PasswordManager.ViewModels.AppViewModels;
 using PasswordManager.ViewModels.BaseClasses;
+using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,12 +20,53 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
     internal class AllEntriesViewModel : ViewModelBase
     {
         
-        public AllEntriesViewModel() 
+        public AllEntriesViewModel(AppViewModel appVm, CardViewModel cardVm, WebSiteViewModel webVm) 
         {
-            Items = new ObservableCollection<ItemViewModelBase>();
+            AppViewModel = appVm;
+            WebSiteViewModel = webVm;
+            CardViewModel = cardVm;
+
+            ChangeCommand = new RelayCommand<ItemViewModelBase>(ShowChangeDialog);
+            DeleteCommand = new AsyncRelayCommand<ItemViewModelBase>(DeleteAsync);
+            AddToFavouriteCommand = new AsyncRelayCommand<ItemViewModelBase>(AddToFavouriteAsync);
+
+            AppViewModel.Apps.CollectionChanged += UpdateItems;
+            WebSiteViewModel.WebSites.CollectionChanged += UpdateItems;
+            CardViewModel.Cards.CollectionChanged += UpdateItems;
+
+
+            Items = [.. WebSiteViewModel.WebSites, .. AppViewModel.Apps, .. CardViewModel.Cards];
+
+
         }
-        
-        public ObservableCollection<ItemViewModelBase> Items { get; private set; } = new ObservableCollection<ItemViewModelBase>();
+        public RelayCommand<ItemViewModelBase> ChangeCommand { get;private set; }
+        public AsyncRelayCommand<ItemViewModelBase> DeleteCommand { get; private set; }
+        public AsyncRelayCommand<ItemViewModelBase> AddToFavouriteCommand { get; private set; }
+
+        public AppViewModel AppViewModel { get; set; }
+        public CardViewModel CardViewModel { get; set; }
+        public WebSiteViewModel WebSiteViewModel { get; set; }
+
+        public ObservableCollection<ItemViewModelBase> Items { get; private set; }
+
+        private string searchKey = "";
+        public string SearchKey
+        {
+            get => searchKey;
+            set
+            {
+                if (value != searchKey)
+                {
+                    searchKey = value;
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(SearchKey));
+                }
+            }
+        }
+        public IEnumerable<ItemViewModelBase> FilteredCollection 
+        {
+            get => Items.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
+        }
         private ItemViewModelBase? currentItem;
         public ItemViewModelBase? CurrentItem
         {
@@ -33,42 +78,65 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
                 OnPropertyChanged(nameof(CurrentItem));
             }
         }
-        public void UpdateViewModelList(object? sender, NotifyCollectionChangedEventArgs e)
+        
+
+        private async Task DeleteAsync(ItemViewModelBase? item)
         {
-            switch (e.Action)
+            if (item != null)
             {
-                case NotifyCollectionChangedAction.Add:
-                    if (e.NewItems?[0] is ItemViewModelBase add) Items.Add(add);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    if (e.OldItems?[0] is ItemViewModelBase del) Items.Remove(del);
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    if (e.OldItems?[0] is ItemViewModelBase old && e.NewItems?[0] is ItemViewModelBase nw)
-                    {
-                        Items.Remove(old);
-                        Items.Add(nw);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    if (e.OldItems is List<ItemViewModelBase> list)
-                    {
-                        foreach(var a in list)
-                        {
-                            Items.Remove(a);
-                        }
-                    }
-                    break;
+                if (item.GetType() == typeof(CardItemViewModel))
+                    await CardViewModel.DeleteCommand.ExecuteAsync((CardItemViewModel)item);
+                else if (item.GetType() == typeof(WebSiteViewModel))
+                    await WebSiteViewModel.DeleteCommand.ExecuteAsync((WebSiteItemViewModel)item);
+                else if (item.GetType() == typeof(AppViewModel))
+                    await AppViewModel.DeleteCommand.ExecuteAsync((AppItemViewModel)item);
+                OnPropertyChanged(nameof(FilteredCollection));
             }
         }
-        public void SetItem(object? sender, PropertyChangedEventArgs e)
+
+        private async Task AddToFavouriteAsync(ItemViewModelBase? item)
         {
-            if (e.PropertyName == nameof(CurrentItem) && e is PropertyChangedExtendedEventArgs a && a.NewValue != null)
+            if (item != null)
             {
-                currentItem = (ItemViewModelBase)a.NewValue;
+                if (item.GetType() == typeof(CardItemViewModel))
+                    await CardViewModel.AddToFavouriteCommand.ExecuteAsync((CardItemViewModel)item);
+                else if (item.GetType() == typeof(WebSiteViewModel))
+                    await WebSiteViewModel.AddToFavouriteCommand.ExecuteAsync((WebSiteItemViewModel)item);
+                else if (item.GetType() == typeof(AppViewModel))
+                    await AppViewModel.AddToFavouriteCommand.ExecuteAsync((AppItemViewModel)item);
+                OnPropertyChanged(nameof(FilteredCollection));
             }
-        } 
+        }
+
+        private void ShowChangeDialog(ItemViewModelBase? item)
+        {
+            if (item != null)
+            {
+                if (item.GetType() == typeof(CardItemViewModel))
+                    CardViewModel.ChangeCommand.Execute((CardItemViewModel)item);
+                else if (item.GetType() == typeof(WebSiteViewModel))
+                    WebSiteViewModel.ChangeCommand.Execute((WebSiteItemViewModel)item);
+                else if (item.GetType() == typeof(AppViewModel))
+                    AppViewModel.ChangeCommand.Execute((AppItemViewModel)item);
+            }
+        }
 
         
+        public void UpdateItems(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems![0] is ItemViewModelBase nw)
+            {
+                Items.Add(nw);
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems![0] is ItemViewModelBase old)
+            {
+                var el = Items.FirstOrDefault(x => x.Id == old.Id);
+                if (el != null) 
+                Items.Remove(el);
+            }
+            OnPropertyChanged(nameof(FilteredCollection));
+        }
+        
+
     }
 }
