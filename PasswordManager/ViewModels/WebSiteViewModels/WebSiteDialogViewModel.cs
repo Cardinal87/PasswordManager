@@ -20,7 +20,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             CloseCommand = new RelayCommand(Close);
             IsFavourite = false;
             IsNew = true;
-            
+            Id = 0;
         }
 
         public WebSiteDialogViewModel(WebSiteModel item)
@@ -67,6 +67,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             {
                 webAdress = value;
                 OnPropertyChanged(nameof(WebAddress));
+                OnPropertyChanged(nameof(CanClose));
             }
         }
         
@@ -80,6 +81,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             {
                 login = value;
                 OnPropertyChanged(nameof(Login));
+                OnPropertyChanged(nameof(CanClose));
             }
         }
 
@@ -92,6 +94,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             {
                 password = value;
                 OnPropertyChanged(nameof(Password));
+                OnPropertyChanged(nameof(CanClose));
             }
         }
         public bool IsFavourite { get; private set; }
@@ -104,8 +107,15 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         protected void Add()
         {
-            dialogResult = true;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            if (CanClose)
+            {
+                if (Name == "") Name = "NewWebSite";
+                dialogResult = true;
+                Model = new WebSiteModel(Name, Login, Password, WebAddress, IsFavourite);
+                Model.Id = Id;
+
+                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            }
         }
 
         public override bool CanClose
@@ -122,13 +132,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         protected override void Close()
         {
             dialogResult = true;
-            if (CanClose)
-            {
-                if (Name == "") Name = "NewWebSite";
-                Model = new WebSiteModel(Name, Login, Password, WebAddress, IsFavourite);
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
-                
-            }
+            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
         

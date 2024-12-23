@@ -1,6 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using PasswordManager.ViewModels.AppViewModels;
+using PasswordManager.ViewModels.WebSiteViewModels;
 
 namespace PasswordManager.Views.WebSiteViews;
 
@@ -10,6 +13,36 @@ public partial class WebSiteView : UserControl
     {
         InitializeComponent();
     }
+    public void EnterPressed(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            var text = ((TextBox)sender).Text;
+            var vm = (WebSiteViewModel)DataContext!;
+            if (text != null) vm.SearchKey = text;
+        }
+    }
 
-    
+    private void ListBox_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+    {
+        if (DataContext != null)
+        {
+            var list = sender as ListBox;
+            ((WebSiteViewModel)DataContext!).CurrentItem = (WebSiteItemViewModel)list?.SelectedItem!;
+        }
+    }
+    private void ChangePasswordVisibility(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var button = (Button)sender!;
+        button.Tag = !(bool)button.Tag!;
+        PasswordGrid.Tag = !(bool)PasswordGrid.Tag!;
+
+
+    }
+    private void TextCopied(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        TextCopiedMessage.Tag = false;
+        TextCopiedMessage.Tag = true;
+    }
+
 }

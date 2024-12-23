@@ -44,6 +44,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             WebSites =  new ObservableCollection<WebSiteItemViewModel>();
               
         }
+        private string searchKey = "";
         private IItemViewModelFactory itemFactory;
         private IDialogService dialogService;
         private IContextFactory contextFactory;
@@ -54,7 +55,28 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public RelayCommand<WebSiteItemViewModel> ChangeCommand { get; set; }
 
         public ObservableCollection<WebSiteItemViewModel> WebSites { get; private set; }
-        
+
+        public IEnumerable<WebSiteItemViewModel> FilteredCollection
+        {
+            get => WebSites.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        public string SearchKey
+        {
+            get => searchKey;
+            set
+            {
+                if (value != searchKey)
+                {
+                    searchKey = value;
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(SearchKey));
+                }
+            }
+        }
+
+
+
         public WebSiteItemViewModel? CurrentItem
         {
 
@@ -88,6 +110,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                     WebSites.Remove(webSiteItem);
                     if (WebSites.Count > 0) CurrentItem = WebSites[0];
                 }
+                OnPropertyChanged(nameof(FilteredCollection));
                 await dbClient.SaveChangesAsync();
             }
         }
@@ -124,6 +147,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                         a?.UpdateModel(model);
                         await dbClient.SaveChangesAsync();
                     }
+                    OnPropertyChanged(nameof(FilteredCollection));
                     dialogService.CloseDialog(vm!);
                 }
             }

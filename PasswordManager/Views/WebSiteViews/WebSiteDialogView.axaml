@@ -38,7 +38,7 @@
 
 
 			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="ShowName" IsVisible="True">
-				<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewApp}"
+				<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewWebSite}"
 						   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"
 						   Margin="20,0,0,0"
 						   MaxWidth="400"/>

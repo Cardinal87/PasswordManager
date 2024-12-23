@@ -156,8 +156,8 @@
 		</ControlTheme>
 		
 		
-		<!--Add button-->
-		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddButton">
+		<!--Default green button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DefaultGreenButton">
 			<Setter Property="CornerRadius" Value="10"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
 			<Setter Property="VerticalAlignment" Value="Center"/>
@@ -166,9 +166,9 @@
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Border CornerRadius="10" Background="{TemplateBinding Background}"
-							HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5">
-						<ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" DockPanel.Dock="Left"
-									      Margin="5,0,0,0"/>
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="7,5,7,5">
+						<ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" 
+										  DockPanel.Dock="Left"/>
 						
 					</Border>
 				</ControlTemplate>

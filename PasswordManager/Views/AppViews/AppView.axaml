@@ -13,8 +13,8 @@
 		
 		
 		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}">
-			<Button Grid.Column="0" Theme="{StaticResource AddButton}" Margin="25,0,0,2"
-					Content="Add App"
+			<Button Grid.Column="0" Theme="{StaticResource DefaultGreenButton}" Margin="25,0,0,2"
+					Content="Add app"
 					Command="{Binding AddNewCommand}">
 				
 			</Button>
@@ -31,7 +31,7 @@
 					 SelectedItem="{Binding CurrentItem}" SelectionChanged="ListBox_SelectionChanged">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<TextBlock Margin="20,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+						<TextBlock Margin="10,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 									Text="{Binding Name}" TextAlignment="Left"/>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
@@ -67,10 +67,10 @@
 				
 				
 				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0" >
-					<DockPanel>
+					<DockPanel Margin="0,5,0,0">
 						<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top" 
 								   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
-						<DockPanel DockPanel.Dock="Bottom" Margin="0,10,20,30">
+						<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,30">
 							<Grid Tag="{x:True}" DockPanel.Dock="Left" Margin="20,0,0,0" 
 								  VerticalAlignment="Center" x:Name="PasswordGrid">
 								<TextBlock Text="{Binding CurrentItem.Password,

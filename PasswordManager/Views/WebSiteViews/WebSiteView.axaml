@@ -2,86 +2,153 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="700"
 			 xmlns:views="clr-namespace:PasswordManager.Views"
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
 			 x:Class="PasswordManager.Views.WebSiteViews.WebSiteView"
-			 x:DataType="vm:WebSiteViewModel"
-			 Height="700" Width="900">
-	
-	
-	
-	<Grid ColumnDefinitions="*,50,320" RowDefinitions="100,50,*" ShowGridLines="True">
-		
-		
+			 x:DataType="vm:WebSiteViewModel">
 
-		<Button x:Name="Add"
-			Grid.Row="1"
-			Grid.Column="1"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch" Command="{Binding AddNewCommand}">
-			
-			
-		</Button>
+	<Grid RowDefinitions="45,*" >
 
-		<TextBox x:Name="Find"
-			Grid.Row="1"
-			Grid.Column="2"
-			Watermark="Find"
-			HorizontalContentAlignment="Left"
-			VerticalContentAlignment="Center">
-		</TextBox>
 
-		<ListBox x:Name="DataList "
-			Grid.Row="2"
-			Grid.Column="0" Grid.ColumnSpan="3"
-			ItemsSource="{Binding WebSites}">
-			<ListBox.ItemTemplate  >
-				<DataTemplate >
-					<Grid ShowGridLines="True" Width="910" ColumnDefinitions="400,300,*,*,*" RowDefinitions="30,30,30,30,30,40">
+
+		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}">
+			<Button Grid.Column="0" Theme="{StaticResource DefaultGreenButton}" Margin="25,0,0,2"
+					Content="Add account"
+					Command="{Binding AddNewCommand}">
+
+			</Button>
+			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,2" VerticalAlignment="Center"
+					 KeyDown="EnterPressed" Classes="searchBox"/>
+
+
+		</Grid>
+
+		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
+
+		<Grid Grid.Row="1" ColumnDefinitions="250,*">
+			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}"
+					 SelectedItem="{Binding CurrentItem}" SelectionChanged="ListBox_SelectionChanged">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel>
+							<TextBlock  Margin="10,10,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+										Text="{Binding Name}" TextAlignment="Left"/>
+							<TextBlock	Margin="15,5,0,0"	HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+										Text="{Binding WebAddress}" TextAlignment="Left" FontSize="12"
+									    Foreground="{DynamicResource SecondFontBrush}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+
+			<Rectangle Width="1" Margin="250,0,0,0"  Fill="{DynamicResource DataBoxBorderBrush}"
+					   VerticalAlignment="Stretch" />
+
+			<Grid Grid.Column="1" RowDefinitions="50,195,*,40" Background="{DynamicResource MainBackgroundBrush}">
+				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Background="{DynamicResource AdditionalBackgroundBrush}">
+					<TextBlock Text="{Binding CurrentItem.Name}" HorizontalAlignment="Left" VerticalAlignment="Center"
+							   Margin="10,0,0,0"/>
+					<Button x:Name="Change" Command="{Binding ChangeCommand}"
+							CommandParameter="{Binding CurrentItem}"
+							Theme="{StaticResource ChangeButton}"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Grid.Column="2"/>
+					<Button x:Name="Delete" Command="{Binding DeleteCommand}"
+							Theme="{StaticResource DeleteButton}"
+							CommandParameter="{Binding CurrentItem}"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Grid.Column="3"/>
+					<Button x:Name="AddToFavourite" Command="{Binding AddToFavouriteCommand}"
+							CommandParameter="{Binding CurrentItem}"
+							Theme="{StaticResource AddToFavouriteButton}"
+							Grid.Column="4"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Tag="{Binding CurrentItem.IsFavourite}">
+
+					</Button>
+				</Grid>
+				<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,50,0,0"/>
+
+
+				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0" >
+					<StackPanel>
+						<DockPanel  Margin="0,5,0,0">
+							<TextBlock Text="Login" Margin="20,10,0,0" DockPanel.Dock="Top"
+									   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+							<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,15">
+								<Grid Tag="{x:True}" DockPanel.Dock="Left" Margin="20,0,0,0"
+									  VerticalAlignment="Center" x:Name="LoginGrid">
+									<TextBlock Text="{Binding CurrentItem.Login}"
+											   FontSize="14" />
+								</Grid>
+								<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+										Command="{Binding CurrentItem.CopyToClipboardCommand}"
+										CommandParameter="{Binding CurrentItem.Login}"
+										Click="TextCopied"/>
+								
+							</DockPanel>
+						</DockPanel>
+					
+						<DockPanel>
 						
-						
-						<TextBlock Text="Name:" Grid.Column="0" Grid.Row="0"
-								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-						<TextBlock Text="Link:" Grid.Column="1" Grid.Row="0"
-								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-						
-						<Button x:Name="Favorite" Grid.Row="0" Grid.Column="2"
-								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
-								/>
-						<Button x:Name="Change" Grid.Row="0" Grid.Column="3"
-								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
-								/>
-						<Button x:Name="Delete" Grid.Row="0" Grid.Column="4"
-								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"/>
+							<TextBlock Text="Password" Margin="20,0,0,0" DockPanel.Dock="Top"
+									   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+							<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,20">
+								<Grid Tag="{x:True}" DockPanel.Dock="Left" Margin="20,0,0,0"
+									  VerticalAlignment="Center" x:Name="PasswordGrid">
+									<TextBlock Text="{Binding CurrentItem.Password,
+											   Converter={StaticResource ToPasswordCharConverter}}"
+											   IsVisible="{Binding $parent.Tag}" FontSize="14" />
+									<TextBlock Text="{Binding CurrentItem.Password}"
+											   IsVisible="{Binding $parent.Tag, Converter={StaticResource ReverseBoolConverter}}"
+											   FontSize="14" />
+								</Grid>
+								<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+										Command="{Binding CurrentItem.CopyToClipboardCommand}"
+										CommandParameter="{Binding CurrentItem.Password}"
+										Click="TextCopied"/>
+								<Button Theme="{StaticResource ShowPasswordButton}" DockPanel.Dock="Right" Tag="{x:False}"
+										Margin="10,0,15,0" Click="ChangePasswordVisibility" />
+							</DockPanel>
 
-						<TextBlock Text="Login" Grid.Column="0" Grid.Row="1"
-								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-						<TextBlock Text="{Binding Login}" Grid.Column="0" Grid.Row="2"
-								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-						<TextBlock Text="Password" Grid.Column="0" Grid.Row="3"
-								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-						<TextBlock Text="{Binding Password}" Grid.Column="0" Grid.Row="4"
-								   HorizontalAlignment="Left" VerticalAlignment="Center"/>
-						
-						<Button x:Name="CopyLogin" Grid.Row="2" Grid.Column="2"
-								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
-								Command="{Binding CopyToClipboard}" CommandParameter="login"/>
-						<Button x:Name="CopyPassword" Grid.Row="4" Grid.Column="2"
-								HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 20 0"
-								Command="{Binding CopyToClipboard}" CommandParameter="password"/>
-						<Button x:Name="GoToWebSite" Grid.Row="5" Grid.Column="1" Content="Go To WebSite"
-								HorizontalAlignment="Left" VerticalAlignment="Stretch" HorizontalContentAlignment="Center"
-								VerticalContentAlignment="Center" 
-								Command="{Binding GoToWebSite}" />
-					</Grid>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
 
-		
-		
-		
+						</DockPanel>
+						<Button Margin="20,0,0,0" Content="go to website" Theme="{StaticResource DefaultGreenButton}"/>
+					</StackPanel>
+				</Border>
+
+
+				<Border CornerRadius="10" Background="{DynamicResource AdditionalBackgroundBrush}"
+						Padding="5" Opacity="0" HorizontalAlignment="Center" Grid.Row="3"
+						IsEnabled="{Binding $self.Tag}"
+						VerticalAlignment="Center" Margin="0,0,0,10" x:Name="TextCopiedMessage">
+
+					<ContentPresenter Content="Text Copied" Foreground="{DynamicResource FontBrush}"/>
+					<Border.Styles>
+						<Style Selector="Border:not(:disabled)">
+							<Style.Animations>
+								<Animation Duration="0:0:2">
+									<KeyFrame Cue="0%">
+										<Setter Property="Opacity" Value="0"/>
+									</KeyFrame>
+									<KeyFrame Cue="2%">
+										<Setter Property="Opacity" Value="1"/>
+									</KeyFrame>
+									<KeyFrame Cue="100%">
+										<Setter Property="Opacity" Value="0"/>
+									</KeyFrame>
+								</Animation>
+							</Style.Animations>
+						</Style>
+					</Border.Styles>
+				</Border>
+
+			</Grid>
+		</Grid>
+
 	</Grid>
+	
+	
 
 </UserControl>

@@ -41,7 +41,7 @@ public partial class WebSiteDialogView : Window
     {
         if (!string.IsNullOrEmpty(NameBox.Text))
         {
-            var vm = (AppDialogViewModel)DataContext!;
+            var vm = (WebSiteDialogViewModel)DataContext!;
             vm.Name = NameBox.Text;
             CloseTemplate(sender, e);
         }
@@ -81,7 +81,7 @@ public partial class WebSiteDialogView : Window
     private void QuickCloseDialog(object? sender, Avalonia.Input.KeyEventArgs e)
     {
         if (e.Key == Key.Enter && MainBorder.IsFocused)
-            ((AppDialogViewModel)DataContext!).AddCommand.Execute(this);
+            ((WebSiteDialogViewModel)DataContext!).AddCommand.Execute(this);
     }
 
 
