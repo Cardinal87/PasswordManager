@@ -31,29 +31,11 @@
 			</Style>
 		</Style>
 
-		<Style Selector="ComboBoxItem">
-			<Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}"/>
-			<Setter Property="Opacity" Value="0.9"/>
-			<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-				<Setter Property="Background" Value="{DynamicResource ComboBoxItemHighLightedBrush}"/>
-			</Style>
-			
-		</Style>
-
-		<Style Selector="ComboBox">
-			<Setter Property="BorderBrush" Value="{DynamicResource DataBoxBorderBrush}"/>
-			<Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}"/>
-			<Setter Property="Focusable" Value="False"/>
-			<Setter Property="MaxDropDownHeight" Value="120"/>
-			<Style Selector="^ /template/ ScrollViewer">
-				<Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}" />
-			</Style>
-
-		</Style>
+		
 	</Window.Styles>
 
 
-	<Border PointerPressed="MoveWindow" KeyDown="QuickCloseDialog" Padding="0" Focusable="True" x:Name="MainBorder"
+	<Border PointerPressed="MoveWindow" Padding="0" Focusable="True" x:Name="MainBorder"
 			BorderThickness="1" BorderBrush="{DynamicResource DataBoxBorderBrush}">
 		<Grid RowDefinitions="55,*,50">
 
@@ -62,7 +44,7 @@
 				<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewCard}"
 						   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"
 						   Margin="20,0,0,0"
-						   MaxWidth="400"/>
+						   MaxWidth="400" />
 				<Button Background="#1b2026" Margin="5,0,0,0"
 						DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
 						HorizontalAlignment="Left" Click="ShowSetNameTemplate" />
@@ -111,45 +93,36 @@
 									 Text="{Binding Number}"
 									 Classes="dataBox"
 									 HorizontalContentAlignment="Left" CornerRadius="15"
-									 KeyDown="ConfirmData"/>
+									 KeyDown="ConfirmData" MaxLength="16"/>
 						</DockPanel>
 						<DockPanel Margin="15,20,0,0">
 							<TextBlock Text="CVC" Foreground="White" VerticalAlignment="Center" Width="75"/>
 							<TextBox Watermark="Enter cvc" Margin="15,0,15,0" BorderThickness="1"
 									 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
 									 BorderBrush="{DynamicResource DataBoxBorderBrush}"
-									 Text="{Binding Cvc, Converter={StaticResource StringToIntConverter}}"
+									 Text="{Binding Cvc}"
 									 Classes="dataBox" MaxLength="3"
 									 HorizontalContentAlignment="Left" CornerRadius="15"
 									 KeyDown="Digit_Validation"/>
 						</DockPanel>
-						<DockPanel Margin="15,20,0,0">
-							<ComboBox DockPanel.Dock="Left" PlaceholderText="MM" Margin="100,0,0,0"
-									  SelectedIndex="{Binding Month}" SelectionChanged="Month_SelectionChanged"
-									  CornerRadius="5" PlaceholderForeground="{DynamicResource SecondFontBrush}">
-								<ComboBoxItem Content="1"/>
-								<ComboBoxItem Content="2"/>
-								<ComboBoxItem Content="3"/>
-								<ComboBoxItem Content="4"/>
-								<ComboBoxItem Content="5"/>
-								<ComboBoxItem Content="6"/>
-								<ComboBoxItem Content="7"/>
-								<ComboBoxItem Content="9"/>
-								<ComboBoxItem Content="9"/>
-								<ComboBoxItem Content="10"/>
-								<ComboBoxItem Content="11"/>
-								<ComboBoxItem Content="12"/>
-							</ComboBox>
+						<DockPanel Margin="95,20,0,0">
+							<TextBox DockPanel.Dock="Left" Margin="10,0,0,0" Classes="dataBox"
+									 CornerRadius="5" Watermark="MM" MaxLength="2"
+									 Text="{Binding Month}"
+									 KeyDown="Digit_Validation"
+									 Background="{DynamicResource DataBoxBackgroundBrush}"
+									 Foreground="{DynamicResource FontBrush}"
+									 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
 							<TextBox DockPanel.Dock="Left" Margin="10,0,0,0" Classes="dataBox"
 									 CornerRadius="5" Watermark="YYYY" MaxLength="4"
-									 Text="{Binding Year, Converter={StaticResource StringToIntConverter}}"
+									 Text="{Binding Year}"
 									 KeyDown="Digit_Validation"
 									 Background="{DynamicResource DataBoxBackgroundBrush}" 
 									 Foreground="{DynamicResource FontBrush}"
 									 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
 								
-							<TextBlock Text="- year is not valid" Foreground="{DynamicResource WarningBrush}"
-									   VerticalAlignment="Center" IsVisible="{Binding !IsValidYear}"/>		
+							<TextBlock Text="- year or month is not valid" Foreground="{DynamicResource WarningBrush}"
+									   VerticalAlignment="Center" IsVisible="{Binding !IsValidDate}" Margin="5,0,0,0"/>		
 						</DockPanel>
 						
 					</StackPanel>

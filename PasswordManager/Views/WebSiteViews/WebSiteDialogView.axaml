@@ -32,7 +32,7 @@
 	</Window.Styles>
 
 
-	<Border PointerPressed="MoveWindow" KeyDown="QuickCloseDialog" Padding="0" Focusable="True" x:Name="MainBorder"
+	<Border PointerPressed="MoveWindow" Padding="0" Focusable="True" x:Name="MainBorder"
 			BorderThickness="1" BorderBrush="{DynamicResource DataBoxBorderBrush}">
 		<Grid RowDefinitions="55,*,50">
 

@@ -11,7 +11,7 @@ namespace PasswordManager.Models
     {
         
         
-        public CardModel(string number, int month, int year, int cvc, string owner, string name, bool isFavourite) : base(name, isFavourite)
+        public CardModel(string number, string month, string year, string cvc, string owner, string name, bool isFavourite) : base(name, isFavourite)
         {
             Number = number;
             Year = year;
@@ -21,9 +21,9 @@ namespace PasswordManager.Models
         }
 
         public string Number { get; set; }
-        public int Year { get; set; }
-        public int Month { get; set; }
-        public int Cvc { get; set; }
+        public string Year { get; set; }
+        public string Month { get; set; }
+        public string Cvc { get; set; }
         public string Owner { get; set; }
         
     }

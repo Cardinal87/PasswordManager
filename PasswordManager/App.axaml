@@ -14,7 +14,14 @@
 		<StyleInclude Source="Icons.axaml"/>
 
 
-		
+
+		<!--ComboBox styles-->
+		<Style Selector="ComboBox:pointerover /template/ Border#border">
+			<Setter Property="BorderBrush" Value="{DynamicResource DataBoxHighLightedBrush}" />
+			<Setter Property="Opacity" Value="0.7" />
+		</Style>
+
+
 		
 		
 		
@@ -59,6 +66,9 @@
 			<Style Selector="^:disabled /template/ PathIcon#icon">
 				<Setter Property="Opacity" Value="0.3 "/>
 			</Style>
+			<Style Selector="^:disabled">
+				<Setter Property="Opacity" Value="0.5 "/>
+			</Style>
 			
 		</Style>
     </Application.Styles>
@@ -79,7 +89,7 @@
 		<converters:StringToDefaultConverter x:Key="StringToDefaultConverter"/>
 		<converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
 		<converters:ToPasswordCharConverter x:Key="ToPasswordCharConverter"/>
-		<converters:StringToIntConverter x:Key="StringToIntConverter"/>
+		
 
 		
 		<!--Text copied message-->

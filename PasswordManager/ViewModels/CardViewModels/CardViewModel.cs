@@ -40,6 +40,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             Cards = new ObservableCollection<CardItemViewModel>();
             
         }
+        private string searchKey = "";
         private IContextFactory contextFactory;
         private IDialogService dialogService;
         private IItemViewModelFactory itemFactory;
@@ -52,7 +53,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             set
             {
                 currentItem = value;
-                OnPropertyChanged(new PropertyChangedExtendedEventArgs(nameof(CurrentItem), value));
+                OnPropertyChanged(nameof(CurrentItem));
             }
         }
 
@@ -62,7 +63,27 @@ namespace PasswordManager.ViewModels.CardViewModels
         public RelayCommand<CardItemViewModel> ChangeCommand { get; set; }
         public RelayCommand AddNewCommand { get; set; }
 
-        
+
+
+        public IEnumerable<CardItemViewModel> FilteredCollection
+        {
+            get => Cards.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        public string SearchKey
+        {
+            get => searchKey;
+            set
+            {
+                if (value != searchKey)
+                {
+                    searchKey = value;
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(SearchKey));
+                }
+            }
+        }
+
         private async Task DeleteAsync(CardItemViewModel? cardItem)
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
@@ -73,6 +94,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                     Cards.Remove(cardItem);
                     if (Cards.Count > 0) CurrentItem = Cards[0];
                 }
+                OnPropertyChanged(nameof(FilteredCollection));
                 await dbClient.SaveChangesAsync();
             }
         }
@@ -101,27 +123,35 @@ namespace PasswordManager.ViewModels.CardViewModels
         {
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
-                if (e.DialogResult && sender is CardDialogViewModel vm)
+                if (sender is CardDialogViewModel vm)
                 {
 
-                    CardModel model = vm.Model!;
+                    if (e.DialogResult && vm.Model != null)
+                    {
+                        CardModel model = vm.Model;
 
-                    if (vm.IsNew)
-                    {
-                        dbClient.Insert(model);
-                        await dbClient.SaveChangesAsync();
-                        CardItemViewModel item = itemFactory.CreateCardItem(model);
-                        Cards.Add(item);
-                    }
-                    else
-                    {
-                        dbClient.Replace(model);
-                        var a = Cards.FirstOrDefault(x => x.Id == model.Id);
-                        a?.UpdateModel(model);
-                        await dbClient.SaveChangesAsync();
+                        if (vm.IsNew)
+                        {
+                            dbClient.Insert(model);
+                            await dbClient.SaveChangesAsync();
+                            CardItemViewModel item = itemFactory.CreateCardItem(model);
+                            Cards.Add(item);
+                            CurrentItem = item;
+
+
+                        }
+                        else
+                        {
+                            dbClient.Replace(model);
+                            var a = Cards.FirstOrDefault(x => x.Id == model.Id);
+                            a?.UpdateModel(model);
+                            await dbClient.SaveChangesAsync();
+                        }
+                        OnPropertyChanged(nameof(FilteredCollection));
                     }
                     dialogService.CloseDialog(vm!);
                 }
+                
             }
             
             

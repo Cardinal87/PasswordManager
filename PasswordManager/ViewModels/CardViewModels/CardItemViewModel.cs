@@ -30,9 +30,9 @@ namespace PasswordManager.ViewModels.CardViewModels
         
         private string owner;
         private string number;
-        private int cvc;
-        private int month;
-        private int year;
+        private string cvc;
+        private string month;
+        private string year;
         
 
         public RelayCommand<string> CopyToClipboardCommand { get; }
@@ -57,7 +57,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             }
         }
 
-        public int Cvc 
+        public string Cvc 
         { 
             get => cvc;
             [MemberNotNull(nameof(cvc))]
@@ -67,7 +67,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                 OnPropertyChanged(nameof(Cvc));
             }
         }
-        public int Month
+        public string Month
         {
             get => month;
             [MemberNotNull(nameof(month))]
@@ -78,7 +78,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             }
         
         }
-        public int Year 
+        public string Year 
         { 
             get => year;
             [MemberNotNull(nameof(year))]

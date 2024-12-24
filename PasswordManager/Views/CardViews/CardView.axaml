@@ -3,9 +3,188 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.CardViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="700"
 			 
              x:Class="PasswordManager.Views.CardViews.CardView"
 			 x:DataType="vm:CardViewModel">
-  <Button Command="{Binding AddNewCommand}"/>
+	<Grid RowDefinitions="45,*" >
+
+
+
+		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}">
+			<Button Grid.Column="0" Theme="{StaticResource DefaultGreenButton}" Margin="25,0,0,2"
+					Content="Add card"
+					Command="{Binding AddNewCommand}">
+
+			</Button>
+			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,2" VerticalAlignment="Center"
+					 KeyDown="EnterPressed" Classes="searchBox"/>
+
+
+		</Grid>
+
+		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
+
+		<Grid Grid.Row="1" ColumnDefinitions="250,*">
+			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}"
+					 SelectedItem="{Binding CurrentItem}" SelectionChanged="ListBox_SelectionChanged">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+							<TextBlock  Margin="10,10,20,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+										Text="{Binding Name}" TextAlignment="Left"/>
+							
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+
+			<Rectangle Width="1" Margin="250,0,0,0"  Fill="{DynamicResource DataBoxBorderBrush}"
+					   VerticalAlignment="Stretch" />
+
+			<Grid Grid.Column="1" RowDefinitions="50,250,*,40" Background="{DynamicResource MainBackgroundBrush}">
+				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Background="{DynamicResource AdditionalBackgroundBrush}">
+					<TextBlock Text="{Binding CurrentItem.Name}" HorizontalAlignment="Left" VerticalAlignment="Center"
+							   Margin="10,0,0,0"/>
+					<Button x:Name="Change" Command="{Binding ChangeCommand}"
+							CommandParameter="{Binding CurrentItem}"
+							Theme="{StaticResource ChangeButton}"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Grid.Column="2"/>
+					<Button x:Name="Delete" Command="{Binding DeleteCommand}"
+							Theme="{StaticResource DeleteButton}"
+							CommandParameter="{Binding CurrentItem}"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Grid.Column="3"/>
+					<Button x:Name="AddToFavourite" Command="{Binding AddToFavouriteCommand}"
+							CommandParameter="{Binding CurrentItem}"
+							Theme="{StaticResource AddToFavouriteButton}"
+							Grid.Column="4"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Tag="{Binding CurrentItem.IsFavourite}">
+
+					</Button>
+				</Grid>
+				<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,50,0,0"/>
+
+
+				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0" >
+					<StackPanel>
+						<DockPanel  Margin="0,5,0,0">
+							<TextBlock Text="Owner" Margin="20,10,0,0" DockPanel.Dock="Top"
+									   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+							<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,15">
+								<Grid DockPanel.Dock="Left" Margin="20,0,0,0"
+									  VerticalAlignment="Center" x:Name="OwnerGrid">
+									<TextBlock Text="{Binding CurrentItem.Owner}"
+											   FontSize="14" />
+								</Grid>
+								<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+										Command="{Binding CurrentItem.CopyToClipboardCommand}"
+										CommandParameter="{Binding CurrentItem.Owner}"
+										Click="TextCopied"/>
+
+							</DockPanel>
+						</DockPanel>
+						<DockPanel  Margin="0,5,0,0">
+							<TextBlock Text="Number" Margin="20,0,0,0" DockPanel.Dock="Top"
+									   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+							<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,15">
+								<Grid DockPanel.Dock="Left" Margin="20,0,0,0"
+									  VerticalAlignment="Center" x:Name="NumberGrid">
+									<TextBlock Text="{Binding CurrentItem.Number}"
+											   FontSize="14" />
+								</Grid>
+								<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+										Command="{Binding CurrentItem.CopyToClipboardCommand}"
+										CommandParameter="{Binding CurrentItem.Number}"
+										Click="TextCopied"/>
+
+							</DockPanel>
+						</DockPanel>
+						<DockPanel>
+
+							<TextBlock Text="Cvc" Margin="20,0,0,0" DockPanel.Dock="Top"
+									   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+							<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,15">
+								<Grid Tag="{x:True}" DockPanel.Dock="Left" Margin="20,0,0,0"
+									  VerticalAlignment="Center" x:Name="CvcGrid">
+									<TextBlock Text="{Binding CurrentItem.Cvc,
+											   Converter={StaticResource ToPasswordCharConverter}}"
+											   IsVisible="{Binding $parent.Tag}" FontSize="14" />
+									<TextBlock Text="{Binding CurrentItem.Cvc}"
+											   IsVisible="{Binding $parent.Tag, Converter={StaticResource ReverseBoolConverter}}"
+											   FontSize="14" />
+								</Grid>
+								<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+										Command="{Binding CurrentItem.CopyToClipboardCommand}"
+										CommandParameter="{Binding CurrentItem.Cvc}"
+										Click="TextCopied"/>
+								<Button Theme="{StaticResource ShowPasswordButton}" DockPanel.Dock="Right" Tag="{x:False}"
+										Margin="10,0,15,0" Click="ChangePasswordVisibility"
+										IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+							</DockPanel>
+
+
+						</DockPanel>
+
+						<DockPanel  Margin="0,5,0,0">
+							
+							
+							<Grid DockPanel.Dock="Bottom" Margin="120,0,20,15">
+								<StackPanel  Orientation="Horizontal" IsVisible="{Binding CurrentItem, 
+											 Converter={x:Static ObjectConverters.IsNotNull}}"
+										VerticalAlignment="Center" x:Name="DateGrid">
+									<TextBlock Text="{Binding CurrentItem.Month}"
+												FontSize="15" />
+									<TextBlock Text="/"
+												FontSize="15" />
+									<TextBlock Text="{Binding CurrentItem.Year}"
+												FontSize="15" />
+								</StackPanel>
+								<StackPanel  Orientation="Horizontal" IsVisible="{Binding CurrentItem, 
+											 Converter={x:Static ObjectConverters.IsNull}}"	
+											 VerticalAlignment="Center" x:Name="DateWatermarkGrid">
+									<TextBlock Text="MM" Foreground="{DynamicResource SecondFontBrush}"
+												FontSize="15" />
+									<TextBlock Text="/" Foreground="{DynamicResource SecondFontBrush}"
+												FontSize="15" Margin="3,0,3,0"/>
+									<TextBlock Text="YYYY"
+												FontSize="15"  Foreground="{DynamicResource SecondFontBrush}"/>
+								</StackPanel>
+							</Grid>
+							
+						</DockPanel>
+
+					</StackPanel>
+				</Border>
+
+
+				<Border CornerRadius="10" Background="{DynamicResource AdditionalBackgroundBrush}"
+						Padding="5" Opacity="0" HorizontalAlignment="Center" Grid.Row="3"
+						IsEnabled="{Binding $self.Tag}"
+						VerticalAlignment="Center" Margin="0,0,0,10" x:Name="TextCopiedMessage">
+
+					<ContentPresenter Content="Text Copied" Foreground="{DynamicResource FontBrush}"/>
+					<Border.Styles>
+						<Style Selector="Border:not(:disabled)">
+							<Style.Animations>
+								<Animation Duration="0:0:2">
+									<KeyFrame Cue="0%">
+										<Setter Property="Opacity" Value="0"/>
+									</KeyFrame>
+									<KeyFrame Cue="2%">
+										<Setter Property="Opacity" Value="1"/>
+									</KeyFrame>
+									<KeyFrame Cue="100%">
+										<Setter Property="Opacity" Value="0"/>
+									</KeyFrame>
+								</Animation>
+							</Style.Animations>
+						</Style>
+					</Border.Styles>
+				</Border>
+
+			</Grid>
+		</Grid>
+
+	</Grid>
 </UserControl>

@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using PasswordManager.ViewModels.AppViewModels;
 using System;
+using Avalonia.Diagnostics;
 
 namespace PasswordManager.Views.AppViews;
 
@@ -11,7 +12,9 @@ public partial class AppDialogView : Window
 {
     public AppDialogView()
     {
+        
         InitializeComponent();
+        
     }
     private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
@@ -78,9 +81,5 @@ public partial class AppDialogView : Window
             MainBorder.Focus();
         }
     }
-    private void QuickCloseDialog(object? sender, Avalonia.Input.KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter && MainBorder.IsFocused)
-            ((AppDialogViewModel)DataContext!).AddCommand.Execute(this);
-    }
+    
 }

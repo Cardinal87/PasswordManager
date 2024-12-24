@@ -13,6 +13,7 @@ public partial class CardDialogView : Window
     public CardDialogView()
     {
         InitializeComponent();
+        this.AttachDevTools();
     }
 
 
@@ -44,7 +45,7 @@ public partial class CardDialogView : Window
     {
         if (!string.IsNullOrEmpty(NameBox.Text))
         {
-            var vm = (AppDialogViewModel)DataContext!;
+            var vm = (CardDialogViewModel)DataContext!;
             vm.Name = NameBox.Text;
             CloseTemplate(sender, e);
         }
@@ -81,20 +82,7 @@ public partial class CardDialogView : Window
             MainBorder.Focus();
         }
     }
-    private void QuickCloseDialog(object? sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter && MainBorder.IsFocused)
-            ((AppDialogViewModel)DataContext!).AddCommand.Execute(this);
-    }
-
-    private void Month_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        int month = ((ComboBox)sender!).SelectedIndex;
-        if (((CardDialogViewModel)DataContext!).Month != month)
-        {
-            ((CardDialogViewModel)DataContext!).Month = month;
-        }
-    }
+    
 
     private void Digit_Validation(object? sender, KeyEventArgs e)
     {

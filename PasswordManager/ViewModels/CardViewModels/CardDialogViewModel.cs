@@ -46,9 +46,9 @@ namespace PasswordManager.ViewModels.CardViewModels
         private string name = "";
         private string owner = "";
         private string number = "";
-        private int? cvc;
-        private int? month;
-        private int? year;
+        private string cvc = "";
+        private string month = "";
+        private string year = "";
         private bool isFavourite;
 
         public int Id { get; private set; }
@@ -69,6 +69,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             {
                 owner = value;
                 OnPropertyChanged(nameof(Owner));
+                OnPropertyChanged(nameof(CanClose));
             }
         }
         public string Number
@@ -79,36 +80,46 @@ namespace PasswordManager.ViewModels.CardViewModels
             {
                 number = value;
                 OnPropertyChanged(nameof(Number));
+                OnPropertyChanged(nameof(CanClose));
             }
         }
 
-        public int? Cvc
+        public string Cvc
         {
             get => cvc;
             set
             {
                 cvc = value;
                 OnPropertyChanged(nameof(Cvc));
+                OnPropertyChanged(nameof(CanClose));
             }
         }
-        public int? Month
+        public string Month
         {
             get => month;
             set
             {
-                month = value;
+                string val = value;
+                if (val.Length == 1) val = "0" + val;
+                month = val;
                 OnPropertyChanged(nameof(Month));
+                OnPropertyChanged(nameof(IsValidDate));
+                OnPropertyChanged(nameof(CanClose));
+
             }
 
         }
-        public int? Year
+        public string Year
         {
             get => year;
             set
             {
+                
                 year = value;
                 OnPropertyChanged(nameof(Year));
-                OnPropertyChanged(nameof(IsValidYear));
+                OnPropertyChanged(nameof(IsValidDate));
+                OnPropertyChanged(nameof(CanClose));
+
             }
 
         }
@@ -125,8 +136,14 @@ namespace PasswordManager.ViewModels.CardViewModels
 
         protected void Add()
         {
-            dialogResult = true;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            if (CanClose)
+            {
+                if (Name == "") Name = "NewWebSite";
+                dialogResult = true;
+                Model = new CardModel(Number, Month, Year, Cvc, Owner, Name, IsFavourite);
+                Model.Id = Id;
+                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            }
         }
 
 
@@ -139,18 +156,18 @@ namespace PasswordManager.ViewModels.CardViewModels
             get
             {
                 return Owner != string.Empty &&
-                       Cvc != null &&
-                       Month != null &&
-                       Year != null &&
-                       IsValidYear;
+                       Cvc != string.Empty &&
+                       Month != string.Empty &&
+                       Year != string.Empty &&
+                       IsValidDate;
             }
         }
-        public bool IsValidYear
+        public bool IsValidDate
         {
             get
             {
-                return (Year >= DateTime.Today.Year - 1 && Year <= DateTime.Today.Year + 10) ||
-                       Year == null;
+                return (int.TryParse(Year, out int intYear) && intYear >= DateTime.Today.Year - 1 && intYear <= DateTime.Today.Year + 10) &&
+                    (int.TryParse(Month, out int intMonth) && intMonth >= 0 && intMonth <= 12);
             }
         }
 
@@ -158,13 +175,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         protected override void Close()
         {
             dialogResult = false;
-            if (CanClose)
-            {
-                if (Name == "") Name = "NewCard";
-                Model = new CardModel(Number, Month.Value, Year.Value, Cvc.Value, Owner, Name, IsFavourite);
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
-
-            }
+            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
     }
 }

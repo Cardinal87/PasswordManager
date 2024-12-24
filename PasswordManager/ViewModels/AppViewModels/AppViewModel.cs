@@ -79,7 +79,7 @@ namespace PasswordManager.ViewModels.AppViewModels
             set
             {
                 currentItem = value;
-                OnPropertyChanged(new PropertyChangedExtendedEventArgs(nameof(CurrentItem), value));
+                OnPropertyChanged(nameof(CurrentItem));
             }
         }
 
@@ -123,26 +123,31 @@ namespace PasswordManager.ViewModels.AppViewModels
             using (IDatabaseClient dbClient = contextFactory.CreateContext())
             {
                 
-                if (sender is AppDialogViewModel vm && vm.Model != null && e.DialogResult)
+                if (sender is AppDialogViewModel vm)
                 {
 
-                    if (vm.IsNew)
+                    if (e.DialogResult && vm.Model != null)
                     {
-                        dbClient.Insert(vm.Model);
-                        await dbClient.SaveChangesAsync();
-                        AppItemViewModel item = itemFactory.CreateAppItem(vm.Model);
-                        Apps.Add(item);
+                        if (vm.IsNew)
+                        {
+                            dbClient.Insert(vm.Model);
+                            await dbClient.SaveChangesAsync();
+                            AppItemViewModel item = itemFactory.CreateAppItem(vm.Model);
+                            Apps.Add(item);
+                            CurrentItem = item;
 
 
+
+                        }
+                        else
+                        {
+                            dbClient.Replace(vm.Model);
+                            var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
+                            a?.UpdateModel(vm.Model);
+                            await dbClient.SaveChangesAsync();
+                        }
+                        OnPropertyChanged(nameof(FilteredCollection));
                     }
-                    else
-                    {
-                        dbClient.Replace(vm.Model);
-                        var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
-                        a?.UpdateModel(vm.Model);
-                        await dbClient.SaveChangesAsync();
-                    }
-                    OnPropertyChanged(nameof(FilteredCollection));
                     dialogService.CloseDialog(vm);
                 }
             }

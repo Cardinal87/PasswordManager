@@ -78,11 +78,7 @@ public partial class WebSiteDialogView : Window
             MainBorder.Focus();
         }
     }
-    private void QuickCloseDialog(object? sender, Avalonia.Input.KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter && MainBorder.IsFocused)
-            ((WebSiteDialogViewModel)DataContext!).AddCommand.Execute(this);
-    }
+    
 
 
 }

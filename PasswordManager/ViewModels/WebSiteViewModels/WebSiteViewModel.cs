@@ -84,7 +84,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             set
             {
                 currentItem = value;
-                OnPropertyChanged(new PropertyChangedExtendedEventArgs(nameof(CurrentItem), value));
+                OnPropertyChanged(nameof(CurrentItem));
             }
         }
 
@@ -131,23 +131,27 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             { 
                 if (e.DialogResult && sender is WebSiteDialogViewModel vm)
                 {
-                    WebSiteModel model = vm.Model!;
+                    if (e.DialogResult && vm.Model != null)
+                    {
+                        WebSiteModel model = vm.Model;
 
-                    if (vm.IsNew)
-                    {
-                        dbClient.Insert(model);
-                        await dbClient.SaveChangesAsync();
-                        WebSiteItemViewModel item = itemFactory.CreateWebSiteItem(model);
-                        WebSites.Add(item);
+                        if (vm.IsNew)
+                        {
+                            dbClient.Insert(model);
+                            await dbClient.SaveChangesAsync();
+                            WebSiteItemViewModel item = itemFactory.CreateWebSiteItem(model);
+                            WebSites.Add(item);
+                            CurrentItem = item;
+                        }
+                        else
+                        {
+                            dbClient.Replace(model);
+                            var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
+                            a?.UpdateModel(model);
+                            await dbClient.SaveChangesAsync();
+                        }
+                        OnPropertyChanged(nameof(FilteredCollection));
                     }
-                    else
-                    {
-                        dbClient.Replace(model);
-                        var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
-                        a?.UpdateModel(model);
-                        await dbClient.SaveChangesAsync();
-                    }
-                    OnPropertyChanged(nameof(FilteredCollection));
                     dialogService.CloseDialog(vm!);
                 }
             }

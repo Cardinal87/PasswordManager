@@ -131,7 +131,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         protected override void Close()
         {
-            dialogResult = true;
+            dialogResult = false;
             dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
 
