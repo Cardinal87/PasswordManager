@@ -85,7 +85,8 @@
 									CommandParameter="{Binding CurrentItem.Password}"
 									Click="TextCopied"/>
 							<Button Theme="{StaticResource ShowPasswordButton}" DockPanel.Dock="Right" Tag="{x:False}"
-									Margin="10,0,15,0" Click="ChangePasswordVisibility" />
+									Margin="10,0,15,0" Click="ChangePasswordVisibility" 
+									IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 						</DockPanel>
 
 

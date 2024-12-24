@@ -125,8 +125,14 @@ namespace PasswordManager.ViewModels.CardViewModels
 
         protected void Add()
         {
-            dialogResult = true;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            if (CanClose)
+            {
+                if (Name == "") Name = "NewWebSite";
+                dialogResult = true;
+                Model = new CardModel(Number, Month.Value, Year.Value, Cvc.Value, Owner, Name, IsFavourite);
+                Model.Id = Id;
+                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            }
         }
 
 
@@ -157,14 +163,8 @@ namespace PasswordManager.ViewModels.CardViewModels
 
         protected override void Close()
         {
-            dialogResult = false;
-            if (CanClose)
-            {
-                if (Name == "") Name = "NewCard";
-                Model = new CardModel(Number, Month.Value, Year.Value, Cvc.Value, Owner, Name, IsFavourite);
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
-
-            }
+            dialogResult = true;
+            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
         }
     }
 }

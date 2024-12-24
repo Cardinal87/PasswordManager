@@ -59,6 +59,9 @@
 			<Style Selector="^:disabled /template/ PathIcon#icon">
 				<Setter Property="Opacity" Value="0.3 "/>
 			</Style>
+			<Style Selector="^:disabled">
+				<Setter Property="Opacity" Value="0.5 "/>
+			</Style>
 			
 		</Style>
     </Application.Styles>
