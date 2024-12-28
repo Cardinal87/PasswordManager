@@ -31,18 +31,6 @@ public partial class WebSiteView : UserControl
             ((WebSiteViewModel)DataContext!).CurrentItem = (WebSiteItemViewModel)list?.SelectedItem!;
         }
     }
-    private void ChangePasswordVisibility(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        var button = (Button)sender!;
-        button.Tag = !(bool)button.Tag!;
-        PasswordGrid.Tag = !(bool)PasswordGrid.Tag!;
-
-
-    }
-    private void TextCopied(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        TextCopiedMessage.Tag = false;
-        TextCopiedMessage.Tag = true;
-    }
+    
 
 }

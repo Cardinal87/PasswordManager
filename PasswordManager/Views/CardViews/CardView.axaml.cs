@@ -32,17 +32,5 @@ public partial class CardView : UserControl
             ((CardViewModel)DataContext!).CurrentItem = (CardItemViewModel)list?.SelectedItem!;
         }
     }
-    private void ChangePasswordVisibility(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        var button = (Button)sender!;
-        button.Tag = !(bool)button.Tag!;
-        CvcGrid.Tag = !(bool)CvcGrid.Tag!;
-
-
-    }
-    private void TextCopied(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        TextCopiedMessage.Tag = false;
-        TextCopiedMessage.Tag = true;
-    }
+    
 }

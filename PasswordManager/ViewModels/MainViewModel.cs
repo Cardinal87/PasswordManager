@@ -72,7 +72,7 @@ internal partial class MainViewModel : ViewModelBase
         CardVm = await cardTask;
         WebSiteVm = await webTask;
 
-        var allEntriesTask = _factory.CreateAllEntriesVM(WebSiteVm, CardVm, AppVm);
+        AllEntriesVm = _factory.CreateAllEntriesVM(WebSiteVm, CardVm, AppVm);
     }
 
 }

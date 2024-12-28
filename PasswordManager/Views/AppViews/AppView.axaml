@@ -8,7 +8,7 @@
 			 x:DataType="vm:AppViewModel" >
 	
 	
-	<Grid RowDefinitions="45,*" >
+	<Grid RowDefinitions="45,*" Background="{DynamicResource MainBackgroundBrush}">
 		
 		
 		
@@ -25,8 +25,13 @@
 		</Grid>
 		
 		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
+
+		<TextBlock Text="no apps have been added yet" FontSize="27"
+		   Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+		   IsVisible="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNull}}"/>
 		
-		<Grid Grid.Row="1" ColumnDefinitions="250,*">
+		<Grid Grid.Row="1" ColumnDefinitions="250,*" IsVisible="{Binding CurrentItem, 
+			  Converter={x:Static ObjectConverters.IsNotNull}}">
 			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}"
 					 SelectedItem="{Binding CurrentItem}" SelectionChanged="ListBox_SelectionChanged">
 				<ListBox.ItemTemplate>
@@ -40,7 +45,7 @@
 			<Rectangle Width="1" Margin="250,0,0,0"  Fill="{DynamicResource DataBoxBorderBrush}"
 					   VerticalAlignment="Stretch" />
 			
-			<Grid Grid.Column="1" RowDefinitions="50,100,*,40" Background="{DynamicResource MainBackgroundBrush}">
+			<Grid Grid.Column="1" RowDefinitions="50,*" Background="{DynamicResource MainBackgroundBrush}">
 				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Background="{DynamicResource AdditionalBackgroundBrush}">
 					<TextBlock Text="{Binding CurrentItem.Name}" HorizontalAlignment="Left" VerticalAlignment="Center"
 							   Margin="10,0,0,0"/>
@@ -64,61 +69,8 @@
 					</Button>
 				</Grid>
 				<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,50,0,0"/>
+				<ContentControl Grid.Row="1" Content="{Binding CurrentItem}"/>
 				
-				
-				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="1" CornerRadius="20" Margin="15,15,15,0" >
-					<DockPanel Margin="0,5,0,0">
-						<TextBlock Text="Password" Margin="20,10,0,0" DockPanel.Dock="Top" 
-								   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
-						<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,30">
-							<Grid Tag="{x:True}" DockPanel.Dock="Left" Margin="20,0,0,0" 
-								  VerticalAlignment="Center" x:Name="PasswordGrid">
-								<TextBlock Text="{Binding CurrentItem.Password,
-										   Converter={StaticResource ToPasswordCharConverter}}"
-										   IsVisible="{Binding $parent.Tag}" FontSize="14" />
-								<TextBlock Text="{Binding CurrentItem.Password}"
-										   IsVisible="{Binding $parent.Tag, Converter={StaticResource ReverseBoolConverter}}"
-										   FontSize="14" />
-							</Grid>
-							<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
-									Command="{Binding CurrentItem.CopyToClipboardCommand}"
-									CommandParameter="{Binding CurrentItem.Password}"
-									Click="TextCopied"/>
-							<Button Theme="{StaticResource ShowPasswordButton}" DockPanel.Dock="Right" Tag="{x:False}"
-									Margin="10,0,15,0" Click="ChangePasswordVisibility" 
-									IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-						</DockPanel>
-
-
-					</DockPanel>
-				</Border>
-				
-				
-				<Border CornerRadius="10" Background="{DynamicResource AdditionalBackgroundBrush}"
-						Padding="5" Opacity="0" HorizontalAlignment="Center" Grid.Row="3"
-						IsEnabled="{Binding $self.Tag}"
-						VerticalAlignment="Center" Margin="0,0,0,10" x:Name="TextCopiedMessage">
-					
-					<ContentPresenter Content="Text Copied" Foreground="{DynamicResource FontBrush}"/>
-					<Border.Styles>
-						<Style Selector="Border:not(:disabled)">
-							<Style.Animations>
-								<Animation Duration="0:0:2">
-									<KeyFrame Cue="0%">
-										<Setter Property="Opacity" Value="0"/>
-									</KeyFrame>
-									<KeyFrame Cue="2%">
-										<Setter Property="Opacity" Value="1"/>
-									</KeyFrame>
-									<KeyFrame Cue="100%">
-										<Setter Property="Opacity" Value="0"/>
-									</KeyFrame>
-								</Animation>
-							</Style.Animations>
-						</Style>
-					</Border.Styles>
-				</Border>
-			
 			</Grid>
 		</Grid>
 		

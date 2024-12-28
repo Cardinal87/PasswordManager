@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="475" d:DesignHeight="605"
+			 xmlns:vm="clr-namespace:PasswordManager.ViewModels.WebSiteViewModels"
+             x:Class="PasswordManager.Views.WebSiteViews.WebSiteItemView"
+			 x:DataType="vm:WebSiteItemViewModel">
+	<Grid  RowDefinitions="195,*,40" Background="{DynamicResource MainBackgroundBrush}">
+		<Border Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="0" CornerRadius="20" Margin="15,15,15,0" >
+			<StackPanel>
+				<DockPanel  Margin="0,5,0,0">
+					<TextBlock Text="Login" Margin="20,10,0,0" DockPanel.Dock="Top"
+							   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+					<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,15">
+						<Grid DockPanel.Dock="Left" Margin="20,0,0,0"
+							  VerticalAlignment="Center" x:Name="LoginGrid">
+							<TextBlock Text="{Binding Login}"
+									   FontSize="14" />
+						</Grid>
+						<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+								Command="{Binding CopyToClipboardCommand}"
+								CommandParameter="{Binding Login}"
+								Click="TextCopied"/>
+
+					</DockPanel>
+				</DockPanel>
+
+				<DockPanel>
+
+					<TextBlock Text="Password" Margin="20,0,0,0" DockPanel.Dock="Top"
+							   Foreground="{DynamicResource SecondFontBrush}" FontSize="14"/>
+					<DockPanel DockPanel.Dock="Bottom" Margin="0,7,20,20">
+						<Grid Tag="{x:True}" DockPanel.Dock="Left" Margin="20,0,0,0"
+							  VerticalAlignment="Center" x:Name="PasswordGrid">
+							<TextBlock Text="{Binding Password,
+											   Converter={StaticResource ToPasswordCharConverter}}"
+									   IsVisible="{Binding $parent.Tag}" FontSize="14" />
+							<TextBlock Text="{Binding Password}"
+									   IsVisible="{Binding $parent.Tag, Converter={StaticResource ReverseBoolConverter}}"
+									   FontSize="14" />
+						</Grid>
+						<Button Theme="{StaticResource CopyButton}" DockPanel.Dock="Right"
+								Command="{Binding CopyToClipboardCommand}"
+								CommandParameter="{Binding Password}"
+								Click="TextCopied"/>
+						<Button Theme="{StaticResource ShowPasswordButton}" DockPanel.Dock="Right" Tag="{x:False}"
+								Margin="10,0,15,0" Click="ChangePasswordVisibility"/>
+					</DockPanel>
+
+
+				</DockPanel>
+				<Button Margin="20,0,0,0" Content="go to website" Theme="{StaticResource DefaultGreenButton}"/>
+			</StackPanel>
+		</Border>
+
+
+		<Border CornerRadius="10" Background="{DynamicResource AdditionalBackgroundBrush}"
+				Padding="5" Opacity="0" HorizontalAlignment="Center" Grid.Row="2"
+				IsEnabled="{Binding $self.Tag}" Tag="{x:False}"
+				VerticalAlignment="Center" Margin="0,0,0,10" x:Name="TextCopiedMessage">
+
+			<ContentPresenter Content="Text Copied" Foreground="{DynamicResource FontBrush}"/>
+			<Border.Styles>
+				<Style Selector="Border:not(:disabled)">
+					<Style.Animations>
+						<Animation Duration="0:0:2">
+							<KeyFrame Cue="0%">
+								<Setter Property="Opacity" Value="0"/>
+							</KeyFrame>
+							<KeyFrame Cue="2%">
+								<Setter Property="Opacity" Value="1"/>
+							</KeyFrame>
+							<KeyFrame Cue="100%">
+								<Setter Property="Opacity" Value="0"/>
+							</KeyFrame>
+						</Animation>
+					</Style.Animations>
+				</Style>
+			</Border.Styles>
+		</Border>
+	</Grid>
+</UserControl>
