@@ -38,6 +38,7 @@ internal partial class MainViewModel : ViewModelBase
     {
         var main = new MainViewModel(factory);
         await main.InizializeViewModelsAsync();
+        main.CurrentPage = main.AllEntriesVm;
         return main;
     }
 
@@ -45,8 +46,7 @@ internal partial class MainViewModel : ViewModelBase
     {
         _factory = factory;
         SetCurrentPageCommand = new RelayCommand<ViewModelBase>(SetCurrentPage);
-
-        CurrentPage = AllEntriesVm;
+        
         
     }
     public RelayCommand<ViewModelBase> SetCurrentPageCommand { get; set; }

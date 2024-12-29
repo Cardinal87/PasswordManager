@@ -94,8 +94,9 @@ namespace PasswordManager.ViewModels.AppViewModels
                     Apps.Remove(appItem);
                     CurrentItem = Apps.Count != 0 ? Apps[0] : null;
                     OnPropertyChanged(nameof(FilteredCollection));
+                    await dbClient.SaveChangesAsync();
                 }
-                await dbClient.SaveChangesAsync();
+                
             }
 
         }

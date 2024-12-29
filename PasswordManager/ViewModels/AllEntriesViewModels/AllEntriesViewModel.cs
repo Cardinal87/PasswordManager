@@ -36,7 +36,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
 
 
             Items = [.. WebSiteViewModel.WebSites, .. AppViewModel.Apps, .. CardViewModel.Cards];
-
+            if (Items.Count > 0) CurrentItem = Items[0];
 
         }
         public RelayCommand<ItemViewModelBase> ChangeCommand { get;private set; }
@@ -86,9 +86,9 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
             {
                 if (item.GetType() == typeof(CardItemViewModel))
                     await CardViewModel.DeleteCommand.ExecuteAsync((CardItemViewModel)item);
-                else if (item.GetType() == typeof(WebSiteViewModel))
+                else if (item.GetType() == typeof(WebSiteItemViewModel))
                     await WebSiteViewModel.DeleteCommand.ExecuteAsync((WebSiteItemViewModel)item);
-                else if (item.GetType() == typeof(AppViewModel))
+                else if (item.GetType() == typeof(AppItemViewModel))
                     await AppViewModel.DeleteCommand.ExecuteAsync((AppItemViewModel)item);
                 OnPropertyChanged(nameof(FilteredCollection));
             }
@@ -100,9 +100,9 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
             {
                 if (item.GetType() == typeof(CardItemViewModel))
                     await CardViewModel.AddToFavouriteCommand.ExecuteAsync((CardItemViewModel)item);
-                else if (item.GetType() == typeof(WebSiteViewModel))
+                else if (item.GetType() == typeof(WebSiteItemViewModel))
                     await WebSiteViewModel.AddToFavouriteCommand.ExecuteAsync((WebSiteItemViewModel)item);
-                else if (item.GetType() == typeof(AppViewModel))
+                else if (item.GetType() == typeof(AppItemViewModel))
                     await AppViewModel.AddToFavouriteCommand.ExecuteAsync((AppItemViewModel)item);
                 OnPropertyChanged(nameof(FilteredCollection));
             }
@@ -114,9 +114,9 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
             {
                 if (item.GetType() == typeof(CardItemViewModel))
                     CardViewModel.ChangeCommand.Execute((CardItemViewModel)item);
-                else if (item.GetType() == typeof(WebSiteViewModel))
+                else if (item.GetType() == typeof(WebSiteItemViewModel))
                     WebSiteViewModel.ChangeCommand.Execute((WebSiteItemViewModel)item);
-                else if (item.GetType() == typeof(AppViewModel))
+                else if (item.GetType() == typeof(AppItemViewModel))
                     AppViewModel.ChangeCommand.Execute((AppItemViewModel)item);
             }
         }

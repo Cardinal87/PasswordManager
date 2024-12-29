@@ -2,7 +2,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using PasswordManager.ViewModels.AllEntriesViewModels;
 using PasswordManager.ViewModels.AppViewModels;
+using PasswordManager.ViewModels.BaseClasses;
 
 
 namespace PasswordManager.Views.AllEntriesViews;
@@ -14,7 +16,6 @@ public partial class AllEntriesView : UserControl
         InitializeComponent();
         
     }
-
     public void EnterPressed(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Enter)
@@ -30,13 +31,8 @@ public partial class AllEntriesView : UserControl
         if (DataContext != null)
         {
             var list = sender as ListBox;
-            ((AppViewModel)DataContext!).CurrentItem = (AppItemViewModel)list?.SelectedItem!;
+            ((AllEntriesViewModel)DataContext!).CurrentItem = (ItemViewModelBase)list?.SelectedItem!;
         }
     }
-    
-    private void TextCopied(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        TextCopiedMessage.Tag = false;
-        TextCopiedMessage.Tag = true;
-    }
+
 }

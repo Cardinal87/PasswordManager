@@ -109,9 +109,10 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                     dbClient.Delete(webSiteItem.Model);
                     WebSites.Remove(webSiteItem);
                     if (WebSites.Count > 0) CurrentItem = WebSites[0];
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    await dbClient.SaveChangesAsync();
                 }
-                OnPropertyChanged(nameof(FilteredCollection));
-                await dbClient.SaveChangesAsync();
+                
             }
         }
 

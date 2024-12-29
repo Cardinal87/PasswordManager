@@ -21,7 +21,7 @@
 			<SolidColorBrush x:Key="DeleteButtonBrush" Color="#7a0000"/>
 			<SolidColorBrush x:Key="ListBoxItemSelectedBrush" Color="#2d3238"/>
 			<SolidColorBrush x:Key="ListBoxItemPointOverBrush" Color="#3b414a"/>
-			<SolidColorBrush x:Key="ComboBoxItemHighLightedBrush" Color="#2b2d3d"/>
+			<SolidColorBrush x:Key="MenuHighLightedBrush" Color="#2b2d3d"/>
 			
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>

@@ -93,9 +93,10 @@ namespace PasswordManager.ViewModels.CardViewModels
                     dbClient.Delete(cardItem.Model);
                     Cards.Remove(cardItem);
                     if (Cards.Count > 0) CurrentItem = Cards[0];
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    await dbClient.SaveChangesAsync();
                 }
-                OnPropertyChanged(nameof(FilteredCollection));
-                await dbClient.SaveChangesAsync();
+                
             }
         }
 

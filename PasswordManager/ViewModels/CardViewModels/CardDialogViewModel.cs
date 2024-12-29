@@ -28,6 +28,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             IsNew = false;
             Name = model.Name!;
             Owner = model.Owner;
+            Number = model.Number;
             Cvc = model.Cvc;
             Month = model.Month;
             Year = model.Year;
