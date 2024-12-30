@@ -1,5 +1,6 @@
 ﻿using PasswordManager.DataConnectors;
 using PasswordManager.Helpers;
+using PasswordManager.ViewModels;
 using PasswordManager.ViewModels.AllEntriesViewModels;
 using PasswordManager.ViewModels.AppViewModels;
 using PasswordManager.ViewModels.BaseClasses;
@@ -44,6 +45,7 @@ namespace PasswordManager.Factories
             var vm = await CardViewModel.CreateAsync(ContextFactory, DialogService, ItemFac);
             return vm;
         }
+
 
         public async Task<WebSiteViewModel> CreateWebSiteVMAsync() 
         {

@@ -14,6 +14,7 @@ using PasswordManager.ViewModels.AppViewModels;
 using PasswordManager.ViewModels.WebSiteViewModels;
 using PasswordManager.Views;
 using PasswordManager.Views.WebSiteViews;
+using System.ComponentModel;
 
 namespace PasswordManager;
 
@@ -25,7 +26,7 @@ public partial class App : Application
         
     }
 
-    public async override void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
     {
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
@@ -34,15 +35,13 @@ public partial class App : Application
         var builder = new ContainerBuilder();
         SetUpContainer(builder);
         var container = builder.Build();
-        
-        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             using (var a = container.BeginLifetimeScope())
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = await MainViewModel.CreateAsync(container.Resolve<IViewModelFactory>())
+                    DataContext = new MenuViewModel()
                 };
             }
             
@@ -58,6 +57,8 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
         
     }
+
+
     private void SetUpContainer(ContainerBuilder builder)
     {
         builder.RegisterType<ClipboardService>().As<IClipboardService>();
@@ -65,6 +66,5 @@ public partial class App : Application
         builder.RegisterType<ContextFactory>().As<IContextFactory>().InstancePerLifetimeScope();
         builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>().SingleInstance();
         builder.RegisterType<ItemViewModelFactory>().As<IItemViewModelFactory>().SingleInstance();
-        
     }
 }

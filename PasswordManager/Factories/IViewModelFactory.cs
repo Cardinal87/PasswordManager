@@ -1,5 +1,6 @@
 ﻿using PasswordManager.DataConnectors;
 using PasswordManager.Helpers;
+using PasswordManager.ViewModels;
 using PasswordManager.ViewModels.AllEntriesViewModels;
 using PasswordManager.ViewModels.AppViewModels;
 using PasswordManager.ViewModels.BaseClasses;
@@ -23,6 +24,7 @@ namespace PasswordManager.Factories
         public Task<AppViewModel> CreateAppVMAsync();
         public Task<CardViewModel> CreateCardVMAsync();
         public AllEntriesViewModel CreateAllEntriesVM(WebSiteViewModel webVm, CardViewModel cardVm,  AppViewModel appVm);
+        
 
     }
 }
