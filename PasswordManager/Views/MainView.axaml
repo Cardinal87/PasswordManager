@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
+			 xmlns:vm="using:PasswordManager.ViewModels"
+             x:Class="PasswordManager.Views.MainView"
+			 x:DataType="vm:MainViewModel">
+	<Grid RowDefinitions="25,75,*" ColumnDefinitions="150,*"
+	  Background="{DynamicResource MainWindowBrush}"
+	  x:Name="MainGrid">
+
+		
+		<ContentControl Content="{Binding CurrentPage}" Grid.Column="1" Grid.RowSpan="7" Grid.Row="1"
+						HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+		<StackPanel Grid.Row="2" Margin="10,0,0,0">
+			<Button Content="AllEntries" Grid.Column="0" Grid.Row="2"
+					Command="{Binding SetCurrentPageCommand}"
+					CommandParameter="{Binding AllEntriesVm}"
+					Theme="{StaticResource TabButton}"
+					Width="100" Height="50"
+					HorizontalAlignment="Left"/>
+			<Button Content="WebSites" Grid.Column="0" Grid.Row="3"
+					Command="{Binding SetCurrentPageCommand}"
+					CommandParameter="{Binding WebSiteVm}"
+					Theme="{StaticResource TabButton}"
+					Width="75" Height="50"/>
+			<Button Content="Apps" Grid.Column="0" Grid.Row="4"
+					Theme="{StaticResource TabButton}"
+					Command="{Binding SetCurrentPageCommand}"
+					CommandParameter="{Binding AppVm}"
+					Width="75" Height="50"/>
+			<Button Content="Cards" Grid.Column="0" Grid.Row="4"
+					Theme="{StaticResource TabButton}"
+					Command="{Binding SetCurrentPageCommand}"
+					CommandParameter="{Binding CardVm}"
+					Width="75" Height="50"/>
+		</StackPanel>
+
+	</Grid>
+</UserControl>

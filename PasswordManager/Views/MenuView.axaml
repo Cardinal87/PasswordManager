@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
+			 xmlns:vm="clr-namespace:PasswordManager.ViewModels"
+             x:Class="PasswordManager.Views.MenuView"
+			 x:DataType="vm:MenuViewModel">
+	<Grid RowDefinitions="*,35,20,35,40,90"
+		  Background="{DynamicResource MainBackgroundBrush}"
+		  Focusable="True"> 
+		
+		<TextBox Classes="dataBox" Grid.Row="1" Watermark="Enter master-password"
+				 HorizontalAlignment="Center" VerticalContentAlignment="Center"
+				 FontSize="16.5"
+				 Width="350" CornerRadius="10"
+				 Background="{DynamicResource DataBoxBackgroundBrush}" 
+				 Foreground="{DynamicResource FontBrush}"
+				 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
+		
+		
+		
+		<Button Theme="{DynamicResource DefaultGreenButton}"
+				Content="Unlock" Grid.Row="3" HorizontalAlignment="Center"
+				VerticalAlignment="Stretch"
+				Width="350" FontSize="16.5"
+				VerticalContentAlignment="Center"
+				HorizontalContentAlignment="Center"
+				Command="{Binding CheckPasswordCommand}"/>
+
+		<Button Grid.Row="4" Background="Transparent"
+				Content="forgot master password?"
+				HorizontalAlignment="Center"
+				FontSize="15.5"
+				Foreground="{DynamicResource MainGreenBrush}">
+			<Button.Styles>
+				<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="BorderBrush" Value="Transparent" />
+					<Setter Property="Background" Value="Transparent" />
+					<Setter Property="Foreground" Value="{DynamicResource MainGreenBrush}"/>
+					<Setter Property="Opacity" Value="0.9"/>
+				</Style>
+				<Style Selector="Button:pressed  /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="Transparent" />
+				</Style>
+			</Button.Styles>
+		</Button>
+		
+		
+		
+	</Grid>
+</UserControl>
