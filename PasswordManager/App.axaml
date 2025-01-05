@@ -27,6 +27,8 @@
 		
 		<!--Style for data boxes-->
 		<Style Selector="TextBox.dataBox">
+			
+			
 			<Style Selector="^:focus /template/ Border#PART_BorderElement">
 				<Setter Property="BorderBrush" Value="{DynamicResource MainGreenBrush}"/>
 				<Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}"/>
@@ -178,7 +180,9 @@
 					<Border CornerRadius="10" Background="{TemplateBinding Background}"
 							HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="7,5,7,5">
 						<ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" 
-										  DockPanel.Dock="Left"/>
+										  DockPanel.Dock="Left" 
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 						
 					</Border>
 				</ControlTemplate>

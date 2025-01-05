@@ -10,7 +10,7 @@
 		  Background="{DynamicResource MainBackgroundBrush}"
 		  Focusable="True"> 
 		
-		<TextBox Classes="dataBox" Grid.Row="1" Watermark="Enter master-password"
+		<TextBox Classes="dataBox" Grid.Row="1" Watermark="Enter master-password" x:Name="passwordBox"
 				 HorizontalAlignment="Center" VerticalContentAlignment="Center"
 				 FontSize="16.5"
 				 Width="350" CornerRadius="10"
@@ -21,12 +21,26 @@
 		
 		
 		<Button Theme="{DynamicResource DefaultGreenButton}"
-				Content="Unlock" Grid.Row="3" HorizontalAlignment="Center"
+				Content="Unlock Storage" Grid.Row="3" HorizontalAlignment="Center"
 				VerticalAlignment="Stretch"
 				Width="350" FontSize="16.5"
 				VerticalContentAlignment="Center"
 				HorizontalContentAlignment="Center"
-				Command="{Binding CheckPasswordCommand}"/>
+				Command="{Binding CheckPasswordCommand}"
+				CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
+				IsVisible="{Binding HasPassword}"/>
+
+		<Button Theme="{DynamicResource DefaultGreenButton}"
+				Content="Create Storage" Grid.Row="3" HorizontalAlignment="Center"
+				VerticalAlignment="Stretch"
+				Width="350" FontSize="16.5"
+				VerticalContentAlignment="Center"
+				HorizontalContentAlignment="Center"
+				Command="{Binding SavePasswordCommand}"
+				CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
+				IsVisible="{Binding !HasPassword}"/>
+
+
 
 		<Button Grid.Row="4" Background="Transparent"
 				Content="forgot master password?"

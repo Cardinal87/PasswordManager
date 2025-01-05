@@ -8,21 +8,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
-using System.Runtime.InteropServices.Marshalling;
+using PasswordManager.Configuration;
+using PasswordManager.Configuration.OptionExtensions;
+
+
+
+
 
 namespace PasswordManager.ViewModels
 {
     class MenuViewModel : ViewModelBase
     {
 
-        public MenuViewModel() 
+        public MenuViewModel(IWritableOptions<LoggingOptions> loggingOpt) 
         {
+            _loggingOpt = loggingOpt;
             SavePasswordCommand = new AsyncRelayCommand<string>(SavePassword);
             CheckPasswordCommand = new AsyncRelayCommand<string>(CheckPassword);
         }
-
-        private AsyncRelayCommand<string> SavePasswordCommand { get; set; }
-        private AsyncRelayCommand<string> CheckPasswordCommand { get; set; }
+        private IWritableOptions<LoggingOptions> _loggingOpt;
+        public AsyncRelayCommand<string> SavePasswordCommand { get; set; }
+        public AsyncRelayCommand<string> CheckPasswordCommand { get; set; }
 
         private bool? isCorrectPass;
         public bool? IsCorrectPass
@@ -34,14 +40,19 @@ namespace PasswordManager.ViewModels
                 OnPropertyChanged(nameof(IsCorrectPass));
             }
         }
+
+        public bool HasPassword { get => !String.IsNullOrEmpty(_loggingOpt.Value.Hash); }
+
+
         private async Task CheckPassword(string? password)
         {
             if (!String.IsNullOrEmpty(password))
             {
-                var salt = Config.Default.Hash.Split('-')[1];
+                
+                var salt = _loggingOpt.Value.Hash.Split()[0]!;
                 var hash = await GetHash(password, salt);
-                IsCorrectPass = Config.Default.Hash.Equals(hash);
-                OnPropertyChanged(nameof(IsCorrectPass));
+                IsCorrectPass = _loggingOpt.Value.Hash.Equals(hash);
+                OnPropertyChanged("PasswordChecked");
             }
         }
 
@@ -51,7 +62,12 @@ namespace PasswordManager.ViewModels
             {
                 var salt = GenerateSalt();
                 var hash = await GetHash(password, salt);
-                Config.Default.Hash = hash;
+                _loggingOpt.Update(opt =>
+                {
+                    opt.Hash = hash;
+                });
+
+                OnPropertyChanged("PasswordCreated");
             }
         }
 
@@ -63,8 +79,8 @@ namespace PasswordManager.ViewModels
                 string str = String.Concat(password, salt);
                 var bites = Encoding.UTF8.GetBytes(str);
                 var hash = await Task.Run(() => sha256.ComputeHash(bites));
-                var hashString = BitConverter.ToString(hash).ToLower();
-                hashString = String.Concat(salt + "-", hashString);
+                var hashString = BitConverter.ToString(hash).ToLower().Replace("-", "");
+                hashString = String.Concat(salt + " ", hashString);
                 return hashString;
             }
             

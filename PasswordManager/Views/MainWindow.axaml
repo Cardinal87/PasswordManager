@@ -11,7 +11,7 @@
         Title="PasswordManager"
 		Height="700" Width="1100"
 		MinHeight="700" MinWidth="1100" 
-		x:DataType="vm:StartViewModel"
+		x:DataType="vm:StartUpViewModel"
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="Default"
 		ExtendClientAreaTitleBarHeightHint="25">
@@ -28,7 +28,7 @@
 	</Window.Styles>
 	<Label PointerPressed="MoveWindow" Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="0" Grid.ColumnSpan="2">
 		<Grid>
-			<ContentControl Content="{Binding CurrentPage}"/>
+			<ContentControl Content="{Binding CurrentPage}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 		</Grid>
 	</Label>
 

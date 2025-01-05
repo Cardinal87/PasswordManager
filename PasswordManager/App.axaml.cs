@@ -3,18 +3,18 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
-using Avalonia.Metadata;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.DataConnectors;
+using PasswordManager.Configuration;
+using PasswordManager.Configuration.OptionExtensions;
 using PasswordManager.Factories;
 using PasswordManager.Helpers;
 using PasswordManager.ViewModels;
-using PasswordManager.ViewModels.AppViewModels;
-using PasswordManager.ViewModels.WebSiteViewModels;
 using PasswordManager.Views;
-using PasswordManager.Views.WebSiteViews;
-using System.ComponentModel;
+using System.IO;
+using System.Text.Json;
+
 
 namespace PasswordManager;
 
@@ -32,16 +32,33 @@ public partial class App : Application
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
-        var builder = new ContainerBuilder();
-        SetUpContainer(builder);
-        var container = builder.Build();
+        if (!File.Exists("appsettings.json"))
+        {
+            var model = new 
+            { 
+                logging = new
+                {
+                    hash = ""
+                }
+            };
+            var json = JsonSerializer.Serialize(model);
+            File.WriteAllText("appsettings.json", json);
+        }
+
+        var conf = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        var services = new ServiceCollection();
+        SetUpContainer(services, conf);
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            using (var a = container.BeginLifetimeScope())
+            using (var a = services.BuildServiceProvider())
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MenuViewModel()
+                    DataContext = new StartUpViewModel(a.GetRequiredService<IViewModelFactory>(),
+                    a.GetRequiredService<IWritableOptions<LoggingOptions>>())
                 };
             }
             
@@ -55,16 +72,15 @@ public partial class App : Application
         //}
 
         base.OnFrameworkInitializationCompleted();
-        
     }
 
-
-    private void SetUpContainer(ContainerBuilder builder)
+    private void SetUpContainer(IServiceCollection services, IConfiguration config)
     {
-        builder.RegisterType<ClipboardService>().As<IClipboardService>();
-        builder.RegisterType<DialogService>().As<IDialogService>().SingleInstance();
-        builder.RegisterType<ContextFactory>().As<IContextFactory>().InstancePerLifetimeScope();
-        builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>().SingleInstance();
-        builder.RegisterType<ItemViewModelFactory>().As<IItemViewModelFactory>().SingleInstance();
+        services.AddScoped<IClipboardService, ClipboardService>();
+        services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IContextFactory, ContextFactory>();
+        services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+        services.AddSingleton<IItemViewModelFactory, ItemViewModelFactory>();
+        services.AddWritebleOptions<LoggingOptions>(config.GetSection(LoggingOptions.Section), "appsettings.json");
     }
 }
