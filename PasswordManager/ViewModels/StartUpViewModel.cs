@@ -1,12 +1,19 @@
-﻿using Microsoft.Extensions.Configuration;
-using PasswordManager.Configuration;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using PasswordManager.Configuration.AppConfiguration;
 using PasswordManager.Configuration.OptionExtensions;
+using PasswordManager.DataConnectors;
 using PasswordManager.Factories;
 using PasswordManager.ViewModels.BaseClasses;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,14 +21,17 @@ namespace PasswordManager.ViewModels
 {
     internal class StartUpViewModel : ViewModelBase
     {
-        private IViewModelFactory _factory;
+        
+        IServiceCollection _services;
+        LoggingOptions _options;
         private ViewModelBase? currentPage;
 
-        public StartUpViewModel(IViewModelFactory factory, IWritableOptions<LoggingOptions> options)
+        public StartUpViewModel(IWritableOptions<LoggingOptions> options, IServiceCollection services)
         {
-            _factory = factory;
+            _options = options.Value;
+            _services = services;
             MenuViewModel = new MenuViewModel(options);
-            MenuViewModel.PropertyChanged += StartApp;
+            MenuViewModel.OnDataBaseEncryptng += StartApp;
             CurrentPage = MenuViewModel;
         }
 
@@ -40,28 +50,44 @@ namespace PasswordManager.ViewModels
             }
         }
 
-        private async void StartApp(object? sender, PropertyChangedEventArgs e)
+        private async void StartApp(string password)
         {
-            if (e.PropertyName == "PasswordChecked")
+            
+            string key = GetEncryptionKey(password);
+            _services.AddDbContextFactory<DatabaseClient>(opt =>
             {
-                DecryptDatabase();
-                var mainVm = await MainViewModel.CreateAsync(_factory);
-                CurrentPage = mainVm;
-            }
-            else if (e.PropertyName == "PasswordCreated")
+                opt.UseSqlite(new SqliteConnectionStringBuilder
+                {
+                    DataSource = _options.ConnectionString,
+                    Password = key
+                    
+                }.ToString());
+            });
+
+            var provider = _services.BuildServiceProvider();
+            if (!File.Exists(_options.ConnectionString))
             {
-                CreateDatabase();
-                var mainVm = await MainViewModel.CreateAsync(_factory);
-                CurrentPage = mainVm;
+                var factory = provider.GetRequiredService<IDbContextFactory<DatabaseClient>>();
+                using var context = factory.CreateDbContext();
+                context.Database.EnsureCreated();
             }
-        }
+            
+            var vm = await MainViewModel.CreateAsync(provider.GetRequiredService<IViewModelFactory>());
+            MainViewModel = vm;
+            CurrentPage = MainViewModel;
+            
 
-        private void DecryptDatabase()
-        {
-
         }
-        private void CreateDatabase()
+        
+        private string GetEncryptionKey(string password)
         {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                var hashString = BitConverter.ToString(hash).ToLower().Replace("-", "");
+                return hashString;
+            }
 
         }
 

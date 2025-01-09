@@ -1,5 +1,8 @@
 ﻿using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using PasswordManager.DataConnectors;
@@ -24,14 +27,14 @@ namespace PasswordManager.ViewModels.AppViewModels
     internal partial class AppViewModel : ViewModelBase
     {
         
-        public static async Task<AppViewModel> CreateAsync(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public static async Task<AppViewModel> CreateAsync(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             var appVm = new AppViewModel(contextFactory,dialogService,itemFactory);
             await appVm.LoadViewModelListAsync();
             return appVm;
         }
         
-        private AppViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        private AppViewModel(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             this.contextFactory = contextFactory;
             this.dialogService = dialogService;
@@ -44,7 +47,7 @@ namespace PasswordManager.ViewModels.AppViewModels
             
         }
         IItemViewModelFactory itemFactory;
-        IContextFactory contextFactory;
+        IDbContextFactory<DatabaseClient> contextFactory;
         IDialogService dialogService;
         private AppItemViewModel? currentItem;
         private string searchKey = "";
@@ -86,7 +89,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         
         private async Task DeleteAsync(AppItemViewModel? appItem)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext()) 
+            using (var dbClient = await contextFactory.CreateDbContextAsync()) 
             {
                 if (appItem != null)
                 {
@@ -96,9 +99,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                     OnPropertyChanged(nameof(FilteredCollection));
                     await dbClient.SaveChangesAsync();
                 }
-                
             }
-
         }
         
         private void ShowChangeDialog(AppItemViewModel? appItem)
@@ -121,7 +122,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         }
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = contextFactory.CreateDbContext())
             {
                 
                 if (sender is AppDialogViewModel vm)
@@ -136,9 +137,6 @@ namespace PasswordManager.ViewModels.AppViewModels
                             AppItemViewModel item = itemFactory.CreateAppItem(vm.Model);
                             Apps.Add(item);
                             CurrentItem = item;
-
-
-
                         }
                         else
                         {
@@ -156,26 +154,27 @@ namespace PasswordManager.ViewModels.AppViewModels
         }
         private async Task AddToFavouriteAsync(AppItemViewModel? appItem)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            if (appItem != null)
             {
-                
-                if (appItem != null)
+                appItem.IsFavourite = !appItem.IsFavourite;
+                using (var dbClient = await contextFactory.CreateDbContextAsync())
                 {
                     AppModel? el = await dbClient.GetByIdAsync<AppModel>(appItem.Id);
                     if (el != null)
                     {
-                        appItem.IsFavourite = !appItem.IsFavourite;
                         el.IsFavourite = !el.IsFavourite;
                         await dbClient.SaveChangesAsync();
                     }
+
                 }
             }
-            }
+        }
         private async Task LoadViewModelListAsync()
         {
-            
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+
+            using (var dbClient = contextFactory.CreateDbContext())
             {
+                await Task.Yield();
                 var models = await dbClient.GetListOfTypeAsync<AppModel>();
                 var viewmodels = new ObservableCollection<AppItemViewModel>();
                 await foreach (var model in models.ToAsyncEnumerable())

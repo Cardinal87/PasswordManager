@@ -1,4 +1,5 @@
-﻿using PasswordManager.DataConnectors;
+﻿using Microsoft.EntityFrameworkCore;
+using PasswordManager.DataConnectors;
 using PasswordManager.Helpers;
 using PasswordManager.ViewModels;
 using PasswordManager.ViewModels.AllEntriesViewModels;
@@ -19,12 +20,12 @@ namespace PasswordManager.Factories
     {
         public IItemViewModelFactory ItemFac { get; }
         public IDialogService DialogService { get; }
-        public IContextFactory ContextFactory { get; }
+        public IDbContextFactory<DatabaseClient> ContextFactory { get; }
         public Task<WebSiteViewModel> CreateWebSiteVMAsync();
         public Task<AppViewModel> CreateAppVMAsync();
         public Task<CardViewModel> CreateCardVMAsync();
         public AllEntriesViewModel CreateAllEntriesVM(WebSiteViewModel webVm, CardViewModel cardVm,  AppViewModel appVm);
-        
+        public Task Test();
 
     }
 }

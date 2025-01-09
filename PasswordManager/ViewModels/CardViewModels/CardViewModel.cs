@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using PasswordManager.DataConnectors;
 using PasswordManager.Factories;
 using PasswordManager.Helpers;
@@ -20,7 +21,7 @@ namespace PasswordManager.ViewModels.CardViewModels
     internal class CardViewModel : ViewModelBase
     {
         
-        public static async Task<CardViewModel> CreateAsync(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public static async Task<CardViewModel> CreateAsync(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             var cardVm = new CardViewModel(contextFactory,dialogService, itemFactory);
             await cardVm.LoadViewModelsListAsync();
@@ -28,7 +29,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         }
         
         
-        private CardViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory) 
+        private CardViewModel(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory) 
         { 
             this.contextFactory = contextFactory;
             this.dialogService = dialogService;
@@ -41,7 +42,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             
         }
         private string searchKey = "";
-        private IContextFactory contextFactory;
+        private IDbContextFactory<DatabaseClient> contextFactory;
         private IDialogService dialogService;
         private IItemViewModelFactory itemFactory;
         public CardItemViewModel? currentItem;
@@ -86,7 +87,7 @@ namespace PasswordManager.ViewModels.CardViewModels
 
         private async Task DeleteAsync(CardItemViewModel? cardItem)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             {
                 if (cardItem != null)
                 {
@@ -122,7 +123,7 @@ namespace PasswordManager.ViewModels.CardViewModels
 
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             {
                 if (sender is CardDialogViewModel vm)
                 {
@@ -138,8 +139,6 @@ namespace PasswordManager.ViewModels.CardViewModels
                             CardItemViewModel item = itemFactory.CreateCardItem(model);
                             Cards.Add(item);
                             CurrentItem = item;
-
-
                         }
                         else
                         {
@@ -160,10 +159,11 @@ namespace PasswordManager.ViewModels.CardViewModels
 
         private async Task AddToFavouriteAsync(CardItemViewModel? cardItem)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             {
                 if (cardItem != null)
                 {
+                    
                     CardModel? el = await dbClient.GetByIdAsync<CardModel>(cardItem.Id);
                     if (el != null)
                     {
@@ -177,8 +177,9 @@ namespace PasswordManager.ViewModels.CardViewModels
         }
         private async Task LoadViewModelsListAsync()
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             {
+                
                 var models = await dbClient.GetListOfTypeAsync<CardModel>();
                 var viewmodels = new ObservableCollection<CardItemViewModel>();
                 await foreach (var model in models.ToAsyncEnumerable())

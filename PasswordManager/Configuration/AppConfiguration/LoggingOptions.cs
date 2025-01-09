@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.Configuration
+namespace PasswordManager.Configuration.AppConfiguration
 {
     internal class LoggingOptions
     {
         public const string Section = "logging";
 
         public string Hash { get; set; }
+        public string ConnectionString { get; set; }
 
     }
 }

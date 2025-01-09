@@ -13,12 +13,12 @@ public partial class WebSiteView : UserControl
     {
         InitializeComponent();
     }
-    public void EnterPressed(object sender, KeyEventArgs e)
+    private void SearchBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (sender is TextBox textBox)
         {
-            var text = ((TextBox)sender).Text;
-            var vm = (WebSiteViewModel)DataContext!;
+            var text = textBox.Text;
+            var vm = (AppViewModel)DataContext!;
             if (text != null) vm.SearchKey = text;
         }
     }

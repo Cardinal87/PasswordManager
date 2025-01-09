@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using PasswordManager.ViewModels.AppViewModels;
 using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.WebSiteViewModels;
 
@@ -14,12 +15,12 @@ public partial class CardView : UserControl
         InitializeComponent();
     }
 
-    public void EnterPressed(object sender, KeyEventArgs e)
+    private void SearchBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (sender is TextBox textBox)
         {
-            var text = ((TextBox)sender).Text;
-            var vm = (CardViewModel)DataContext!;
+            var text = textBox.Text;
+            var vm = (AppViewModel)DataContext!;
             if (text != null) vm.SearchKey = text;
         }
     }

@@ -14,15 +14,7 @@ public partial class AppView : UserControl
     {
         InitializeComponent();
     }
-    public void EnterPressed(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter)
-        {
-            var text = ((TextBox)sender).Text;
-            var vm = (AppViewModel)DataContext!;
-            if (text != null) vm.SearchKey = text;
-        }
-    }
+    
 
     private void ListBox_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
     {
@@ -32,7 +24,14 @@ public partial class AppView : UserControl
             ((AppViewModel)DataContext!).CurrentItem = (AppItemViewModel)list?.SelectedItem!;
         }
     }
-    
 
-
+    private void SearchBox_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
+    {
+        if (sender is TextBox textBox)
+        {
+            var text = textBox.Text;
+            var vm = (AppViewModel)DataContext!;
+            if (text != null) vm.SearchKey = text;
+        }
+    }
 }

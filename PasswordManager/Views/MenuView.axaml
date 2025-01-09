@@ -6,61 +6,82 @@
 			 xmlns:vm="clr-namespace:PasswordManager.ViewModels"
              x:Class="PasswordManager.Views.MenuView"
 			 x:DataType="vm:MenuViewModel">
-	<Grid RowDefinitions="*,35,20,35,40,90"
+	<Grid RowDefinitions="480,*"
 		  Background="{DynamicResource MainBackgroundBrush}"
-		  Focusable="True"> 
-		
-		<TextBox Classes="dataBox" Grid.Row="1" Watermark="Enter master-password" x:Name="passwordBox"
-				 HorizontalAlignment="Center" VerticalContentAlignment="Center"
-				 FontSize="16.5"
-				 Width="350" CornerRadius="10"
-				 Background="{DynamicResource DataBoxBackgroundBrush}" 
-				 Foreground="{DynamicResource FontBrush}"
-				 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
-		
-		
-		
-		<Button Theme="{DynamicResource DefaultGreenButton}"
-				Content="Unlock Storage" Grid.Row="3" HorizontalAlignment="Center"
-				VerticalAlignment="Stretch"
-				Width="350" FontSize="16.5"
-				VerticalContentAlignment="Center"
-				HorizontalContentAlignment="Center"
-				Command="{Binding CheckPasswordCommand}"
-				CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
-				IsVisible="{Binding HasPassword}"/>
+		  Focusable="True">
 
-		<Button Theme="{DynamicResource DefaultGreenButton}"
-				Content="Create Storage" Grid.Row="3" HorizontalAlignment="Center"
-				VerticalAlignment="Stretch"
-				Width="350" FontSize="16.5"
-				VerticalContentAlignment="Center"
-				HorizontalContentAlignment="Center"
-				Command="{Binding SavePasswordCommand}"
-				CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
-				IsVisible="{Binding !HasPassword}"/>
-
-
-
-		<Button Grid.Row="4" Background="Transparent"
-				Content="forgot master password?"
-				HorizontalAlignment="Center"
-				FontSize="15.5"
-				Foreground="{DynamicResource MainGreenBrush}">
-			<Button.Styles>
-				<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-					<Setter Property="BorderBrush" Value="Transparent" />
-					<Setter Property="Background" Value="Transparent" />
-					<Setter Property="Foreground" Value="{DynamicResource MainGreenBrush}"/>
-					<Setter Property="Opacity" Value="0.9"/>
-				</Style>
-				<Style Selector="Button:pressed  /template/ ContentPresenter#PART_ContentPresenter">
-					<Setter Property="Background" Value="Transparent" />
-				</Style>
-			</Button.Styles>
-		</Button>
+		<Grid Grid.Row="1" RowDefinitions="35,20,35,40,90" x:Name="LoggingGrid" IsVisible="True">
+			<TextBox Classes="dataBox" Grid.Row="0"  Watermark="Enter master-password" x:Name="passwordBox"
+					 HorizontalAlignment="Center" VerticalContentAlignment="Center"
+					 Text="{Binding Password}"
+					 FontSize="16.5"
+					 Width="350" CornerRadius="10"
+					 Background="{DynamicResource DataBoxBackgroundBrush}" 
+					 Foreground="{DynamicResource FontBrush}"
+					 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
 		
 		
+		
+			<Button Theme="{DynamicResource DefaultGreenButton}"
+					Content="Unlock Storage" Grid.Row="2" HorizontalAlignment="Center"
+					VerticalAlignment="Stretch"
+					Width="350" FontSize="16.5"
+					VerticalContentAlignment="Center"
+					HorizontalContentAlignment="Center"
+					Command="{Binding CheckPasswordCommand}"
+					CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
+					IsVisible="{Binding HasPassword}"/>
+
+			<Button Theme="{DynamicResource DefaultGreenButton}"
+					Content="Create Storage" Grid.Row="2" HorizontalAlignment="Center"
+					VerticalAlignment="Stretch"
+					Width="350" FontSize="16.5"
+					VerticalContentAlignment="Center"
+					HorizontalContentAlignment="Center"
+					Command="{Binding SavePasswordCommand}"
+					CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
+					IsVisible="{Binding !HasPassword}"/>
+		
+			<Button Grid.Row="3" Background="Transparent"
+					Content="forgot master password?"
+					Click="ShowConfirmationWindow"
+					HorizontalAlignment="Center"
+					FontSize="15.5"
+					Foreground="{DynamicResource MainGreenBrush}"
+					IsVisible="{Binding HasPassword}">
+				<Button.Styles>
+					<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="BorderBrush" Value="Transparent" />
+						<Setter Property="Background" Value="Transparent" />
+						<Setter Property="Foreground" Value="{DynamicResource MainGreenBrush}"/>
+						<Setter Property="Opacity" Value="0.9"/>
+					</Style>
+					<Style Selector="Button:pressed  /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="Background" Value="Transparent" />
+					</Style>
+				</Button.Styles>
+			</Button>
+		</Grid>
+		<Grid x:Name="ConfirmationGrid" Grid.Row="1" IsVisible="False">
+			<TextBlock FontSize="19" Margin="10,0,0,0" TextAlignment="Center">
+				are you sure you <LineBreak/>
+				want to delete the storage
+				
+			</TextBlock>
+			<Button Theme="{StaticResource ConfirmButton}" Content="Confirm" Margin="125,0,0,0"
+					Padding="10,7,10,7"
+					Click="HideConfirmationWindow"
+					Command="{Binding DeleteStorageCommand}"
+					HorizontalAlignment="Center"
+					FontSize="18"
+					VerticalAlignment="Center"/>
+			<Button Content="Cancel" Padding="10,7,10,7" Margin="0,0,125,0"
+					Theme="{StaticResource CancelButton}"
+					Click="HideConfirmationWindow"
+					FontSize="18"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+		</Grid>
 		
 	</Grid>
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Markup.Xaml.MarkupExtensions;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PasswordManager;
 using PasswordManager.DataConnectors;
@@ -24,7 +25,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     internal partial class WebSiteViewModel : ViewModelBase
     {
 
-        public static async Task<WebSiteViewModel> CreateAsync(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public static async Task<WebSiteViewModel> CreateAsync(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             var webVm = new WebSiteViewModel(contextFactory, dialogService, itemFactory);
             await webVm.LoadViewModelsListAsync();
@@ -32,7 +33,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
         
         
-        private WebSiteViewModel(IContextFactory contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        private WebSiteViewModel(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
         {
             this.itemFactory = itemFactory;
             this.contextFactory = contextFactory;
@@ -47,7 +48,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private string searchKey = "";
         private IItemViewModelFactory itemFactory;
         private IDialogService dialogService;
-        private IContextFactory contextFactory;
+        private IDbContextFactory<DatabaseClient> contextFactory;
         private WebSiteItemViewModel? currentItem;
         public RelayCommand AddNewCommand { get; }
         public AsyncRelayCommand<WebSiteItemViewModel> AddToFavouriteCommand { get; set; }
@@ -102,7 +103,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         
         private async Task DeleteAsync(WebSiteItemViewModel? webSiteItem)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             {    
                 if (webSiteItem != null)
                 {
@@ -128,7 +129,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
 
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             { 
                 if (e.DialogResult && sender is WebSiteDialogViewModel vm)
                 {
@@ -161,10 +162,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
         private async Task AddToFavouriteAsync(WebSiteItemViewModel? webSiteItem)
         {
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             {   
                 if (webSiteItem != null)
                 {
+                    
                     WebSiteModel? el = await dbClient.GetByIdAsync<WebSiteModel>(webSiteItem.Id);
                     if (el != null)
                     {
@@ -179,8 +181,9 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private async Task LoadViewModelsListAsync()
         {
 
-            using (IDatabaseClient dbClient = contextFactory.CreateContext())
+            using (var dbClient = await contextFactory.CreateDbContextAsync())
             {
+                await Task.Yield();
                 var models = await dbClient.GetListOfTypeAsync<WebSiteModel>();
                 var viewmodels = new ObservableCollection<WebSiteItemViewModel>();
                 await foreach (var model in models.ToAsyncEnumerable())

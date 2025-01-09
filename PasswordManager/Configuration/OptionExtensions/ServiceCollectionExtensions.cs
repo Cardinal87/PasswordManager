@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Autofac.Builder;
+﻿
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

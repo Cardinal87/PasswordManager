@@ -10,15 +10,8 @@
 	<UserControl.Styles>
 		
 		<Style Selector="Menu">
-			<Setter Property="Background" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="HorizontalAlignment" Value="Left"/>
-			<Setter Property="CornerRadius" Value="10"/>
-			<Style Selector="^:pointerover">
-				<Style Selector="^ /template/ Border">
-					<Setter Property="Opacity" Value="0.8" />
-				</Style>
-			</Style>
-			
 		</Style>
 
 
@@ -61,11 +54,9 @@
 	
 	<Grid RowDefinitions="45,*" Background="{DynamicResource MainBackgroundBrush}">
 
-		
-
-		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}">
-			<Menu Margin="15,0,0,0" >
-				<MenuItem Header="Add" Classes="MainItem">
+		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}" >
+			<Menu Margin="25,0,0,2">
+				<MenuItem Header="Add" Classes="MainItem" VerticalAlignment="Center" Padding="7,5,7,5">
 					<MenuItem Header="Account" Classes="CommonItem"
 							  Command="{Binding WebSiteViewModel.AddNewCommand}"/>
 					<MenuItem Header="App" Classes="CommonItem"/>

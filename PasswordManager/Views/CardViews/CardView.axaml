@@ -18,14 +18,14 @@
 
 			</Button>
 			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,2" VerticalAlignment="Center"
-					 KeyDown="EnterPressed" Classes="searchBox"/>
+					 TextChanged="SearchBox_TextChanged" Classes="searchBox"/>
 
 
 		</Grid>
 
 		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
 		
-		<TextBlock Text="no cards have been added yet" FontSize="27"
+		<TextBlock Text="no cards have been added yet" FontSize="25"
 				   Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
 				   IsVisible="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNull}}"/>
 		

@@ -61,9 +61,9 @@ internal partial class MainViewModel : ViewModelBase
         CurrentPage = vm;
     }
 
-    
     private async Task InizializeViewModelsAsync()
     {
+        
         var appTask =  _factory.CreateAppVMAsync();
         var cardTask = _factory.CreateCardVMAsync();
         var webTask = _factory.CreateWebSiteVMAsync();

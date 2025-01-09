@@ -187,9 +187,6 @@
 					</Border>
 				</ControlTemplate>
 			</Setter>
-			
-			
-			
 		</ControlTheme>
 		
 		
@@ -230,6 +227,7 @@
 		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="ConfirmButton">
 			<Setter Property="Background" Value="{DynamicResource MainGreenBrush}"/>
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Padding" Value="7,5,7,5"/>
 			<Setter Property="Content" Value="Confirm"/>
 			<Setter Property="CornerRadius" Value="5"/>
 			
@@ -242,6 +240,7 @@
 		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="CancelButton">
 			<Setter Property="Background" Value="{DynamicResource MainRedBrush}"/>
 			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Padding" Value="7,5,7,5"/>
 			<Setter Property="Content" Value="Cancel"/>
 			<Setter Property="CornerRadius" Value="5"/>
 		</ControlTheme>

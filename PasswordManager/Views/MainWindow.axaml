@@ -14,7 +14,8 @@
 		x:DataType="vm:StartUpViewModel"
 		ExtendClientAreaToDecorationsHint="True"
 		ExtendClientAreaChromeHints="Default"
-		ExtendClientAreaTitleBarHeightHint="25">
+		ExtendClientAreaTitleBarHeightHint="25"
+		WindowStartupLocation="CenterOwner">
 	
 	
 	
@@ -26,10 +27,10 @@
 			</Style>
 		</Style>
 	</Window.Styles>
-	<Label PointerPressed="MoveWindow" Background="{DynamicResource AdditionalBackgroundBrush}" Grid.Row="0" Grid.ColumnSpan="2">
-		<Grid>
-			<ContentControl Content="{Binding CurrentPage}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-		</Grid>
+	<Label PointerPressed="MoveWindow" Background="{DynamicResource AdditionalBackgroundBrush}"
+		   Padding="0">
+		<ContentControl Content="{Binding CurrentPage}"/>
+		
 	</Label>
 
 </Window>

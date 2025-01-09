@@ -17,7 +17,7 @@
 			<SolidColorBrush x:Key="DataBoxBackgroundBrush" Color="#060c14"/>
 			<SolidColorBrush x:Key="CloseButtonHighLightedBrush" Color="#4f4f4f"/>
 			<SolidColorBrush x:Key="WarningBrush" Color="#de1818"/>
-			<SolidColorBrush x:Key="MainWindowBrush" Color="#2d2d38"/>
+			<SolidColorBrush x:Key="MainWindowBrush" Color="#262638"/>
 			<SolidColorBrush x:Key="DeleteButtonBrush" Color="#7a0000"/>
 			<SolidColorBrush x:Key="ListBoxItemSelectedBrush" Color="#2d3238"/>
 			<SolidColorBrush x:Key="ListBoxItemPointOverBrush" Color="#3b414a"/>

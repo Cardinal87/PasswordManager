@@ -10,4 +10,15 @@ public partial class MenuView : UserControl
     {
         InitializeComponent();
     }
+
+    private void ShowConfirmationWindow(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        LoggingGrid.IsVisible = false;
+        ConfirmationGrid.IsVisible = true;
+    }
+    private void HideConfirmationWindow(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        LoggingGrid.IsVisible = true;
+        ConfirmationGrid.IsVisible = false;
+    }
 }
