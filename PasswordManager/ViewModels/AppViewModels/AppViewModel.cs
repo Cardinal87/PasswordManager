@@ -56,6 +56,8 @@ namespace PasswordManager.ViewModels.AppViewModels
         {
             get => Apps.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
         }
+
+        public bool IsEmptyCollection { get => !Apps.Any(); }
         public AsyncRelayCommand<AppItemViewModel> AddToFavouriteCommand { get; set; }
         public RelayCommand AddNewCommand { get; set; }
         public AsyncRelayCommand<AppItemViewModel> DeleteCommand { get; set; }

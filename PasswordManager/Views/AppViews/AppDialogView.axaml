@@ -38,18 +38,21 @@
 	<Border PointerPressed="MoveWindow"  Padding="0" Focusable="True" x:Name="MainBorder"
 			BorderThickness="1" BorderBrush="{DynamicResource DataBoxBorderBrush}">
 		<Grid RowDefinitions="55,*,50">
-		
-		
-			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="ShowName" IsVisible="True">
-				<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewApp}"
-						   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"
-						   Margin="20,0,0,0"
-						   MaxWidth="400"/>
-				<Button Background="#1b2026" Margin="5,0,0,0"
-						DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
-						HorizontalAlignment="Left" Click="ShowSetNameTemplate" />
 
-			</DockPanel>
+			<Grid x:Name="ShowName"  IsVisible="True">
+				<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" IsVisible="True">
+					<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewApp}"
+							   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"
+							   Margin="20,0,0,0"
+							   MaxWidth="400"/>
+					<Button Background="#1b2026" Margin="5,0,0,0"
+							DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
+							HorizontalAlignment="Left" Click="ShowSetNameTemplate" />
+
+				</DockPanel>
+			</Grid>
+			<TextBlock Text="name is not correct" Foreground="{DynamicResource WarningBrush}" FontSize="12"
+					   Margin="22,0,0,2" IsVisible="{Binding !IsValidName}" VerticalAlignment="Bottom"/>
 			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="SetName" IsVisible="False">
 				<Button Margin="15,0,15,1" Theme="{StaticResource DismissButton}"
 						DockPanel.Dock="Right" Padding="3" Click="CloseTemplate"/>
@@ -59,30 +62,33 @@
 					<TextBox Watermark="Name" Foreground="{DynamicResource FontBrush}" x:Name="NameBox" 
 							 DockPanel.Dock="Right" VerticalAlignment="Center"
 							 Background="{DynamicResource DataBoxBackgroundBrush}" BorderThickness="0"
-							 Classes="dataBox" CornerRadius="5" TextChanged="NameChanged"
+							 Classes="dataBox" CornerRadius="5"
 							 KeyDown="QuickConfirmName"/>
-					<TextBlock Text="Name should be filled" Foreground="{DynamicResource WarningBrush}" FontSize="10" 
-							   Margin="5,0,0,0" IsVisible="False" x:Name="NameWarning"/>
 				</StackPanel>
 
 
 			</DockPanel>
 			<Grid Grid.Row="1" ShowGridLines="True" Background="{DynamicResource MainBackgroundBrush}">
 				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Margin="25,40" CornerRadius="20" >
+					
 					<StackPanel>
 						<TextBlock Text="Account" Foreground="White" Margin="15,10,0,0"/>
 						<Separator Margin="0,5,0,0" Background="{DynamicResource DataBoxBorderBrush}"/>
-						<DockPanel Margin="15,30,0,0">
-							<TextBlock Text="Password" Foreground="White" VerticalAlignment="Center" Width="75"/>
-							<TextBox Watermark="Enter password" Margin="15,0,15,0" BorderThickness="1"
-									 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
-									 BorderBrush="{DynamicResource DataBoxBorderBrush}"
-									 Text="{Binding Password}"
-									 Classes="dataBox"
-									 HorizontalContentAlignment="Left" CornerRadius="15"
-									 KeyDown="ConfirmPassword"/>
-						</DockPanel>
-						
+						<Grid RowDefinitions="25,30" Margin="0,20,0,0">
+							<DockPanel Margin="15,0,0,0">
+								<TextBlock Text="Password" Foreground="White" VerticalAlignment="Center" Width="75"/>
+								<TextBox Watermark="Enter password" Margin="15,0,15,0" BorderThickness="1"
+										 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
+										 BorderBrush="{DynamicResource DataBoxBorderBrush}"
+										 Text="{Binding Password}"
+										 Classes="dataBox" MaxLength="30"
+										 HorizontalContentAlignment="Left" CornerRadius="15"
+										 KeyDown="ConfirmPassword"/>
+							</DockPanel>
+							<TextBlock Text="password is not correct" Foreground="{DynamicResource WarningBrush}"
+									   Margin="115,2,0,0" Grid.Row="1"
+									   IsVisible="{Binding !IsValidPassword}"/>
+						</Grid>
 					</StackPanel>
 					
 				</Border>

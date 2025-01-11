@@ -18,7 +18,7 @@
 
 			</Button>
 			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,2" VerticalAlignment="Center"
-					 TextChanged="SearchBox_TextChanged" Classes="searchBox"/>
+					 Text="{Binding SearchKey}" Classes="searchBox"/>
 
 
 		</Grid>
@@ -27,11 +27,10 @@
 		
 		<TextBlock Text="no cards have been added yet" FontSize="25"
 				   Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-				   IsVisible="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNull}}"/>
+				   IsVisible="{Binding IsEmptyCollection}"/>
 		
 		
-		<Grid Grid.Row="1" ColumnDefinitions="250,*" IsVisible="{Binding CurrentItem, 
-			  Converter={x:Static ObjectConverters.IsNotNull}}">
+		<Grid Grid.Row="1" ColumnDefinitions="250,*" IsVisible="{Binding !IsEmptyCollection}">
 			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}"
 					 SelectedItem="{Binding CurrentItem}" SelectionChanged="ListBox_SelectionChanged">
 				<ListBox.ItemTemplate>

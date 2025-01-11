@@ -50,7 +50,8 @@
 
 
 				</DockPanel>
-				<Button Margin="20,0,0,0" Content="go to website" Theme="{StaticResource DefaultGreenButton}"/>
+				<Button Margin="20,0,0,0" Content="open website" Theme="{StaticResource DefaultGreenButton}"
+						Command="{Binding OpenWebSiteCommand}"/>
 			</StackPanel>
 		</Border>
 

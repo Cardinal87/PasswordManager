@@ -10,6 +10,7 @@ using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using PasswordManager.Configuration.AppConfiguration;
+using System.Text.RegularExpressions;
 
 
 
@@ -19,24 +20,25 @@ namespace PasswordManager.ViewModels
 {
     class MenuViewModel : ViewModelBase
     {
-
-        public MenuViewModel(IWritableOptions<LoggingOptions> loggingOpt) 
+        private const string passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,50}$";
+        
+        
+        public MenuViewModel(IWritableOptions<LoggingOptions> loggingOpt, Func<string, Task> startApp) 
         {
+            _startApp = startApp;
             _loggingOpt = loggingOpt;
             DeleteStorageCommand = new RelayCommand(DeleteStorage);
             SavePasswordCommand = new AsyncRelayCommand<string>(SavePassword);
             CheckPasswordCommand = new AsyncRelayCommand<string>(CheckPassword);
         }
+        private Func<string, Task> _startApp;
         private IWritableOptions<LoggingOptions> _loggingOpt;
-        public event Action<string>? OnDataBaseEncryptng;
         public RelayCommand DeleteStorageCommand { get; private set; }
         public AsyncRelayCommand<string> SavePasswordCommand { get; private set; }
         public AsyncRelayCommand<string> CheckPasswordCommand { get; private set; }
-        private bool? isCorrectPass;
+        private bool isCorrectPass = true;
 
-        public string Password { get; set; } = string.Empty;
-        
-        public bool? IsCorrectPass
+        public bool IsCorrectPass
         {
             get => isCorrectPass;
             set
@@ -56,8 +58,10 @@ namespace PasswordManager.ViewModels
                 var salt = _loggingOpt.Value.Hash.Split("==")[0] + "==";
                 var hash = await GetHash(password, salt);
                 IsCorrectPass = _loggingOpt.Value.Hash.Equals(hash);
-                if (IsCorrectPass.HasValue && IsCorrectPass.Value)
-                    OnDataBaseEncryptng?.Invoke(password);  
+                if (IsCorrectPass)
+                    await _startApp(password);
+                    
+                
             }
         }
 
@@ -71,7 +75,9 @@ namespace PasswordManager.ViewModels
                 {
                     opt.Hash = hash;
                 });
-                OnDataBaseEncryptng?.Invoke(password);
+                IsCorrectPass = Regex.IsMatch(password, passwordPattern);
+                if (IsCorrectPass)
+                    await _startApp(password);
             }
         }
         private void DeleteStorage()

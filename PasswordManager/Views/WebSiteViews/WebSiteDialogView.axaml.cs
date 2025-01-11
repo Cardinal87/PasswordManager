@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using PasswordManager.ViewModels.AppViewModels;
+using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.Interfaces;
 using PasswordManager.ViewModels.WebSiteViewModels;
 
@@ -33,32 +34,22 @@ public partial class WebSiteDialogView : Window
     {
         ShowName.IsVisible = true;
         SetName.IsVisible = false;
+        NameBox.Text = string.Empty;
         ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.Default;
         MainBorder.Focus();
     }
 
     private void ConfirmName(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (!string.IsNullOrEmpty(NameBox.Text))
+
+        if (NameBox.Text != null)
         {
             var vm = (WebSiteDialogViewModel)DataContext!;
             vm.Name = NameBox.Text;
             CloseTemplate(sender, e);
         }
-        else
-        {
-            ConfirmNameButton.IsEnabled = false;
-            NameWarning.IsVisible = true;
-        }
-    }
-    private void NameChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (!string.IsNullOrEmpty(NameBox.Text))
-        {
-            ConfirmNameButton.IsEnabled = true;
-            NameWarning.IsVisible = false;
-
-        }
+        
+        
     }
 
     private void QuickConfirmName(object? sender, Avalonia.Input.KeyEventArgs e)
@@ -67,6 +58,7 @@ public partial class WebSiteDialogView : Window
         {
             ConfirmName(sender, e);
             e.Handled = true;
+            MainBorder.Focus();
         }
     }
 

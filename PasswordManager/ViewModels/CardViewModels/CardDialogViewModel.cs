@@ -7,12 +7,21 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.CardViewModels
 {
     internal class CardDialogViewModel : DialogViewModelBase, IDialogResultHelper
     {
+        private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
+        private const string cvcPattern = @"^\d{3}$";
+        private const string numberPattern = @"^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$|^(\d{16})$";
+        private const string ownerPattern = @"[a-zA-Z0-9._%+-]+|^$";
+
+
+
+
         public CardDialogViewModel() 
         { 
             AddCommand = new RelayCommand(Add);
@@ -60,6 +69,8 @@ namespace PasswordManager.ViewModels.CardViewModels
             {
                 name = value;
                 OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidName));
             }
         }
         public string Owner
@@ -71,6 +82,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                 owner = value;
                 OnPropertyChanged(nameof(Owner));
                 OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidOwner));
             }
         }
         public string Number
@@ -82,6 +94,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                 number = value;
                 OnPropertyChanged(nameof(Number));
                 OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidNumber));
             }
         }
 
@@ -93,6 +106,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                 cvc = value;
                 OnPropertyChanged(nameof(Cvc));
                 OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidCvc));
             }
         }
         public string Month
@@ -137,6 +151,7 @@ namespace PasswordManager.ViewModels.CardViewModels
 
         protected void Add()
         {
+            isChecked = true;
             if (CanClose)
             {
                 if (Name == "") Name = "NewWebSite";
@@ -145,33 +160,81 @@ namespace PasswordManager.ViewModels.CardViewModels
                 Model.Id = Id;
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
             }
+            else
+            {
+                OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidDate));
+                OnPropertyChanged(nameof(IsValidCvc));
+                OnPropertyChanged(nameof(IsValidNumber));
+                OnPropertyChanged(nameof(IsValidOwner));
+                OnPropertyChanged(nameof(IsValidName));
+            }
         }
 
 
         
         public override bool CanClose
         {
-            [MemberNotNullWhen(true, nameof(Cvc))]
-            [MemberNotNullWhen(true, nameof(Month))]
-            [MemberNotNullWhen(true, nameof(Year))]
             get
             {
-                return Owner != string.Empty &&
-                       Cvc != string.Empty &&
+                if (!isChecked) return true;
+                return IsValidOwner &&
+                       IsValidCvc &&
                        Month != string.Empty &&
                        Year != string.Empty &&
+                       IsValidName &&
+                       IsValidNumber &&
                        IsValidDate;
             }
         }
+        public bool IsValidName
+        {
+            get
+            {
+                if (!isChecked) return true;
+                return Regex.IsMatch(Name, namePattern) && Name.Length >= 0
+                    && Name.Length <= 100;
+            }
+        }
+        public bool IsValidOwner
+        {
+            get
+            {
+                if (!isChecked) return true;
+                return Regex.IsMatch(Owner, ownerPattern) && Owner.Length > 0
+                    && Owner.Length <= 50;
+            }
+        }
+        
+        public bool IsValidNumber
+        {
+            get
+            {
+                if (!isChecked) return true;
+                return Regex.IsMatch(Number, numberPattern);
+            }
+        }
+
+        public bool IsValidCvc
+        {
+            get
+            {
+                if (!isChecked) return true;
+                return Regex.IsMatch(Cvc, cvcPattern);
+            }
+        }
+
         public bool IsValidDate
         {
             get
             {
+                if (!isChecked) return true;
                 return (int.TryParse(Year, out int intYear) && intYear >= DateTime.Today.Year - 1 && intYear <= DateTime.Today.Year + 10) &&
                     (int.TryParse(Month, out int intMonth) && intMonth >= 0 && intMonth <= 12);
             }
         }
 
+        private bool isChecked = false;
 
         protected override void Close()
         {

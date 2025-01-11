@@ -29,11 +29,9 @@ namespace PasswordManager.DataConnectors
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<WebSiteModel>().ToTable("WebSites").HasKey(e => e.Id);
-
-            modelBuilder.Entity<AppModel>().ToTable("Apps").HasKey(e => e.Id);
-
-            modelBuilder.Entity<CardModel>().ToTable("Cards").HasKey(e => e.Id);
+            modelBuilder.ApplyConfiguration(new WebSiteModelConfiguration());
+            modelBuilder.ApplyConfiguration(new AppModelConfiguration());
+            modelBuilder.ApplyConfiguration(new CardModelConfiguration());
         }
         public IEnumerable<T> GetListOfType<T>() where T : ModelBase
         {

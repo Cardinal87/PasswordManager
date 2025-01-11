@@ -36,6 +36,7 @@ public partial class AppDialogView : Window
     {
         ShowName.IsVisible = true;
         SetName.IsVisible = false;
+        NameBox.Text = string.Empty;
         ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.Default;
         MainBorder.Focus();
     }
@@ -48,21 +49,9 @@ public partial class AppDialogView : Window
             vm.Name = NameBox.Text;
             CloseTemplate(sender, e);
         }
-        else
-        {
-            ConfirmNameButton.IsEnabled = false;
-            NameWarning.IsVisible = true;
-        }
+        
     }
-    private void NameChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (!string.IsNullOrEmpty(NameBox.Text))
-        {
-            ConfirmNameButton.IsEnabled = true;
-            NameWarning.IsVisible = false;
-            
-        }
-    }
+    
 
     private void QuickConfirmName(object? sender, Avalonia.Input.KeyEventArgs e)
     {

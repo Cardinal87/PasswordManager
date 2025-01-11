@@ -10,42 +10,52 @@
 		  Background="{DynamicResource MainBackgroundBrush}"
 		  Focusable="True">
 
-		<Grid Grid.Row="1" RowDefinitions="35,20,35,40,90" x:Name="LoggingGrid" IsVisible="True">
+		<Grid Grid.Row="1" RowDefinitions="35,65,40,90" x:Name="LoggingGrid" IsVisible="True">
 			<TextBox Classes="dataBox" Grid.Row="0"  Watermark="Enter master-password" x:Name="passwordBox"
 					 HorizontalAlignment="Center" VerticalContentAlignment="Center"
-					 Text="{Binding Password}"
 					 FontSize="16.5"
 					 Width="350" CornerRadius="10"
 					 Background="{DynamicResource DataBoxBackgroundBrush}" 
 					 Foreground="{DynamicResource FontBrush}"
 					 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
-		
-		
-		
-			<Button Theme="{DynamicResource DefaultGreenButton}"
-					Content="Unlock Storage" Grid.Row="2" HorizontalAlignment="Center"
+
+
+			<Grid Grid.Row="1" RowDefinitions="30,35" IsVisible="{Binding HasPassword}">
+				<TextBlock Text="password is not correct" Foreground="{DynamicResource WarningBrush}"
+						   Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,180,7"
+						   IsVisible="{Binding !IsCorrectPass}"
+						   VerticalAlignment="Center"/>
+				<Button Theme="{DynamicResource DefaultGreenButton}"
+					Content="Unlock Storage" Grid.Row="1" HorizontalAlignment="Center"
 					VerticalAlignment="Stretch"
 					Width="350" FontSize="16.5"
 					VerticalContentAlignment="Center"
 					HorizontalContentAlignment="Center"
 					Command="{Binding CheckPasswordCommand}"
-					CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
-					IsVisible="{Binding HasPassword}"/>
-
-			<Button Theme="{DynamicResource DefaultGreenButton}"
-					Content="Create Storage" Grid.Row="2" HorizontalAlignment="Center"
+					CommandParameter="{Binding ElementName=passwordBox, Path=Text}"/>
+			
+			</Grid>
+			<Grid Grid.Row="1" RowDefinitions="30,35" IsVisible="{Binding !HasPassword}">
+				<TextBlock Text="password must contain at least 1 upper and 1 lower case letter,1 digit, 1 special character and be between 10 and 50 characters" Foreground="{DynamicResource WarningBrush}"
+						   Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,7"
+						   VerticalAlignment="Center" IsVisible="{Binding !IsCorrectPass}"/>
+				<Button Theme="{DynamicResource DefaultGreenButton}"
+					Content="Create Storage" Grid.Row="1" HorizontalAlignment="Center"
 					VerticalAlignment="Stretch"
 					Width="350" FontSize="16.5"
 					VerticalContentAlignment="Center"
 					HorizontalContentAlignment="Center"
+					IsEnabled="{Binding !SavePasswordCommand.IsRunning}"
 					Command="{Binding SavePasswordCommand}"
-					CommandParameter="{Binding ElementName=passwordBox, Path=Text}"
-					IsVisible="{Binding !HasPassword}"/>
-		
-			<Button Grid.Row="3" Background="Transparent"
+					CommandParameter="{Binding ElementName=passwordBox, Path=Text}"/>
+			
+			</Grid>	
+			<Button Grid.Row="2" Background="Transparent"
 					Content="forgot master password?"
 					Click="ShowConfirmationWindow"
 					HorizontalAlignment="Center"
+					IsEnabled="{Binding !SavePasswordCommand.IsRunning}"
+					
 					FontSize="15.5"
 					Foreground="{DynamicResource MainGreenBrush}"
 					IsVisible="{Binding HasPassword}">

@@ -70,6 +70,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         {
             get => Cards.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
         }
+        public bool IsEmptyCollection {  get => !Cards.Any(); }
 
         public string SearchKey
         {

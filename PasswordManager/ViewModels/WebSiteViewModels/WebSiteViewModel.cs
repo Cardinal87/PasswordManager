@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             this.itemFactory = itemFactory;
             this.contextFactory = contextFactory;
             this.dialogService = dialogService;
+            
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
             AddToFavouriteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(AddToFavouriteAsync);
             DeleteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(DeleteAsync);
@@ -50,6 +52,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private IDialogService dialogService;
         private IDbContextFactory<DatabaseClient> contextFactory;
         private WebSiteItemViewModel? currentItem;
+        
         public RelayCommand AddNewCommand { get; }
         public AsyncRelayCommand<WebSiteItemViewModel> AddToFavouriteCommand { get; set; }
         public AsyncRelayCommand<WebSiteItemViewModel> DeleteCommand { get; set; }
@@ -61,7 +64,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             get => WebSites.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
         }
-
+        public bool IsEmptyCollection { get => !WebSites.Any(); }
         public string SearchKey
         {
             get => searchKey;
@@ -131,7 +134,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         {
             using (var dbClient = await contextFactory.CreateDbContextAsync())
             { 
-                if (e.DialogResult && sender is WebSiteDialogViewModel vm)
+                if (sender is WebSiteDialogViewModel vm)
                 {
                     if (e.DialogResult && vm.Model != null)
                     {
@@ -156,10 +159,13 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                     }
                     dialogService.CloseDialog(vm!);
                 }
+                
             }
             
            
         }
+
+        
         private async Task AddToFavouriteAsync(WebSiteItemViewModel? webSiteItem)
         {
             using (var dbClient = await contextFactory.CreateDbContextAsync())

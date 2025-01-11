@@ -14,6 +14,7 @@ using PasswordManager.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using PasswordManager.ViewModels.BaseClasses;
+using System.Diagnostics;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
@@ -28,15 +29,15 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             
             UpdateModel(model);
             this.clipBoardService = clipBoardService;
-            
-            GoTowebSiteCommand = new RelayCommand(GoToWebSite);
+
+            OpenWebSiteCommand = new RelayCommand(OpenWebSite);
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);
             
             
         }
+        public RelayCommand OpenWebSiteCommand { get; set; }
         public RelayCommand<string> CopyToClipboardCommand { get; }
         
-        public RelayCommand GoTowebSiteCommand { get; }
 
         
         private string login;
@@ -93,16 +94,22 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             if (text != null)
                 clipBoardService.SaveToClipBoard(text);
         }
-        
-        private void GoToWebSite()
-        {
 
-        }
-        private void AddToFavourite()
+        private void OpenWebSite()
         {
-            if (IsFavourite) IsFavourite = false;
-            else IsFavourite = true;
+            if (!String.IsNullOrEmpty(WebAddress))
+            {
+                string url = "http://" + WebAddress + "/";
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
         }
+
+
         [MemberNotNull(nameof(webAddress))]
         [MemberNotNull(nameof(login))]
         [MemberNotNull(nameof(password))]

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,6 +15,8 @@ namespace PasswordManager.ViewModels.AppViewModels
 {
     internal class AppDialogViewModel : DialogViewModelBase, IDialogResultHelper
     {
+        private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
+        private const string passwordPattern = @"^[a-zA-Z0-9!@#$%^&*()_+-=]{1,30}$";
         public AppDialogViewModel() 
         {
             AddCommand = new RelayCommand(Add);
@@ -53,6 +56,8 @@ namespace PasswordManager.ViewModels.AppViewModels
             {
                 name = value;
                 OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidName));
             }
         }
         public string Password
@@ -66,6 +71,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                 password = value;
                 OnPropertyChanged(nameof(password));
                 OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidPassword));
             }
         }
 
@@ -76,7 +82,7 @@ namespace PasswordManager.ViewModels.AppViewModels
         {
             get
             {
-                return Password != string.Empty;
+                return IsValidName && IsValidPassword;
             }
         } 
 
@@ -92,8 +98,35 @@ namespace PasswordManager.ViewModels.AppViewModels
 
                 dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
             }
+            else
+            {
+                OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidName));
+                OnPropertyChanged(nameof(IsValidPassword));
+                
+
+            }
         }
 
+        public bool IsValidName
+        {
+            get
+            {
+                if (!isChecked) return true;
+                return Regex.IsMatch(Name, namePattern) && Name.Length >= 0
+                    && Name.Length <= 100;
+            }
+        }
+
+        public bool IsValidPassword
+        {
+            get
+            {
+                if (!isChecked) return true;
+                return Regex.IsMatch(Password, passwordPattern);
+            }
+        }
+        private bool isChecked = false;
         protected override void Close()
         {
             dialogResult = false;

@@ -30,8 +30,7 @@ namespace PasswordManager.ViewModels
         {
             _options = options.Value;
             _services = services;
-            MenuViewModel = new MenuViewModel(options);
-            MenuViewModel.OnDataBaseEncryptng += StartApp;
+            MenuViewModel = new MenuViewModel(options, StartApp);
             CurrentPage = MenuViewModel;
         }
 
@@ -50,7 +49,7 @@ namespace PasswordManager.ViewModels
             }
         }
 
-        private async void StartApp(string password)
+        private async Task StartApp(string password)
         {
             
             string key = GetEncryptionKey(password);

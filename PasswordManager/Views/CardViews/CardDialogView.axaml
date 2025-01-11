@@ -38,97 +38,123 @@
 	<Border PointerPressed="MoveWindow" Padding="0" Focusable="True" x:Name="MainBorder"
 			BorderThickness="1" BorderBrush="{DynamicResource DataBoxBorderBrush}">
 		<Grid RowDefinitions="55,*,50">
-
-
-			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="ShowName" IsVisible="True">
-				<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewCard}"
-						   Foreground="{DynamicResource FontBrush}" DockPanel.Dock="Left" VerticalAlignment="Center"
-						   Margin="20,0,0,0"
-						   MaxWidth="400" />
-				<Button Background="#1b2026" Margin="5,0,0,0"
-						DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
-						HorizontalAlignment="Left" Click="ShowSetNameTemplate" />
-
-			</DockPanel>
+			<Grid x:Name="ShowName"  IsVisible="True">
+				<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" >
+				
+					<TextBlock Text="{Binding Name, Converter={StaticResource StringToDefaultConverter}, ConverterParameter=NewCard}"
+							   Foreground="{DynamicResource FontBrush}"  
+							   DockPanel.Dock="Left" VerticalAlignment="Center"
+							   Margin="20,0,0,0"
+							   MaxWidth="400" />
+					
+				
+					<Button Background="#1b2026" Margin="5,0,0,0"
+							DockPanel.Dock="Left" Theme="{StaticResource ChangeButton}"
+							HorizontalAlignment="Left" Click="ShowSetNameTemplate" />
+				</DockPanel>
+			</Grid>
+			<TextBlock Text="name is not correct" Foreground="{DynamicResource WarningBrush}" FontSize="12"
+					   Margin="22,0,0,2" IsVisible="{Binding !IsValidName}" VerticalAlignment="Bottom"/>
 			<DockPanel Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}" x:Name="SetName" IsVisible="False">
 				<Button Margin="15,0,15,1" Theme="{StaticResource DismissButton}"
 						DockPanel.Dock="Right" Padding="3" Click="CloseTemplate"/>
+				
 				<Button Margin="10,0,5,1" Theme="{StaticResource CheckmarkButton}" x:Name="ConfirmNameButton"
-						DockPanel.Dock="Right" Click="ConfirmName"/>
-				<StackPanel  Margin="15,11,0,0">
-					<TextBox Watermark="Name" Foreground="{DynamicResource FontBrush}" x:Name="NameBox"
-							 DockPanel.Dock="Right" VerticalAlignment="Center"
-							 Background="{DynamicResource DataBoxBackgroundBrush}" BorderThickness="0"
-							 Classes="dataBox" CornerRadius="5" TextChanged="NameChanged"
-							 KeyDown="QuickConfirmName"/>
-					<TextBlock Text="Name should be filled" Foreground="{DynamicResource WarningBrush}" FontSize="10"
-							   Margin="5,0,0,0" IsVisible="False" x:Name="NameWarning"/>
-				</StackPanel>
+						DockPanel.Dock="Right" Click="ConfirmName"
+						IsEnabled="{Binding IsValidName}"/>
+				
+				<TextBox Watermark="Name" Foreground="{DynamicResource FontBrush}"
+							Margin="15,11,0,0" DockPanel.Dock="Right" x:Name="NameBox"
+							VerticalAlignment="Center"
+							MaxLength="100"
+							Background="{DynamicResource DataBoxBackgroundBrush}" BorderThickness="0"
+							Classes="dataBox" CornerRadius="5"
+							KeyDown="QuickConfirmName"/>
+					
+				
 
 
 			</DockPanel>
-			<Grid Grid.Row="1" ShowGridLines="True" Background="{DynamicResource MainBackgroundBrush}">
-				
-				<DockPanel VerticalAlignment="Top"
-						   Margin="35,15,25,0">
-					<TextBlock Text="Owner" Foreground="White" VerticalAlignment="Center"/>
-					<TextBox Watermark="Enter owner" Margin="15,0,15,0" BorderThickness="1"
-							 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
-							 BorderBrush="{DynamicResource DataBoxBorderBrush}"
-							 Text="{Binding Owner}"
-							 Classes="dataBox"
-							 CornerRadius="5"
-							 KeyDown="ConfirmData"/>
-				</DockPanel>
+			<Grid Grid.Row="1" Background="{DynamicResource MainBackgroundBrush}">
 
-				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Margin="25,65,25,40" CornerRadius="20" >
+				<StackPanel>
+					<DockPanel VerticalAlignment="Top"
+							   Margin="35,15,25,0">
+						<TextBlock Text="Owner" Foreground="White" VerticalAlignment="Center"/>
+						<TextBox Watermark="Enter owner" Margin="15,0,15,0" BorderThickness="1"
+								 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
+								 BorderBrush="{DynamicResource DataBoxBorderBrush}"
+								 Text="{Binding Owner}"
+								 Classes="dataBox" MaxLength="50"
+								 CornerRadius="5"
+								 KeyDown="ConfirmData"/>
+					</DockPanel>
+					<TextBlock Text="owner in not correct" Foreground="{DynamicResource WarningBrush}"
+									   Margin="100,0,0,0"
+									   IsVisible="{Binding !IsValidOwner}"/>
+				</StackPanel>
+
+				<Border Background="{DynamicResource AdditionalBackgroundBrush}" Margin="25,70,25,40" CornerRadius="20" >
 					<StackPanel>
 						<TextBlock Text="Card" Foreground="White" Margin="15,10,0,0"/>
 						<Separator Margin="0,5,0,0" Background="{DynamicResource DataBoxBorderBrush}"/>
-						<DockPanel Margin="15,30,0,0">
-							<TextBlock Text="Number" Foreground="White" VerticalAlignment="Center" Width="75"/>
-							<TextBox Watermark="Enter number" Margin="15,0,15,0" BorderThickness="1"
-									 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
-									 BorderBrush="{DynamicResource DataBoxBorderBrush}"
-									 Text="{Binding Number}"
-									 Classes="dataBox"
-									 HorizontalContentAlignment="Left" CornerRadius="15"
-									 KeyDown="ConfirmData" MaxLength="16"/>
-						</DockPanel>
-						<DockPanel Margin="15,20,0,0">
-							<TextBlock Text="CVC" Foreground="White" VerticalAlignment="Center" Width="75"/>
-							<TextBox Watermark="Enter cvc" Margin="15,0,15,0" BorderThickness="1"
-									 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
-									 BorderBrush="{DynamicResource DataBoxBorderBrush}"
-									 Text="{Binding Cvc}"
-									 Classes="dataBox" MaxLength="3"
-									 HorizontalContentAlignment="Left" CornerRadius="15"
-									 KeyDown="Digit_Validation"/>
-						</DockPanel>
-						<DockPanel Margin="95,20,0,0">
-							<TextBox DockPanel.Dock="Left" Margin="10,0,0,0" Classes="dataBox"
-									 CornerRadius="5" Watermark="MM" MaxLength="2"
-									 Text="{Binding Month}"
-									 KeyDown="Digit_Validation"
-									 Background="{DynamicResource DataBoxBackgroundBrush}"
-									 Foreground="{DynamicResource FontBrush}"
-									 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
-							<TextBox DockPanel.Dock="Left" Margin="10,0,0,0" Classes="dataBox"
-									 CornerRadius="5" Watermark="YYYY" MaxLength="4"
-									 Text="{Binding Year}"
-									 KeyDown="Digit_Validation"
-									 Background="{DynamicResource DataBoxBackgroundBrush}" 
-									 Foreground="{DynamicResource FontBrush}"
-									 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
+						<Grid RowDefinitions="25,30,25,30,40" Margin="0,20,0,0">
+							<DockPanel Margin="15,0,0,0" Grid.Row="0">
+								<TextBlock Text="Number" Foreground="White" VerticalAlignment="Center" Width="75"/>
+								<TextBox Watermark="Enter number" Margin="15,0,15,0" BorderThickness="1"
+										 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
+										 BorderBrush="{DynamicResource DataBoxBorderBrush}"
+										 Text="{Binding Number}"
+										 Classes="dataBox"
+										 HorizontalContentAlignment="Left" CornerRadius="15"
+										 KeyDown="ConfirmData" MaxLength="16"/>
+							</DockPanel>
+							<TextBlock Text="card number is not correct" Foreground="{DynamicResource WarningBrush}"
+									   Margin="115,2,0,0" Grid.Row="1"
+									   IsVisible="{Binding !IsValidNumber}"/>
+							<DockPanel Margin="15,0,0,0" Grid.Row="2">
+								<TextBlock Text="CVC" Foreground="White" VerticalAlignment="Center" Width="75"/>
+								<TextBox Watermark="Enter cvc"  BorderThickness="1"
+											Margin="15,0,15,0"
+											Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
+											BorderBrush="{DynamicResource DataBoxBorderBrush}"
+											Text="{Binding Cvc}"
+											Classes="dataBox" MaxLength="3"
+											HorizontalContentAlignment="Left" CornerRadius="15"
+											KeyDown="Digit_Validation"/>
 								
-							<TextBlock Text="- year or month is not valid" Foreground="{DynamicResource WarningBrush}"
-									   VerticalAlignment="Center" IsVisible="{Binding !IsValidDate}" Margin="5,0,0,0"/>		
-						</DockPanel>
+							
+							</DockPanel>
 						
+							<TextBlock Text="cvc is not correct" Foreground="{DynamicResource WarningBrush}"
+									   Margin="115,2,0,0" Grid.Row="3"
+									   IsVisible="{Binding !IsValidCvc}"/>
+						
+							<DockPanel Margin="95,10,0,0" Grid.Row="4">
+								<TextBox DockPanel.Dock="Left" Margin="10,0,0,0" Classes="dataBox"
+										 CornerRadius="5" Watermark="MM" MaxLength="2"
+										 Text="{Binding Month}"
+										 KeyDown="Digit_Validation"
+										 Background="{DynamicResource DataBoxBackgroundBrush}"
+										 Foreground="{DynamicResource FontBrush}"
+										 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
+								<TextBox DockPanel.Dock="Left" Margin="10,0,0,0" Classes="dataBox"
+										 CornerRadius="5" Watermark="YYYY" MaxLength="4"
+										 Text="{Binding Year}"
+										 KeyDown="Digit_Validation"
+										 Background="{DynamicResource DataBoxBackgroundBrush}" 
+										 Foreground="{DynamicResource FontBrush}"
+										 BorderBrush="{DynamicResource DataBoxBorderBrush}"/>
+								
+								<TextBlock Text="- year or month is not correct" Grid.Row="5"
+										   Foreground="{DynamicResource WarningBrush}"
+										   VerticalAlignment="Center" IsVisible="{Binding !IsValidDate}" Margin="5,0,0,0"/>		
+							</DockPanel>
+						</Grid>
 					</StackPanel>
 
 				</Border>
-				<TextBlock Text="all fields must be filled in" FontSize="12"
+				<TextBlock Text="all fields must be filled in correctly" FontSize="12"
 						   Foreground="{DynamicResource WarningBrush}"
 						   VerticalAlignment="Bottom" HorizontalAlignment="Right"
 						   Margin="0,0,30,25" IsVisible="{Binding !CanClose}"/>

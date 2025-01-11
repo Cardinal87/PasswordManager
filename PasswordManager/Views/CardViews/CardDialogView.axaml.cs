@@ -13,7 +13,6 @@ public partial class CardDialogView : Window
     public CardDialogView()
     {
         InitializeComponent();
-        this.AttachDevTools();
     }
 
 
@@ -37,32 +36,9 @@ public partial class CardDialogView : Window
     {
         ShowName.IsVisible = true;
         SetName.IsVisible = false;
+        NameBox.Text = string.Empty;
         ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.Default;
         MainBorder.Focus();
-    }
-
-    private void ConfirmName(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (!string.IsNullOrEmpty(NameBox.Text))
-        {
-            var vm = (CardDialogViewModel)DataContext!;
-            vm.Name = NameBox.Text;
-            CloseTemplate(sender, e);
-        }
-        else
-        {
-            ConfirmNameButton.IsEnabled = false;
-            NameWarning.IsVisible = true;
-        }
-    }
-    private void NameChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (!string.IsNullOrEmpty(NameBox.Text))
-        {
-            ConfirmNameButton.IsEnabled = true;
-            NameWarning.IsVisible = false;
-
-        }
     }
 
     private void QuickConfirmName(object? sender, KeyEventArgs e)
@@ -71,8 +47,20 @@ public partial class CardDialogView : Window
         {
             ConfirmName(sender, e);
             e.Handled = true;
+            MainBorder.Focus();
         }
     }
+    private void ConfirmName(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (NameBox.Text != null)
+        {
+            var vm = (CardDialogViewModel)DataContext!;
+            vm.Name = NameBox.Text;
+            CloseTemplate(sender, e);
+        }
+
+    }
+
 
     private void ConfirmData(object? sender, KeyEventArgs e)
     {
