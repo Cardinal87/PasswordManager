@@ -15,6 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using PasswordManager.ViewModels.BaseClasses;
 using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PasswordManager.ViewModels.WebSiteViewModels
 {
@@ -24,11 +25,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         public WebSiteModel Model { get; private set; }
         private IClipboardService clipBoardService;
         
-        public WebSiteItemViewModel(WebSiteModel model, IClipboardService clipBoardService) 
+        public WebSiteItemViewModel(WebSiteModel model, IServiceProvider provider) 
         {
             
             UpdateModel(model);
-            this.clipBoardService = clipBoardService;
+            clipBoardService = provider.GetRequiredService<IClipboardService>();
 
             OpenWebSiteCommand = new RelayCommand(OpenWebSite);
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);

@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PasswordManager.Configuration.OptionExtensions;
-using PasswordManager.Factories;
+
 using PasswordManager.Helpers;
 using PasswordManager.ViewModels;
 using PasswordManager.Views;
@@ -16,6 +16,7 @@ using System.IO;
 
 using System.Threading.Tasks;
 using PasswordManager.Configuration.AppConfiguration;
+using PasswordManager.Services;
 
 namespace PasswordManager;
 
@@ -83,8 +84,7 @@ public partial class App : Application
     {
         services.AddScoped<IClipboardService, ClipboardService>();
         services.AddSingleton<IDialogService, DialogService>();
-        services.AddSingleton<IViewModelFactory, ViewModelFactory>();
-        services.AddSingleton<IItemViewModelFactory, ItemViewModelFactory>();
+        services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
         services.AddWritebleOptions<LoggingOptions>(config.GetSection(LoggingOptions.Section), "appsettings.json");
         services.AddTransient<StartUpViewModel>(prov =>
         {

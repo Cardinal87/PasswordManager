@@ -29,6 +29,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
             ChangeCommand = new RelayCommand<ItemViewModelBase>(ShowChangeDialog);
             DeleteCommand = new AsyncRelayCommand<ItemViewModelBase>(DeleteAsync);
             AddToFavouriteCommand = new AsyncRelayCommand<ItemViewModelBase>(AddToFavouriteAsync);
+            
 
             AppViewModel.Apps.CollectionChanged += UpdateItems;
             WebSiteViewModel.WebSites.CollectionChanged += UpdateItems;
@@ -39,6 +40,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
             if (Items.Count > 0) CurrentItem = Items[0];
 
         }
+        
         public RelayCommand<ItemViewModelBase> ChangeCommand { get;private set; }
         public AsyncRelayCommand<ItemViewModelBase> DeleteCommand { get; private set; }
         public AsyncRelayCommand<ItemViewModelBase> AddToFavouriteCommand { get; private set; }
@@ -78,7 +80,6 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
                 OnPropertyChanged(nameof(CurrentItem));
             }
         }
-        
 
         private async Task DeleteAsync(ItemViewModelBase? item)
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Helpers
 {
-    internal interface IDialogService
+    public interface IDialogService
     {
         void OpenDialog(DialogViewModelBase DialogVm);
         void CloseDialog(DialogViewModelBase dialogVM);

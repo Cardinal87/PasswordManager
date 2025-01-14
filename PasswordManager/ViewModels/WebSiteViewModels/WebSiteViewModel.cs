@@ -2,9 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordManager;
 using PasswordManager.DataConnectors;
-using PasswordManager.Factories;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels.AppViewModels;
@@ -26,20 +26,20 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
     internal partial class WebSiteViewModel : ViewModelBase
     {
 
-        public static async Task<WebSiteViewModel> CreateAsync(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public static async Task<WebSiteViewModel> CreateAsync(IServiceProvider provider)
         {
-            var webVm = new WebSiteViewModel(contextFactory, dialogService, itemFactory);
+            var webVm = new WebSiteViewModel(provider);
             await webVm.LoadViewModelsListAsync();
             return webVm;
         }
         
         
-        private WebSiteViewModel(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        private WebSiteViewModel(IServiceProvider provider)
         {
-            this.itemFactory = itemFactory;
-            this.contextFactory = contextFactory;
-            this.dialogService = dialogService;
-            
+            this.provider = provider;
+            contextFactory = provider.GetRequiredService<IDbContextFactory<DatabaseClient>>();
+            dialogService = provider.GetRequiredService<IDialogService>();
+
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
             AddToFavouriteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(AddToFavouriteAsync);
             DeleteCommand = new AsyncRelayCommand<WebSiteItemViewModel>(DeleteAsync);
@@ -48,7 +48,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
               
         }
         private string searchKey = "";
-        private IItemViewModelFactory itemFactory;
+        IServiceProvider provider;
         private IDialogService dialogService;
         private IDbContextFactory<DatabaseClient> contextFactory;
         private WebSiteItemViewModel? currentItem;
@@ -95,12 +95,12 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private void ShowChangeDialog(WebSiteItemViewModel? webSiteItem)
         {
             if (webSiteItem != null && webSiteItem.Model != null)
-                ShowDialog(new WebSiteDialogViewModel(webSiteItem.Model));
+                ShowDialog(new WebSiteDialogViewModel(webSiteItem.Model, provider));
         }
         
         private void ShowAddNewDialog() 
         { 
-            var Dialog = new WebSiteDialogViewModel();
+            var Dialog = new WebSiteDialogViewModel(provider);
             ShowDialog(Dialog);
         }
         
@@ -114,6 +114,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                     WebSites.Remove(webSiteItem);
                     if (WebSites.Count > 0) CurrentItem = WebSites[0];
                     OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
                     await dbClient.SaveChangesAsync();
                 }
                 
@@ -144,7 +145,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                         {
                             dbClient.Insert(model);
                             await dbClient.SaveChangesAsync();
-                            WebSiteItemViewModel item = itemFactory.CreateWebSiteItem(model);
+                            WebSiteItemViewModel item = new WebSiteItemViewModel(model, provider);
                             WebSites.Add(item);
                             CurrentItem = item;
                         }
@@ -156,6 +157,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                             await dbClient.SaveChangesAsync();
                         }
                         OnPropertyChanged(nameof(FilteredCollection));
+                        OnPropertyChanged(nameof(IsEmptyCollection));
                     }
                     dialogService.CloseDialog(vm!);
                 }
@@ -194,7 +196,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                 var viewmodels = new ObservableCollection<WebSiteItemViewModel>();
                 await foreach (var model in models.ToAsyncEnumerable())
                 {
-                    var item = itemFactory.CreateWebSiteItem(model);
+                    var item = new WebSiteItemViewModel(model, provider);
                     viewmodels.Add(item);
                 }
                 if (viewmodels.Count > 0) CurrentItem = viewmodels[0];

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Helpers
 {
-    internal interface IClipboardService
+    public interface IClipboardService
     {
         void SaveToClipBoard(string text);
     }

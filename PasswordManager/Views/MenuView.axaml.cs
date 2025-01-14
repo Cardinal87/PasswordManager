@@ -21,4 +21,8 @@ public partial class MenuView : UserControl
         LoggingGrid.IsVisible = true;
         ConfirmationGrid.IsVisible = false;
     }
+
+    private void MenuItem_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+    }
 }

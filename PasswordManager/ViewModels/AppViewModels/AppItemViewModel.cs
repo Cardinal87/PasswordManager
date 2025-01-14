@@ -1,5 +1,6 @@
 ﻿using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels.BaseClasses;
@@ -14,11 +15,11 @@ namespace PasswordManager.ViewModels.AppViewModels
 {
     internal partial class AppItemViewModel : ItemViewModelBase
     {
-        public AppItemViewModel(AppModel app,IClipboardService clipboard)
+        public AppItemViewModel(AppModel app, IServiceProvider provider)
         {
             
             UpdateModel(app);
-            clipBoard = clipboard;
+            clipBoard = provider.GetRequiredService<IClipboardService>();
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipBoard);
             
         }

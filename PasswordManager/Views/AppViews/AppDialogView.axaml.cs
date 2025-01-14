@@ -14,7 +14,7 @@ public partial class AppDialogView : Window
     {
         
         InitializeComponent();
-        
+        this.AttachDevTools();
     }
     private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {

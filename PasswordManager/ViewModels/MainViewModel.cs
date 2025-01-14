@@ -11,10 +11,11 @@ using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Net;
 using PasswordManager.DataConnectors;
-using PasswordManager.Factories;
+
 using PasswordManager.ViewModels.CardViewModels;
 using PasswordManager.ViewModels.BaseClasses;
 using System.Threading.Tasks;
+using System;
 
 
 namespace PasswordManager.ViewModels;
@@ -23,7 +24,7 @@ internal partial class MainViewModel : ViewModelBase
 {
 
     private ViewModelBase? currentPage;
-    private IViewModelFactory _factory;
+    
 
     public ViewModelBase? CurrentPage {
 
@@ -34,21 +35,22 @@ internal partial class MainViewModel : ViewModelBase
         }
     }
 
-    public async static Task<MainViewModel> CreateAsync(IViewModelFactory factory)
+    public async static Task<MainViewModel> CreateAsync(IServiceProvider provider)
     {
-        var main = new MainViewModel(factory);
+        var main = new MainViewModel(provider);
         await main.InizializeViewModelsAsync();
         main.CurrentPage = main.AllEntriesVm;
         return main;
     }
 
-    private MainViewModel(IViewModelFactory factory)
+    private MainViewModel(IServiceProvider provider)
     {
-        _factory = factory;
+        _provider = provider;
         SetCurrentPageCommand = new RelayCommand<ViewModelBase>(SetCurrentPage);
         
         
     }
+    IServiceProvider _provider;
     public RelayCommand<ViewModelBase> SetCurrentPageCommand { get; set; }
     private List<ItemViewModelBase> items = new();
     public AllEntriesViewModel? AllEntriesVm { get; private set; }
@@ -64,15 +66,15 @@ internal partial class MainViewModel : ViewModelBase
     private async Task InizializeViewModelsAsync()
     {
         
-        var appTask =  _factory.CreateAppVMAsync();
-        var cardTask = _factory.CreateCardVMAsync();
-        var webTask = _factory.CreateWebSiteVMAsync();
+        var appTask = AppViewModel.CreateAsync(_provider);
+        var cardTask = CardViewModel.CreateAsync(_provider);
+        var webTask = WebSiteViewModel.CreateAsync(_provider);
         
         AppVm = await appTask;
         CardVm = await cardTask;
         WebSiteVm = await webTask;
 
-        AllEntriesVm = _factory.CreateAllEntriesVM(WebSiteVm, CardVm, AppVm);
+        AllEntriesVm = new AllEntriesViewModel(AppVm, CardVm, WebSiteVm);
     }
 
 }

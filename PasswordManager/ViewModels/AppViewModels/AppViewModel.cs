@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Update.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordManager.DataConnectors;
-using PasswordManager.Factories;
+
 using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels.BaseClasses;
@@ -27,18 +28,18 @@ namespace PasswordManager.ViewModels.AppViewModels
     internal partial class AppViewModel : ViewModelBase
     {
         
-        public static async Task<AppViewModel> CreateAsync(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public static async Task<AppViewModel> CreateAsync(IServiceProvider provider)
         {
-            var appVm = new AppViewModel(contextFactory,dialogService,itemFactory);
+            var appVm = new AppViewModel(provider);
             await appVm.LoadViewModelListAsync();
             return appVm;
         }
         
-        private AppViewModel(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        private AppViewModel(IServiceProvider provider)
         {
-            this.contextFactory = contextFactory;
-            this.dialogService = dialogService;
-            this.itemFactory = itemFactory;
+            this.provider = provider;
+            contextFactory = provider.GetRequiredService<IDbContextFactory<DatabaseClient>>();
+            dialogService = provider.GetRequiredService<IDialogService>();
             
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
             AddToFavouriteCommand = new AsyncRelayCommand<AppItemViewModel>(AddToFavouriteAsync);
@@ -46,7 +47,7 @@ namespace PasswordManager.ViewModels.AppViewModels
             ChangeCommand = new RelayCommand<AppItemViewModel>(ShowChangeDialog);
             
         }
-        IItemViewModelFactory itemFactory;
+        IServiceProvider provider;
         IDbContextFactory<DatabaseClient> contextFactory;
         IDialogService dialogService;
         private AppItemViewModel? currentItem;
@@ -99,6 +100,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                     Apps.Remove(appItem);
                     CurrentItem = Apps.Count != 0 ? Apps[0] : null;
                     OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
                     await dbClient.SaveChangesAsync();
                 }
             }
@@ -107,11 +109,11 @@ namespace PasswordManager.ViewModels.AppViewModels
         private void ShowChangeDialog(AppItemViewModel? appItem)
         {
             if (appItem != null && appItem.Model != null)
-                ShowDialog(new AppDialogViewModel(appItem.Model));
+                ShowDialog(new AppDialogViewModel(appItem.Model, provider));
         }
         private void ShowAddNewDialog()
         {
-            ShowDialog(new AppDialogViewModel());
+            ShowDialog(new AppDialogViewModel(provider));
         }
 
         private void ShowDialog(AppDialogViewModel? dialogVM)
@@ -136,7 +138,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                         {
                             dbClient.Insert(vm.Model);
                             await dbClient.SaveChangesAsync();
-                            AppItemViewModel item = itemFactory.CreateAppItem(vm.Model);
+                            AppItemViewModel item = new AppItemViewModel(vm.Model, provider);
                             Apps.Add(item);
                             CurrentItem = item;
                         }
@@ -148,6 +150,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                             await dbClient.SaveChangesAsync();
                         }
                         OnPropertyChanged(nameof(FilteredCollection));
+                        OnPropertyChanged(nameof(IsEmptyCollection));
                     }
                     dialogService.CloseDialog(vm);
                 }
@@ -181,7 +184,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                 var viewmodels = new ObservableCollection<AppItemViewModel>();
                 await foreach (var model in models.ToAsyncEnumerable())
                 {
-                    var item = itemFactory.CreateAppItem(model);
+                    var item = new AppItemViewModel(model, provider);
                     viewmodels.Add(item);
                 }
                 if (viewmodels.Count > 0) CurrentItem = viewmodels[0];

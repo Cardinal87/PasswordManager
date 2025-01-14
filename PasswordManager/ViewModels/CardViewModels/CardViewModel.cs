@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordManager.DataConnectors;
-using PasswordManager.Factories;
+
 using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels.AppViewModels;
@@ -21,19 +22,19 @@ namespace PasswordManager.ViewModels.CardViewModels
     internal class CardViewModel : ViewModelBase
     {
         
-        public static async Task<CardViewModel> CreateAsync(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory)
+        public static async Task<CardViewModel> CreateAsync(IServiceProvider provider)
         {
-            var cardVm = new CardViewModel(contextFactory,dialogService, itemFactory);
+            var cardVm = new CardViewModel(provider);
             await cardVm.LoadViewModelsListAsync();
             return cardVm;
         }
         
         
-        private CardViewModel(IDbContextFactory<DatabaseClient> contextFactory, IDialogService dialogService, IItemViewModelFactory itemFactory) 
-        { 
-            this.contextFactory = contextFactory;
-            this.dialogService = dialogService;
-            this.itemFactory = itemFactory;
+        private CardViewModel(IServiceProvider provider) 
+        {
+            this.provider = provider;
+            contextFactory = provider.GetRequiredService<IDbContextFactory<DatabaseClient>>();
+            dialogService = provider.GetRequiredService<IDialogService>();
             AddToFavouriteCommand = new AsyncRelayCommand<CardItemViewModel>(AddToFavouriteAsync);
             DeleteCommand = new AsyncRelayCommand<CardItemViewModel>(DeleteAsync);
             ChangeCommand = new RelayCommand<CardItemViewModel>(ShowChangeDialog);
@@ -44,7 +45,7 @@ namespace PasswordManager.ViewModels.CardViewModels
         private string searchKey = "";
         private IDbContextFactory<DatabaseClient> contextFactory;
         private IDialogService dialogService;
-        private IItemViewModelFactory itemFactory;
+        IServiceProvider provider;
         public CardItemViewModel? currentItem;
         
         public CardItemViewModel? CurrentItem
@@ -96,6 +97,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                     Cards.Remove(cardItem);
                     if (Cards.Count > 0) CurrentItem = Cards[0];
                     OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
                     await dbClient.SaveChangesAsync();
                 }
                 
@@ -137,7 +139,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                         {
                             dbClient.Insert(model);
                             await dbClient.SaveChangesAsync();
-                            CardItemViewModel item = itemFactory.CreateCardItem(model);
+                            CardItemViewModel item = new CardItemViewModel(model, provider);
                             Cards.Add(item);
                             CurrentItem = item;
                         }
@@ -149,6 +151,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                             await dbClient.SaveChangesAsync();
                         }
                         OnPropertyChanged(nameof(FilteredCollection));
+                        OnPropertyChanged(nameof(IsEmptyCollection));
                     }
                     dialogService.CloseDialog(vm!);
                 }
@@ -185,7 +188,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                 var viewmodels = new ObservableCollection<CardItemViewModel>();
                 await foreach (var model in models.ToAsyncEnumerable())
                 {
-                    var item = itemFactory.CreateCardItem(model);
+                    var item = new CardItemViewModel(model, provider);
                     viewmodels.Add(item);
                 }
                 if (viewmodels.Count > 0) CurrentItem = viewmodels[0];

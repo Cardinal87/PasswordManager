@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordManager.Helpers;
 using PasswordManager.Models;
 using PasswordManager.ViewModels.BaseClasses;
@@ -14,9 +15,9 @@ namespace PasswordManager.ViewModels.CardViewModels
 {
     class CardItemViewModel : ItemViewModelBase
     {
-        public CardItemViewModel(CardModel model, IClipboardService clipboardService) 
+        public CardItemViewModel(CardModel model, IServiceProvider provider) 
         {
-            this.clipboardService = clipboardService;
+            clipboardService = provider.GetRequiredService<IClipboardService>();
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);
             
             

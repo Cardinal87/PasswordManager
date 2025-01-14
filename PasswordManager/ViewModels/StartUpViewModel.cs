@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PasswordManager.Configuration.AppConfiguration;
 using PasswordManager.Configuration.OptionExtensions;
 using PasswordManager.DataConnectors;
-using PasswordManager.Factories;
+
 using PasswordManager.ViewModels.BaseClasses;
 using System;
 using System.Collections.Generic;
@@ -71,7 +71,7 @@ namespace PasswordManager.ViewModels
                 context.Database.EnsureCreated();
             }
             
-            var vm = await MainViewModel.CreateAsync(provider.GetRequiredService<IViewModelFactory>());
+            var vm = await MainViewModel.CreateAsync(provider);
             MainViewModel = vm;
             CurrentPage = MainViewModel;
             

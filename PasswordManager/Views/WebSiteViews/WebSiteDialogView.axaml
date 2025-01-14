@@ -98,13 +98,15 @@
 						<Grid RowDefinitions="25,30,25,30" Margin="0,20,0,0">
 							<DockPanel Margin="15,0,0,0" Grid.Row="0">
 								<TextBlock Text="Password" Foreground="White" VerticalAlignment="Center" Width="75"/>
-								<TextBox Watermark="Enter password" Margin="15,0,15,0" BorderThickness="1"
+								<TextBox Watermark="Enter password" Margin="15,0,0,0" BorderThickness="1"
 											Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
 											BorderBrush="{DynamicResource DataBoxBorderBrush}"
-											Text="{Binding Password}"
-											Classes="dataBox"
+											Text="{Binding Password}" Width="325"
+											Classes="dataBox" HorizontalAlignment="Left"
 											HorizontalContentAlignment="Left" CornerRadius="15"
 											KeyDown="ConfirmData"/>
+								<Button Theme="{StaticResource GenPasswordButton}" 
+										Command="{Binding GeneratePasswordCommand}"/>
 							</DockPanel>
 							<TextBlock Text="password is not correct" Foreground="{DynamicResource WarningBrush}"
 									   Margin="115,2,0,0" Grid.Row="1"
@@ -112,11 +114,12 @@
 							
 							<DockPanel Margin="15,0,0,0" Grid.Row="2">
 								<TextBlock Text="Login" Foreground="White" VerticalAlignment="Center" Width="75"/>
-								<TextBox Watermark="Enter login" Margin="15,0,15,0" BorderThickness="1"
+								<TextBox Watermark="Enter login" Margin="15,0,0,0" BorderThickness="1"
 											Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
 											BorderBrush="{DynamicResource DataBoxBorderBrush}"
 											Text="{Binding Login}"
 											Classes="dataBox"
+											Width="325" HorizontalAlignment="Left"
 											HorizontalContentAlignment="Left" CornerRadius="15"
 											KeyDown="ConfirmData"/>
 							</DockPanel>

@@ -10,9 +10,11 @@
 	  Background="{DynamicResource MainWindowBrush}"
 	  x:Name="MainGrid">
 
+
+		<Border Grid.Column="1" Grid.RowSpan="3" Grid.Row="0" Background="{DynamicResource AdditionalBackgroundBrush}"/>
+		<ContentControl Content="{Binding CurrentPage}" Grid.Column="1" Grid.RowSpan="3" Grid.Row="1"
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 		
-		<ContentControl Content="{Binding CurrentPage}" Grid.Column="1" Grid.RowSpan="7" Grid.Row="1"
-						HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 		<StackPanel Grid.Row="2" Margin="10,0,0,0">
 			<Button Content="AllEntries" Grid.Column="0" Grid.Row="2"
 					Command="{Binding SetCurrentPageCommand}"

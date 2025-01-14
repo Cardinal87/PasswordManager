@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.ViewModels.BaseClasses
 {
-    internal abstract class DialogViewModelBase : ViewModelBase
+    public abstract class DialogViewModelBase : ViewModelBase
     {
         public abstract bool CanClose { get;}
         protected abstract void Close();

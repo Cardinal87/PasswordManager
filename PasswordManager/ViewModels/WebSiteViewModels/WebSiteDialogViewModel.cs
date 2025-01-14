@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
+using PasswordManager.Helpers;
 using PasswordManager.Models;
+using PasswordManager.Services;
 using PasswordManager.ViewModels.BaseClasses;
 using PasswordManager.ViewModels.Interfaces;
 using System;
@@ -16,13 +19,16 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string loginPattern = @"^((\+?\\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9})|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|([a-zA-Z0-9._]{4,}))$";
         private const string webAdressPattern = @"^((?!-)[A-Za-z0-9-]{1,40}(?<!-)\.)+[A-Za-z]{2,10}$";
-        private const string passwordPattern = @"^[a-zA-Z0-9!@#$%^&*()_+-=]{1,30}$";
+        private const string passwordPattern = @"^[a-zA-Z0-9~!@#$%^*()_+={}[]|:,.?/-]{1,30}$";
 
 
 
         private bool dialogResult;
-        public WebSiteDialogViewModel()
+        public WebSiteDialogViewModel(IServiceProvider provider)
         {
+            this.provider = provider;
+            dialogService = provider.GetRequiredService<IDialogService>();
+            GeneratePasswordCommand = new RelayCommand(ShowPasswordGenerator);
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             IsFavourite = false;
@@ -30,8 +36,11 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             Id = 0;
         }
 
-        public WebSiteDialogViewModel(WebSiteModel item)
+        public WebSiteDialogViewModel(WebSiteModel item, IServiceProvider provider)
         {
+            this.provider = provider;
+            dialogService = provider.GetRequiredService<IDialogService>();
+            GeneratePasswordCommand = new RelayCommand(ShowPasswordGenerator);
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             Model = item;
@@ -44,7 +53,8 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
             IsNew = false;
 
         }
-        
+        IServiceProvider provider;
+        IDialogService dialogService;
         public WebSiteModel? Model { get; private set; }
         
         private string password = "";
@@ -111,11 +121,18 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
         }
         public bool IsFavourite { get; private set; }
         public bool IsNew { get; set; }
-
+        public RelayCommand GeneratePasswordCommand { get; private set; }
         public RelayCommand AddCommand { get; set; }
         public RelayCommand CloseCommand { get; set; }
 
         public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
+
+        private void ShowPasswordGenerator()
+        {
+            var vm = new PasswordGeneratorViewModel(provider);
+            vm.dialogResultRequest += GetDialogResult;
+            dialogService.OpenDialog(vm);
+        }
 
         protected void Add()
         {
@@ -137,6 +154,14 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                 OnPropertyChanged(nameof(IsValidPassword));
                 OnPropertyChanged(nameof(IsValidWebAdress));
                 
+            }
+        }
+        private void GetDialogResult(object? sender, DialogResultEventArgs e)
+        {
+            if (sender is PasswordGeneratorViewModel vm && e.DialogResult)
+            {
+                Password = vm.Password;
+                dialogService.CloseDialog(vm);
             }
         }
 

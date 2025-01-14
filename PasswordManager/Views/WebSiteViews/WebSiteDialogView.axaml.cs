@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Diagnostics;
 using Avalonia.Markup.Xaml;
 using PasswordManager.ViewModels.AppViewModels;
 using PasswordManager.ViewModels.CardViewModels;
@@ -14,6 +15,7 @@ public partial class WebSiteDialogView : Window
     public WebSiteDialogView()
     {
         InitializeComponent();
+        this.AttachDevTools();
     }
     private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {

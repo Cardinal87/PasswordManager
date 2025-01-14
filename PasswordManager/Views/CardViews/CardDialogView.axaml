@@ -101,11 +101,11 @@
 						<Grid RowDefinitions="25,30,25,30,40" Margin="0,20,0,0">
 							<DockPanel Margin="15,0,0,0" Grid.Row="0">
 								<TextBlock Text="Number" Foreground="White" VerticalAlignment="Center" Width="75"/>
-								<TextBox Watermark="Enter number" Margin="15,0,15,0" BorderThickness="1"
+								<TextBox Watermark="Enter number" Margin="15,0,0,0" BorderThickness="1"
 										 Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
 										 BorderBrush="{DynamicResource DataBoxBorderBrush}"
-										 Text="{Binding Number}"
-										 Classes="dataBox"
+										 Text="{Binding Number}" HorizontalAlignment="Left"
+										 Classes="dataBox" Width="325"
 										 HorizontalContentAlignment="Left" CornerRadius="15"
 										 KeyDown="ConfirmData" MaxLength="16"/>
 							</DockPanel>
@@ -115,13 +115,14 @@
 							<DockPanel Margin="15,0,0,0" Grid.Row="2">
 								<TextBlock Text="CVC" Foreground="White" VerticalAlignment="Center" Width="75"/>
 								<TextBox Watermark="Enter cvc"  BorderThickness="1"
-											Margin="15,0,15,0"
-											Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
-											BorderBrush="{DynamicResource DataBoxBorderBrush}"
-											Text="{Binding Cvc}"
-											Classes="dataBox" MaxLength="3"
-											HorizontalContentAlignment="Left" CornerRadius="15"
-											KeyDown="Digit_Validation"/>
+										Margin="15,0,40,0"
+										Background="{DynamicResource DataBoxBackgroundBrush}" Foreground="{DynamicResource FontBrush}"
+										BorderBrush="{DynamicResource DataBoxBorderBrush}"
+										Text="{Binding Cvc}" Width="325"
+										HorizontalAlignment="Left"
+										Classes="dataBox" MaxLength="3"
+										HorizontalContentAlignment="Left" CornerRadius="15"
+										KeyDown="Digit_Validation"/>
 								
 							
 							</DockPanel>

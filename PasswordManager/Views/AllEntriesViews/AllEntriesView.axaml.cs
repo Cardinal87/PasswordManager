@@ -35,4 +35,10 @@ public partial class AllEntriesView : UserControl
         }
     }
 
+    private void CardItem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        ((AllEntriesViewModel)DataContext!).CardViewModel.AddNewCommand.Execute(null);
+    }
+
+    
 }
