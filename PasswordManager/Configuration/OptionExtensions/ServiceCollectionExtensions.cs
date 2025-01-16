@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
+using PasswordManager.ViewModels.Services;
 
 namespace PasswordManager.Configuration.OptionExtensions
 {

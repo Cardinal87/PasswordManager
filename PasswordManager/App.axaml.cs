@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PasswordManager.Configuration.OptionExtensions;
 
-using PasswordManager.Helpers;
+using PasswordManager.ViewModels;
 using PasswordManager.ViewModels;
 using PasswordManager.Views;
 using System.IO;

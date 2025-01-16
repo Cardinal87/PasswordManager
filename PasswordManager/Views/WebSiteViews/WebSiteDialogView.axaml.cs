@@ -15,7 +15,6 @@ public partial class WebSiteDialogView : Window
     public WebSiteDialogView()
     {
         InitializeComponent();
-        this.AttachDevTools();
     }
     private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {

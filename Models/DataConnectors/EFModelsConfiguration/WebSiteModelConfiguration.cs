@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.Configuration.EFModelsConfiguration
+namespace PasswordManager.Models.Configuration.EFModelsConfiguration
 {
     class WebSiteModelConfiguration : IEntityTypeConfiguration<WebSiteModel>
     {

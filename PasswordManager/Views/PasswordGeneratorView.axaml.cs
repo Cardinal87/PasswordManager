@@ -9,7 +9,6 @@ public partial class PasswordGeneratorView : Window
     public PasswordGeneratorView()
     {
         InitializeComponent();
-        this.AttachDevTools();
     }
     private void MoveWindow(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {

@@ -9,7 +9,7 @@ using Avalonia.Controls.Templates;
 using PasswordManager.ViewModels.BaseClasses;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace PasswordManager.Helpers
+namespace PasswordManager.ViewModels
 {
     internal class ViewLocator : IDataTemplate
     {

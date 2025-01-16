@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace PasswordManager.Helpers
+namespace PasswordManager.ViewModels
 {
     internal class DialogService : IDialogService
     {
