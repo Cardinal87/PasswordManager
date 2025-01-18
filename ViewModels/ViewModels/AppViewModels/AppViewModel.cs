@@ -3,16 +3,16 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.ViewModels.Services;
-using PasswordManager.Models.DataConnectors;
-using PasswordManager.Models.Models;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.Interfaces;
-using System.Linq.
+using ViewModels.Services;
+using Models.DataConnectors;
+using Models;
+using ViewModels.BaseClasses;
+using ViewModels.Interfaces;
+using System.Linq;
 using System.Collections.ObjectModel;
 
 
-namespace PasswordManager.ViewModels.AppViewModels
+namespace ViewModels.AppViewModels
 {
     public partial class AppViewModel : ViewModelBase
     {
@@ -129,6 +129,7 @@ namespace PasswordManager.ViewModels.AppViewModels
                             await dbClient.SaveChangesAsync();
                             AppItemViewModel item = new AppItemViewModel(vm.Model, provider);
                             Apps.Add(item);
+                            CurrentItem = null;
                             CurrentItem = item;
                         }
                         else

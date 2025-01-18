@@ -1,26 +1,20 @@
 ﻿
-using PasswordManager.ViewModels.WebSiteViewModels;
-using PasswordManager.ViewModels.AllEntriesViewModels;
-using PasswordManager.ViewModels.AppViewModels;
+using ViewModels.WebSiteViewModels;
+using ViewModels.AllEntriesViewModels;
+using ViewModels.AppViewModels;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
-using PasswordManager.ViewModels;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Net;
-using PasswordManager.DataConnectors;
 
-using PasswordManager.ViewModels.CardViewModels;
-using PasswordManager.ViewModels.BaseClasses;
+
+using ViewModels.CardViewModels;
+using ViewModels.BaseClasses;
 using System.Threading.Tasks;
 using System;
 
 
-namespace PasswordManager.ViewModels;
+namespace ViewModels;
 
-internal partial class MainViewModel : ViewModelBase
+public partial class MainViewModel : ViewModelBase
 {
 
     private ViewModelBase? currentPage;

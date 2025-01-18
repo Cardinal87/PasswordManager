@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="700"
+             xmlns:vm="clr-namespace:ViewModels.AllEntriesViewModels;assembly=ViewModels"
+			 x:Class="Views.AllEntriesViews.AllEntriesView"
+			 x:DataType="vm:AllEntriesViewModel">
+
+	
+	
+	
+	
+	
+	<Grid RowDefinitions="45,*" Background="{DynamicResource MainBackgroundBrush}">
+
+		<Grid Grid.Row="0" ColumnDefinitions="300,*,250" Background="{DynamicResource AdditionalBackgroundBrush}" >
+			<TextBox Theme="{StaticResource SearchBox}" Grid.Column="2" Margin="0,0,10,2" VerticalAlignment="Center"
+					 KeyDown="EnterPressed" Classes="searchBox"/>
+
+
+		</Grid>
+
+		<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,45,0,0"/>
+
+		<TextBlock Text="no entries have been added yet" FontSize="27"
+				   Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+				   IsVisible="{Binding IsEmptyCollection}"/>
+		
+		<Grid Grid.Row="1" ColumnDefinitions="250,*" IsVisible="{Binding !IsEmptyCollection}">
+			<ListBox Grid.Column="0"  ItemsSource="{Binding FilteredCollection}" Background="{DynamicResource AdditionalBackgroundBrush}"
+					 SelectedItem="{Binding CurrentItem}" SelectionChanged="ListBox_SelectionChanged">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Margin="10,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+									Text="{Binding Name}" TextAlignment="Left"/>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+
+			<Rectangle Width="1" Margin="250,0,0,0"  Fill="{DynamicResource DataBoxBorderBrush}"
+					   VerticalAlignment="Stretch" />
+
+			<Grid Grid.Column="1" RowDefinitions="50,*" Background="{DynamicResource MainBackgroundBrush}">
+				<Grid Grid.Row="0" ColumnDefinitions="150,*,40,40,40" Background="{DynamicResource AdditionalBackgroundBrush}">
+					<TextBlock Text="{Binding CurrentItem.Name}" HorizontalAlignment="Left" VerticalAlignment="Center"
+							   Margin="10,0,0,0"/>
+					<Button x:Name="Change" Command="{Binding ChangeCommand}"
+							CommandParameter="{Binding CurrentItem}"
+							Theme="{StaticResource ChangeButton}"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Grid.Column="2"/>
+					<Button x:Name="Delete" Command="{Binding DeleteCommand}"
+							Theme="{StaticResource DeleteButton}"
+							CommandParameter="{Binding CurrentItem}"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Grid.Column="3"/>
+					<Button x:Name="AddToFavourite" Command="{Binding AddToFavouriteCommand}"
+							CommandParameter="{Binding CurrentItem}"
+							Theme="{StaticResource AddToFavouriteButton}"
+							Grid.Column="4"
+							IsEnabled="{Binding CurrentItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+							Tag="{Binding CurrentItem.IsFavourite}">
+
+					</Button>
+				</Grid>
+				<Separator Background="{DynamicResource DataBoxBorderBrush}" Margin="0,50,0,0"/>
+
+				<ContentControl Content="{Binding CurrentItem}" Grid.Row="1"/>
+
+				
+
+			</Grid>
+		</Grid>
+
+	</Grid>
+</UserControl>

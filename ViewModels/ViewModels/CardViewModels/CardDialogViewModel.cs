@@ -1,22 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using PasswordManager.Models;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.Interfaces;
+
+using ViewModels.BaseClasses;
+using ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-using PasswordManager.Models.Models;
+using Models;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.CardViewModels
+namespace ViewModels.CardViewModels
 {
-    internal class CardDialogViewModel : DialogViewModelBase, IDialogResultHelper
+    public class CardDialogViewModel : DialogViewModelBase, IDialogResultHelper
     {
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string cvcPattern = @"^\d{3}$";
-        private const string numberPattern = @"^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$|^(\d{16})$";
+        private const string numberPattern = @"^(\d\s*){12,15}\d$";
         private const string ownerPattern = @"[a-zA-Z0-9._%+-]+|^$";
 
 
@@ -114,9 +114,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             get => month;
             set
             {
-                string val = value;
-                if (val.Length == 1) val = "0" + val;
-                month = val;
+                month = value;
                 OnPropertyChanged(nameof(Month));
                 OnPropertyChanged(nameof(IsValidDate));
                 OnPropertyChanged(nameof(CanClose));
@@ -129,7 +127,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             get => year;
             set
             {
-                
+
                 year = value;
                 OnPropertyChanged(nameof(Year));
                 OnPropertyChanged(nameof(IsValidDate));
@@ -137,6 +135,25 @@ namespace PasswordManager.ViewModels.CardViewModels
 
             }
 
+        }
+
+        public string Date
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(Year)) return Month;
+                return Month + "/" + Year;
+
+            }
+            set
+            {
+                var arr = value.Split('/');
+                Month = arr[0];
+                Year = arr.Length == 2 ? arr[1] : "";
+                OnPropertyChanged(nameof(Date));
+                OnPropertyChanged(nameof(CanClose));
+                OnPropertyChanged(nameof(IsValidDate));
+            }
         }
         public bool IsFavourite
         {
@@ -180,8 +197,6 @@ namespace PasswordManager.ViewModels.CardViewModels
                 if (!isChecked) return true;
                 return IsValidOwner &&
                        IsValidCvc &&
-                       Month != string.Empty &&
-                       Year != string.Empty &&
                        IsValidName &&
                        IsValidNumber &&
                        IsValidDate;
@@ -229,7 +244,7 @@ namespace PasswordManager.ViewModels.CardViewModels
             get
             {
                 if (!isChecked) return true;
-                return (int.TryParse(Year, out int intYear) && intYear >= DateTime.Today.Year - 1 && intYear <= DateTime.Today.Year + 10) &&
+                return (int.TryParse(Year, out int intYear) && intYear >= DateTime.Today.Year - 2001 && intYear <= DateTime.Today.Year - 1900) &&
                     (int.TryParse(Month, out int intMonth) && intMonth >= 0 && intMonth <= 12);
             }
         }

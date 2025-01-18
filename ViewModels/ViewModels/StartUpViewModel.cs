@@ -3,19 +3,19 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using PasswordManager.ViewModels.Services;
-using PasswordManager.Models.DataConnectors;
+using ViewModels.Services;
+using Models.DataConnectors;
 
-using PasswordManager.ViewModels.Services.AppConfiguration;
-using PasswordManager.ViewModels.BaseClasses;
+using ViewModels.Services.AppConfiguration;
+using ViewModels.BaseClasses;
 
 using System.Security.Cryptography;
 using System.Text;
 
 
-namespace PasswordManager.ViewModels
+namespace ViewModels
 {
-    internal class StartUpViewModel : ViewModelBase
+    public class StartUpViewModel : ViewModelBase
     {
         
         IServiceCollection _services;

@@ -1,17 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.ViewModels;
-using PasswordManager.Models;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.WebSiteViewModels;
+using ViewModels;
+using Models;
+using ViewModels.BaseClasses;
+using ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
-using PasswordManager.ViewModels.Services;
-using PasswordManager.Models.DataConnectors;
-using PasswordManager.Models.Models;
+using ViewModels.Services;
+using Models.DataConnectors;
+
 using System.Diagnostics.CodeAnalysis;
 
-namespace PasswordManager.ViewModels.CardViewModels
+namespace ViewModels.CardViewModels
 {
     public class CardItemViewModel : ItemViewModelBase
     {
@@ -70,7 +70,10 @@ namespace PasswordManager.ViewModels.CardViewModels
         }
         public string Month
         {
-            get => month;
+            get 
+            {
+                return month;
+            }
             [MemberNotNull(nameof(month))]
             set
             {

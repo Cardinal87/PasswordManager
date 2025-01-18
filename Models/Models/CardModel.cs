@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace PasswordManager.Models.Models
+namespace Models
 {
     public class CardModel : ModelBase
     {

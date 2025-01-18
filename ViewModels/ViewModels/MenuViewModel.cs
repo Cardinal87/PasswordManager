@@ -1,10 +1,10 @@
 ﻿
-using PasswordManager.ViewModels.BaseClasses;
+using ViewModels.BaseClasses;
 using System.Security.Cryptography;
 using System;
 using System.Text;
-using PasswordManager.ViewModels.Services;
-using PasswordManager.ViewModels.Services.AppConfiguration;
+using ViewModels.Services;
+using ViewModels.Services.AppConfiguration;
 using CommunityToolkit.Mvvm.Input;
 
 
@@ -14,9 +14,9 @@ using System.Text.RegularExpressions;
 
 
 
-namespace PasswordManager.ViewModels
+namespace ViewModels
 {
-    class MenuViewModel : ViewModelBase
+    public class MenuViewModel : ViewModelBase
     {
         private const string passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,50}$";
         

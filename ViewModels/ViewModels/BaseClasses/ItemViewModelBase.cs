@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.BaseClasses
+namespace ViewModels.BaseClasses
 {
     public partial class ItemViewModelBase : ViewModelBase
     {

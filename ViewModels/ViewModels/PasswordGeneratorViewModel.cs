@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.Services;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.Interfaces;
+using Models.Services;
+using ViewModels.BaseClasses;
+using ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels
+namespace ViewModels
 {
     internal class PasswordGeneratorViewModel : DialogViewModelBase, IDialogResultHelper
     {

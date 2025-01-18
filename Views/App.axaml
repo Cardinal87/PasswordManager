@@ -1,0 +1,465 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Views.App"
+			 xmlns:local="using:Views.Services"
+			 xmlns:converters="using:Views.Converters"
+             RequestedThemeVariant="Dark">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	<Application.DataTemplates>
+		<local:ViewLocator/>
+	</Application.DataTemplates>
+	
+    <Application.Styles>
+        <FluentTheme />
+		<StyleInclude Source="Icons.axaml"/>
+
+
+
+	
+
+
+		
+		
+		
+		<!--Style for data boxes-->
+		<Style Selector="TextBox.dataBox">
+			
+			
+			<Style Selector="^:focus /template/ Border#PART_BorderElement">
+				<Setter Property="BorderBrush" Value="{DynamicResource MainGreenBrush}"/>
+				<Setter Property="Background" Value="{DynamicResource MainBackgroundBrush}"/>
+			</Style>
+			<Style Selector="^ /template/ TextBlock#PART_Watermark">
+				<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			</Style>
+			<Style Selector="^:pointerover:not(:focus)">
+				<Style Selector="^ /template/ TextBlock#PART_Watermark">
+					<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ Border#PART_BorderElement">
+					<Setter Property="BorderBrush" Value="{DynamicResource DataBoxHighLightedBrush}"/>
+					<Setter Property="Background" Value="{DynamicResource DataBoxBackgroundBrush}"/>
+				</Style>
+			</Style>
+		</Style>
+		
+		
+		<!--ListBox for items-->
+		<Style Selector="ListBoxItem">
+			<Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListBoxItemSelectedBrush}"/>
+				
+			</Style>
+			<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+				<Setter Property="Background" Value="{DynamicResource ListBoxItemPointOverBrush}"/>
+			</Style>
+		</Style>
+
+		<!--Button styles-->
+		<Style Selector="Button">
+			
+			<Style Selector="^:pointerover">
+				<Setter Property="Opacity" Value="0.7"/>
+			</Style>
+			<Style Selector="^:disabled /template/ PathIcon#icon">
+				<Setter Property="Opacity" Value="0.3 "/>
+			</Style>
+			<Style Selector="^:disabled">
+				<Setter Property="Opacity" Value="0.5 "/>
+			</Style>
+			
+		</Style>
+    </Application.Styles>
+
+
+	<!--Themes-->
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<MergeResourceInclude Source="/Themes.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
+	
+	
+	
+	<Application.Resources>
+		<converters:StringToDefaultConverter x:Key="StringToDefaultConverter"/>
+		<converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+		<converters:ToPasswordCharConverter x:Key="ToPasswordCharConverter"/>
+		
+
+		
+		<!--Text copied message-->
+		<DataTemplate x:Key="TextCopiedMessage" DataType="{x:Type ContentControl}">
+			<Border CornerRadius="10" Background="{DynamicResource AdditionalBackgroundBrush}"
+					IsEnabled="{Binding Tag}" Padding="5" Opacity="0" HorizontalAlignment="Center"
+					VerticalAlignment="Center" Classes="TextCopiedMessage" >
+
+				<ContentPresenter Content="Text Copied" Foreground="{DynamicResource FontBrush}"/>
+
+				<Border.Styles>
+					<Style Selector="Border.TextCopiedMessage:not(:disabled)">
+						<Style.Animations>
+							<Animation Duration="0:0:2">
+								<KeyFrame Cue="0%">
+									<Setter Property="Opacity" Value="0"/>
+								</KeyFrame>
+								<KeyFrame Cue="2%">
+									<Setter Property="Opacity" Value="1"/>
+								</KeyFrame>
+								<KeyFrame Cue="100%">
+									<Setter Property="Opacity" Value="0"/>
+								</KeyFrame>
+							</Animation>
+						</Style.Animations>
+					</Style>
+				</Border.Styles>
+			</Border>
+		</DataTemplate>
+
+		
+		
+		
+		<!--Delete button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DeleteButton">
+			<Setter Property="Background" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate TargetType="Button">
+					<PathIcon x:Name="icon" Data="{StaticResource delete_icon}" Foreground="{DynamicResource DeleteButtonBrush}"/>
+				</ControlTemplate>
+			</Setter>
+			
+		</ControlTheme>
+	
+		
+		<!--Change button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="ChangeButton">
+			<Setter Property="Background" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate TargetType="Button">
+					<PathIcon x:Name="icon" Data="{StaticResource change_icon}" Foreground="{DynamicResource MainGreenBrush}"
+							  Height="15" Width="15"/>
+				</ControlTemplate>
+			</Setter>
+		
+		</ControlTheme>
+		
+		
+		<!--Add to favourite button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="AddToFavouriteButton">
+			<Setter Property="Background" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid>
+						<PathIcon x:Name="icon_off" Data="{StaticResource favourite_off_icon}" Foreground="{DynamicResource SecondFontBrush}"
+								  IsVisible="{TemplateBinding Tag, Converter={StaticResource ReverseBoolConverter}}"/>
+						<PathIcon x:Name="icon" Data="{StaticResource favourite_icon}" Foreground="{DynamicResource SecondFontBrush}"
+								  IsVisible="{TemplateBinding Tag}"/>
+						
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+			
+		</ControlTheme>
+		
+		
+		<!--Default green button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DefaultGreenButton">
+			<Setter Property="CornerRadius" Value="10"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Background" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border CornerRadius="10" Background="{TemplateBinding Background}"
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="7,5,7,5">
+						<ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" 
+										  DockPanel.Dock="Left" 
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+						
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		
+		
+		
+		<!--Checkmark button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="CheckmarkButton">
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Background="{TemplateBinding Background}" Padding="2" VerticalAlignment="Center">
+						<PathIcon Data="{StaticResource checkmark_icon}" Background="{TemplateBinding Background}"
+							  Foreground="{TemplateBinding Foreground}" Height="17" Width="17"/>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+			
+		</ControlTheme>
+		
+		
+		<!--Dismiss button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button" x:Key="DismissButton">
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource MainRedBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Background="{TemplateBinding Background}" Padding="2" VerticalAlignment="Center">
+						<PathIcon Data="{StaticResource dismiss_icon}" Background="{TemplateBinding Background}"
+								  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"/>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+			
+		</ControlTheme>
+		
+		
+		<!--Confirm button-->
+		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="ConfirmButton">
+			<Setter Property="Background" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Padding" Value="7,5,7,5"/>
+			<Setter Property="Content" Value="Confirm"/>
+			<Setter Property="CornerRadius" Value="5"/>
+			
+			<Style Selector="^:disabled">
+				<Setter Property="Opacity" Value="0.4"/>
+			</Style>
+		</ControlTheme>
+
+		<!--Cancel button-->
+		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="CancelButton">
+			<Setter Property="Background" Value="{DynamicResource MainRedBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="Padding" Value="7,5,7,5"/>
+			<Setter Property="Content" Value="Cancel"/>
+			<Setter Property="CornerRadius" Value="5"/>
+		</ControlTheme>
+		
+		
+		<!--TabButtons-->
+		<ControlTheme TargetType="Button" BasedOn="{StaticResource BaseButton}" x:Key="TabButton">
+			<Setter Property="Background" Value="{DynamicResource MainWindowBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource MainWindowBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}"
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+						<TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Left" VerticalAlignment="Center"
+							   Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" />
+					</Border>
+				</ControlTemplate>
+			</Setter>
+			
+		</ControlTheme>
+		
+		
+		<!--Copy button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button"
+					  x:Key="CopyButton">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Height" Value="16"/>
+			<Setter Property="Width" Value="16"/>
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource SecondFontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<PathIcon Data="{StaticResource copy_icon}" Background="{TemplateBinding Background}"
+							  Foreground="{TemplateBinding Foreground}" Height="{TemplateBinding Height}" 
+							  Width="{TemplateBinding Width}"/>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		
+		<!--Show password button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" TargetType="Button"
+					  x:Key="ShowPasswordButton">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Background" Value="{DynamicResource AdditionalBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource SecondFontBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid>
+						<PathIcon Data="{StaticResource show_icon}" Background="{TemplateBinding Background}"
+								  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"
+								  IsVisible="{TemplateBinding Tag, Converter={StaticResource ReverseBoolConverter}}"/>
+						<PathIcon Data="{StaticResource hide_icon}" Background="{TemplateBinding Background}"
+								  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"
+								  IsVisible="{TemplateBinding Tag}"/>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		
+		
+		<!--Generate password button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" x:Key="GenPasswordButton" TargetType="Button">
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<PathIcon Data="{StaticResource key_icon}" Background="{TemplateBinding Background}"
+							  Foreground="{TemplateBinding Foreground}" Height="16" Width="16"/>
+				</ControlTemplate>
+				
+			</Setter>
+			
+		</ControlTheme>
+		
+		<!--Update button-->
+		<ControlTheme BasedOn="{StaticResource BaseButton}" x:Key="UpdateButton" TargetType="Button">
+			<Setter Property="Height" Value="25"/>
+			<Setter Property="Width" Value="25"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="{DynamicResource MainGreenBrush}"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<PathIcon Data="{StaticResource update_icon}" Background="Transparent"
+							  Foreground="{TemplateBinding Foreground}" Height="{TemplateBinding Height}" 
+							  Width="{TemplateBinding Width}"/>
+				</ControlTemplate>
+			</Setter>
+		</ControlTheme>
+		
+		
+		
+		
+		<!--Base template for button-->
+		<ControlTheme x:Key="BaseButton" TargetType="Button">
+			<Setter Property="Background" Value="Gray"/>
+			
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			
+		</ControlTheme>
+		
+		
+		<!--Template for search box-->
+		<ControlTheme x:Key="SearchBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+			<Setter Property="Background" Value="{DynamicResource SearchBoxBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Watermark" Value="Find(Crtl + F)"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource SearchBoxBackgroundBrush}"/>
+			
+			<Setter Property="Template">
+				<ControlTemplate>
+					<DataValidationErrors>
+						<Panel>
+							<Border
+							  Name="PART_BorderElement"
+							  Background="{TemplateBinding Background}"
+							  BorderBrush="{TemplateBinding BorderBrush}"
+							  BorderThickness="{TemplateBinding BorderThickness}"
+							  CornerRadius="15"
+							  MinWidth="{TemplateBinding MinWidth}"
+							  MinHeight="{TemplateBinding MinHeight}">
+							</Border>
+
+							<Border
+								Margin="{TemplateBinding Margin}" Padding="3">
+								
+								<Grid ColumnDefinitions="Auto,*,Auto" >
+									<DockPanel x:Name="PART_InnerDockPanel"
+												Grid.Column="1"
+												Grid.ColumnSpan="1"
+												Cursor="IBeam"
+												Margin="10,0,0,0" >
+										
+										<TextBlock Name="PART_FloatingWatermark"
+													Foreground="{DynamicResource SystemAccentColor}"
+													FontSize="{TemplateBinding FontSize}"
+													IsVisible="False"
+													Text="{TemplateBinding Watermark}"
+													DockPanel.Dock="Top" />
+										<Panel>
+											<TextBlock Name="PART_Watermark"
+													Opacity="0.5"
+													Foreground="{TemplateBinding Foreground}"
+													Text="{TemplateBinding Watermark}"
+													TextAlignment="{TemplateBinding TextAlignment}"
+													TextWrapping="{TemplateBinding TextWrapping}"
+													IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+													HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+													VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+											</TextBlock>
+											<TextPresenter Name="PART_TextPresenter"
+															Text="{TemplateBinding Text, Mode=TwoWay}"
+															CaretIndex="{TemplateBinding CaretIndex}"
+															SelectionStart="{TemplateBinding SelectionStart}"
+															SelectionEnd="{TemplateBinding SelectionEnd}"
+															TextAlignment="{TemplateBinding TextAlignment}"
+															TextWrapping="{TemplateBinding TextWrapping}"
+															LineHeight="{TemplateBinding LineHeight}"
+															LetterSpacing="{TemplateBinding LetterSpacing}"
+															PasswordChar="{TemplateBinding PasswordChar}"
+															RevealPassword="{TemplateBinding RevealPassword}"
+															SelectionBrush="{TemplateBinding SelectionBrush}"
+															SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+															CaretBrush="{TemplateBinding CaretBrush}"
+															HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+															VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+										</Panel>
+										
+									</DockPanel>
+									
+									<ContentPresenter Grid.Column="2" Grid.ColumnSpan="1" Content="{TemplateBinding InnerRightContent}"/>
+								</Grid>
+							</Border>
+						</Panel>
+					</DataValidationErrors>
+				</ControlTemplate>
+				
+
+			</Setter>
+			<Style Selector="^:focus">
+				<Style Selector="^ /template/ Border#PART_BorderElement">
+					<Setter Property="BorderBrush" Value="{DynamicResource MainGreenBrush}"/>
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ PathIcon">
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ TextBlock#PART_Watermark">
+					<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+				</Style>
+			</Style>
+
+			<Style Selector="^:pointerover:not(:focus)">
+				<Style Selector="^ /template/ TextBlock#PART_Watermark">
+					<Setter Property="Foreground" Value="{DynamicResource FontBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ Border#PART_BorderElement">
+					<Setter Property="BorderBrush" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+				<Style Selector="^ /template/ PathIcon">
+					<Setter Property="Background" Value="{DynamicResource SearchBoxHighLightedBrush}"/>
+				</Style>
+			</Style>
+			</ControlTheme>
+		
+		
+			
+	</Application.Resources>
+	
+</Application>
+    

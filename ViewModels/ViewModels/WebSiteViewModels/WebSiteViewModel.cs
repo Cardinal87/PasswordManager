@@ -1,29 +1,24 @@
-﻿using Avalonia.Markup.Xaml.MarkupExtensions;
+﻿
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager;
-using PasswordManager.DataConnectors;
-using PasswordManager.ViewModels;
-using PasswordManager.Models;
-using PasswordManager.ViewModels.AppViewModels;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.Interfaces;
-using PasswordManager.Views;
+
+using Models.DataConnectors;
+using ViewModels;
+using Models;
+using ViewModels.AppViewModels;
+using ViewModels.BaseClasses;
+using ViewModels.Interfaces;
+using ViewModels.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.WebSiteViewModels
+
+namespace ViewModels.WebSiteViewModels
 {
-    internal partial class WebSiteViewModel : ViewModelBase
+    public partial class WebSiteViewModel : ViewModelBase
     {
 
         public static async Task<WebSiteViewModel> CreateAsync(IServiceProvider provider)
@@ -147,6 +142,7 @@ namespace PasswordManager.ViewModels.WebSiteViewModels
                             await dbClient.SaveChangesAsync();
                             WebSiteItemViewModel item = new WebSiteItemViewModel(model, provider);
                             WebSites.Add(item);
+                            CurrentItem = null;
                             CurrentItem = item;
                         }
                         else

@@ -1,14 +1,14 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
-using PasswordManager.ViewModels.Services;
+using ViewModels.Services;
 
-using PasswordManager.Models.Models;
+using Models;
 using System.Diagnostics.CodeAnalysis;
-using PasswordManager.ViewModels.BaseClasses;
+using ViewModels.BaseClasses;
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace PasswordManager.ViewModels.WebSiteViewModels
+namespace ViewModels.WebSiteViewModels
 {
     public partial class WebSiteItemViewModel : ItemViewModelBase
     {

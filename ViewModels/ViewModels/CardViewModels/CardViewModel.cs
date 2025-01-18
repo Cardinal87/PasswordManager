@@ -1,14 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.DataConnectors;
+using Models.DataConnectors;
 
-using PasswordManager.ViewModels;
-using PasswordManager.Models;
-using PasswordManager.ViewModels.AppViewModels;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.Interfaces;
-using PasswordManager.ViewModels.WebSiteViewModels;
+using ViewModels;
+using Models;
+using ViewModels.AppViewModels;
+using ViewModels.BaseClasses;
+using ViewModels.Interfaces;
+using ViewModels.Services;
+using ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,9 +18,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.CardViewModels
+namespace ViewModels.CardViewModels
 {
-    internal class CardViewModel : ViewModelBase
+    public class CardViewModel : ViewModelBase
     {
         
         public static async Task<CardViewModel> CreateAsync(IServiceProvider provider)
@@ -141,6 +142,7 @@ namespace PasswordManager.ViewModels.CardViewModels
                             await dbClient.SaveChangesAsync();
                             CardItemViewModel item = new CardItemViewModel(model, provider);
                             Cards.Add(item);
+                            CurrentItem = null;
                             CurrentItem = item;
                         }
                         else

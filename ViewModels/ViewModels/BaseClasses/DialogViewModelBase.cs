@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.BaseClasses
+namespace ViewModels.BaseClasses
 {
     public abstract class DialogViewModelBase : ViewModelBase
     {

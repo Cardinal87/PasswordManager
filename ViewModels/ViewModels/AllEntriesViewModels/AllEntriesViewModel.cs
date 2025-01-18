@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using PasswordManager.ViewModels;
-using PasswordManager.Models;
-using PasswordManager.ViewModels.AppViewModels;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.CardViewModels;
-using PasswordManager.ViewModels.WebSiteViewModels;
+using ViewModels;
+using Models;
+using ViewModels.AppViewModels;
+using ViewModels.BaseClasses;
+using ViewModels.CardViewModels;
+using ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,9 +15,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.AllEntriesViewModels
+namespace ViewModels.AllEntriesViewModels
 {
-    internal class AllEntriesViewModel : ViewModelBase
+    public class AllEntriesViewModel : ViewModelBase
     {
         
         public AllEntriesViewModel(AppViewModel appVm, CardViewModel cardVm, WebSiteViewModel webVm) 
@@ -65,6 +65,9 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
                 }
             }
         }
+
+        public bool IsEmptyCollection { get => !Items.Any(); }
+
         public IEnumerable<ItemViewModelBase> FilteredCollection 
         {
             get => Items.Where(x => x.Name!.Contains(SearchKey, StringComparison.CurrentCultureIgnoreCase));
@@ -92,6 +95,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
                 else if (item.GetType() == typeof(AppItemViewModel))
                     await AppViewModel.DeleteCommand.ExecuteAsync((AppItemViewModel)item);
                 OnPropertyChanged(nameof(FilteredCollection));
+                OnPropertyChanged(nameof(IsEmptyCollection));
             }
         }
 
@@ -106,6 +110,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
                 else if (item.GetType() == typeof(AppItemViewModel))
                     await AppViewModel.AddToFavouriteCommand.ExecuteAsync((AppItemViewModel)item);
                 OnPropertyChanged(nameof(FilteredCollection));
+                OnPropertyChanged(nameof(IsEmptyCollection));
             }
         }
 
@@ -136,6 +141,7 @@ namespace PasswordManager.ViewModels.AllEntriesViewModels
                 Items.Remove(el);
             }
             OnPropertyChanged(nameof(FilteredCollection));
+            OnPropertyChanged(nameof(IsEmptyCollection));
         }
         
 

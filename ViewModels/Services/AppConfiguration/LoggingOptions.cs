@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.Services.AppConfiguration
+namespace ViewModels.Services.AppConfiguration
 {
-    internal class LoggingOptions
+    public class LoggingOptions
     {
         public const string Section = "logging";
 

@@ -1,17 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.ViewModels;
-using PasswordManager.Models;
+using ViewModels;
+using Models;
 
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.Interfaces;
-using PasswordManager.ViewModels.Services;
+using ViewModels.BaseClasses;
+using ViewModels.Interfaces;
+using ViewModels.Services;
 
-using PasswordManager.Models.Models;
+
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace PasswordManager.ViewModels.WebSiteViewModels
+namespace ViewModels.WebSiteViewModels
 {
     public partial class WebSiteDialogViewModel : DialogViewModelBase, IDialogResultHelper
     {

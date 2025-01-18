@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PasswordManager.Models.Models;
+using Models;
 
 
-namespace PasswordManager.Models.Configuration.EFModelsConfiguration
+namespace Models.Configuration.EFModelsConfiguration
 {
     class CardModelConfiguration : IEntityTypeConfiguration<CardModel>
     {

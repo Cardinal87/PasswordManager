@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using PasswordManager.Models.Configuration.EFModelsConfiguration;
-using PasswordManager.Models.Models;
+using Models.Configuration.EFModelsConfiguration;
+using Models;
 
 
 
-namespace PasswordManager.Models.DataConnectors
+namespace Models.DataConnectors
 {
     public class DatabaseClient : DbContext 
     {

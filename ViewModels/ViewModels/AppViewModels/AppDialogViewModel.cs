@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.ViewModels.Services;
-using PasswordManager.Models.DataConnectors;
-using PasswordManager.Models.Models;
-using PasswordManager.ViewModels.BaseClasses;
-using PasswordManager.ViewModels.Interfaces;
+using ViewModels.Services;
+using Models.DataConnectors;
+using Models;
+using ViewModels.BaseClasses;
+using ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -13,9 +13,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 
-namespace PasswordManager.ViewModels.AppViewModels
+namespace ViewModels.AppViewModels
 {
-    internal class AppDialogViewModel : DialogViewModelBase, IDialogResultHelper
+    public class AppDialogViewModel : DialogViewModelBase, IDialogResultHelper
     {
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string passwordPattern = @"^[a-zA-Z0-9~!@#$%^*()_+={}[]|:,.?/-]{1,30}$";

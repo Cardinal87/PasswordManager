@@ -1,17 +1,16 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using PasswordManager.ViewModels;
-using PasswordManager.Models;
-using PasswordManager.ViewModels.BaseClasses;
+using ViewModels;
+using Models;
+using ViewModels.BaseClasses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using PasswordManager.ViewModels.Services;
-using PasswordManager.Models.DataConnectors;
-using PasswordManager.Models.Models;
+using ViewModels.Services;
+using Models.DataConnectors;
 
-namespace PasswordManager.ViewModels.AppViewModels
+namespace ViewModels.AppViewModels
 {
     public partial class AppItemViewModel : ItemViewModelBase
     {
