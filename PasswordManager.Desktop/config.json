@@ -1,0 +1,6 @@
+{
+  "Authorization": {
+    "Hash": "",
+    "ConnectionString": "passwordmanager.db"
+  }
+}

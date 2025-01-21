@@ -1,0 +1,10 @@
+@Extension.WebAPI_HostAddress = http://localhost:5167
+
+Get {{Extension.WebAPI_HostAddress}}/api/authorization/get?url=http://discord.com
+
+
+
+###
+
+Post {{Extension.WebAPI_HostAddress}}/api/authorization/setpassword
+Authorization: Basic JXNheSZzQGZnayphc2QhMjRG

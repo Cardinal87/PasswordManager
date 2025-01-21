@@ -37,23 +37,24 @@ public partial class App : Application
 
 
 
-        if (!File.Exists("appsettings.json"))
+        if (!File.Exists("config.json"))
         {
             var model = new 
-            { 
-                logging = new
+            {
+                Authorization = new
                 {
-                    hash = "",
-                    connectionString = "passwordmanager.db"
+                    Hash = "",
+                    ConnectionString = "passwordmanager.db",
+                    Salt = ""
                 }
             };
             var json = JsonConvert.SerializeObject(model, Formatting.Indented);
-            File.WriteAllText("appsettings.json", json);
+            File.WriteAllText("config.json", json);
         }
 
         
         var conf = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
+            .AddJsonFile("config.json")
             .Build();
 
         var services = new ServiceCollection();
@@ -86,10 +87,10 @@ public partial class App : Application
         services.AddScoped<IClipboardService, ClipboardService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
-        services.AddWritebleOptions<LoggingOptions>(config.GetSection(LoggingOptions.Section), "appsettings.json");
+        services.AddWritebleOptions<AuthorizationOptions>(config.GetSection(AuthorizationOptions.Section), "config.json");
         services.AddTransient<StartUpViewModel>(prov =>
         {
-            return new StartUpViewModel(prov.GetRequiredService<IWritableOptions<LoggingOptions>>(),
+            return new StartUpViewModel(prov.GetRequiredService<IWritableOptions<AuthorizationOptions>>(),
                 services);
         });
     }

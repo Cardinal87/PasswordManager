@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ViewModels
 {
-    internal class PasswordGeneratorViewModel : DialogViewModelBase, IDialogResultHelper
+    public class PasswordGeneratorViewModel : DialogViewModelBase, IDialogResultHelper
     {
         
         public PasswordGeneratorViewModel(IServiceProvider provider) 

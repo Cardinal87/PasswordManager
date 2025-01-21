@@ -19,10 +19,10 @@ namespace ViewModels
     {
         
         IServiceCollection _services;
-        LoggingOptions _options;
+        AuthorizationOptions _options;
         private ViewModelBase? currentPage;
 
-        public StartUpViewModel(IWritableOptions<LoggingOptions> options, IServiceCollection services)
+        public StartUpViewModel(IWritableOptions<AuthorizationOptions> options, IServiceCollection services)
         {
             _options = options.Value;
             _services = services;
@@ -47,8 +47,8 @@ namespace ViewModels
 
         private async Task StartApp(string password)
         {
-            
-            string key = GetEncryptionKey(password);
+
+            string key = DatabaseEncoding.GetEcryptionKey(password, _options.Salt);
             _services.AddDbContextFactory<DatabaseClient>(opt =>
             {
                 opt.UseSqlite(new SqliteConnectionStringBuilder
@@ -74,17 +74,7 @@ namespace ViewModels
 
         }
         
-        private string GetEncryptionKey(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(password);
-                var hash = sha256.ComputeHash(bytes);
-                var hashString = BitConverter.ToString(hash).ToLower().Replace("-", "");
-                return hashString;
-            }
-
-        }
+        
 
     }
 }

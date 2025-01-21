@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:vm="using:ViewModels.AppViewModels"
+		xmlns:vm="clr-namespace:ViewModels.AppViewModels;assembly=ViewModels"
 		xmlns:local="using:Views.AppViews"
         mc:Ignorable="d" d:DesignWidth="525" d:DesignHeight="325"
 		Width="525" Height="325"

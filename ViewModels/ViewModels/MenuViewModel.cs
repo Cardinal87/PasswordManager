@@ -21,7 +21,7 @@ namespace ViewModels
         private const string passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,50}$";
         
         
-        public MenuViewModel(IWritableOptions<LoggingOptions> loggingOpt, Func<string, Task> startApp) 
+        public MenuViewModel(IWritableOptions<AuthorizationOptions> loggingOpt, Func<string, Task> startApp) 
         {
             _startApp = startApp;
             _loggingOpt = loggingOpt;
@@ -30,7 +30,7 @@ namespace ViewModels
             CheckPasswordCommand = new AsyncRelayCommand<string>(CheckPassword);
         }
         private Func<string, Task> _startApp;
-        private IWritableOptions<LoggingOptions> _loggingOpt;
+        private IWritableOptions<AuthorizationOptions> _loggingOpt;
         public RelayCommand DeleteStorageCommand { get; private set; }
         public AsyncRelayCommand<string> SavePasswordCommand { get; private set; }
         public AsyncRelayCommand<string> CheckPasswordCommand { get; private set; }
@@ -53,13 +53,11 @@ namespace ViewModels
         {
             if (!String.IsNullOrEmpty(password))
             {
-                var salt = _loggingOpt.Value.Hash.Split("==")[0] + "==";
+                var salt = _loggingOpt.Value.Salt;
                 var hash = await GetHash(password, salt);
                 IsCorrectPass = _loggingOpt.Value.Hash.Equals(hash);
                 if (IsCorrectPass)
                     await _startApp(password);
-                    
-                
             }
         }
 
@@ -72,6 +70,7 @@ namespace ViewModels
                 _loggingOpt.Update(opt =>
                 {
                     opt.Hash = hash;
+                    opt.Salt = salt;
                 });
                 IsCorrectPass = Regex.IsMatch(password, passwordPattern);
                 if (IsCorrectPass)
@@ -87,6 +86,7 @@ namespace ViewModels
             _loggingOpt.Update(opt =>
             {
                 opt.Hash = "";
+                opt.Salt = "";
             });
             OnPropertyChanged(nameof(HasPassword));
         }
@@ -97,9 +97,9 @@ namespace ViewModels
             int keySize = 32;
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), iterCount, HashAlgorithmName.SHA256))
             {
+                
                 var hash = await Task.Run(() => pbkdf2.GetBytes(keySize));
                 var hashString = BitConverter.ToString(hash).ToLower().Replace("-", "");
-                hashString = String.Concat(salt, hashString);
                 return hashString;
             }
         }

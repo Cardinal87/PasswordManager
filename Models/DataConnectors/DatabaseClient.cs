@@ -13,8 +13,6 @@ namespace Models.DataConnectors
        {
             
        }
-        
-        
         public DbSet<WebSiteModel> WebSites { get; set; }
         public DbSet<AppModel> Apps { get; set; }
         public DbSet<CardModel> Cards { get; set; }
@@ -62,6 +60,13 @@ namespace Models.DataConnectors
             }
         }
         
+        public async Task<IEnumerable<T>> GetByPredicate<T>(Predicate<T> pred) where T: ModelBase
+        {
+            var set = Set<T>();
+            var list = await Task.Run(() => set.Where(t => pred(t)).ToList());
+            return list;
+        } 
+
         public async Task<T?> GetByIdAsync<T>(int id) where T : ModelBase
         {
             var list = Set<T>();
