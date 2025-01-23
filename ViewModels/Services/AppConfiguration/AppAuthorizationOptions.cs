@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace ViewModels.Services.AppConfiguration
 {
-    public class AuthorizationOptions
+    public class AppAuthorizationOptions
     {
         public const string Section = "Authorization";
 
-        public string Hash { get; set; }
-        public string ConnectionString { get; set; }
-        public string Salt { get; set; }
+        public string Hash { get; set; } = String.Empty;
+        public string ConnectionString { get; set; } = string.Empty;
+        public string Salt { get; set; } = string.Empty;
 
     }
 }

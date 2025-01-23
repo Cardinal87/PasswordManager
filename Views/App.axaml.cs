@@ -87,10 +87,10 @@ public partial class App : Application
         services.AddScoped<IClipboardService, ClipboardService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
-        services.AddWritebleOptions<AuthorizationOptions>(config.GetSection(AuthorizationOptions.Section), "config.json");
+        services.AddWritebleOptions<AppAuthorizationOptions>(config.GetSection(AppAuthorizationOptions.Section), "config.json");
         services.AddTransient<StartUpViewModel>(prov =>
         {
-            return new StartUpViewModel(prov.GetRequiredService<IWritableOptions<AuthorizationOptions>>(),
+            return new StartUpViewModel(prov.GetRequiredService<IWritableOptions<AppAuthorizationOptions>>(),
                 services);
         });
     }

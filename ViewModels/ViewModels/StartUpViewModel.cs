@@ -19,10 +19,10 @@ namespace ViewModels
     {
         
         IServiceCollection _services;
-        AuthorizationOptions _options;
+        AppAuthorizationOptions _options;
         private ViewModelBase? currentPage;
 
-        public StartUpViewModel(IWritableOptions<AuthorizationOptions> options, IServiceCollection services)
+        public StartUpViewModel(IWritableOptions<AppAuthorizationOptions> options, IServiceCollection services)
         {
             _options = options.Value;
             _services = services;

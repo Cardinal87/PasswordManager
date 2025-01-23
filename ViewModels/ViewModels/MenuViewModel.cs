@@ -21,7 +21,7 @@ namespace ViewModels
         private const string passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,50}$";
         
         
-        public MenuViewModel(IWritableOptions<AuthorizationOptions> loggingOpt, Func<string, Task> startApp) 
+        public MenuViewModel(IWritableOptions<AppAuthorizationOptions> loggingOpt, Func<string, Task> startApp) 
         {
             _startApp = startApp;
             _loggingOpt = loggingOpt;
@@ -30,7 +30,7 @@ namespace ViewModels
             CheckPasswordCommand = new AsyncRelayCommand<string>(CheckPassword);
         }
         private Func<string, Task> _startApp;
-        private IWritableOptions<AuthorizationOptions> _loggingOpt;
+        private IWritableOptions<AppAuthorizationOptions> _loggingOpt;
         public RelayCommand DeleteStorageCommand { get; private set; }
         public AsyncRelayCommand<string> SavePasswordCommand { get; private set; }
         public AsyncRelayCommand<string> CheckPasswordCommand { get; private set; }
