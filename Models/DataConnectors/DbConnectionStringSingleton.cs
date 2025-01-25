@@ -9,45 +9,43 @@ namespace Models.DataConnectors
 
         private static DbConnectionStringSingleton? instance;
 
-        public static void SetPassword(string password)
+        public static void SetCreditals(string password, string datasource)
         {
-            if (instance != null)
-            { 
-                instance._password = password;
+            if (instance == null)
+            {
+                instance = new DbConnectionStringSingleton();
             }
-            throw new InvalidOperationException("instance had not been setted");
+            instance._password = password;
+            instance._datasource = datasource;
         }
-        public static DbConnectionStringSingleton SetInstance(string datasource)
-        {
-            var inst = new DbConnectionStringSingleton(datasource);
-            instance = inst;
-            return inst;
-        }
-
+        
         public static DbConnectionStringSingleton GetInstance()
         {
             if (instance != null) return instance;
-            else throw new InvalidOperationException("instance had not been setted");
+            else
+            {
+                instance = new DbConnectionStringSingleton();
+                return instance;
+            }
         }
 
-        private DbConnectionStringSingleton(string datasource)
+        private DbConnectionStringSingleton()
         {
-            _datasource = datasource;
-            _password = "";
-
+            
         }
-        private string _datasource;
-        private string _password;
+        private string _datasource = "";
+        private string _password = "";
         public string? ConnectionString 
         { 
             get
             {
+                
                 return new SqliteConnectionStringBuilder
                 {
-                    ConnectionString = _datasource,
+                    DataSource = _datasource,
                     Password = _password
                 }.ToString();
-                
+               
             }
         }
 

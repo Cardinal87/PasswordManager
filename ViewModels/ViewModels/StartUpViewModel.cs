@@ -48,7 +48,7 @@ namespace ViewModels
         private async Task StartApp(string password)
         {
 
-            string key = DatabaseEncoding.GetEcryptionKey(password, _options.Salt);
+            string key = await EncodingKeys.GetEcryptionKey(password, _options.Salt);
             _services.AddDbContextFactory<DatabaseClient>(opt =>
             {
                 opt.UseSqlite(new SqliteConnectionStringBuilder

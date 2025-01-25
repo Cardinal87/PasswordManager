@@ -34,7 +34,7 @@ namespace Extension.WebAPI.Controllers
             var inst = DbConnectionStringSingleton.GetInstance();
             var uri = new Uri(url);
             var host = uri.Host;
-            _dbclient.Database.EnsureCreated();
+            
             var dataList = await _dbclient.GetByPredicate<WebSiteModel>(m => m.WebAddress == host);
             if (dataList.Count() > 0)
             {
@@ -45,7 +45,7 @@ namespace Extension.WebAPI.Controllers
         }
 
 
-        [HttpPost("postdata")]
+        [HttpPost("post")]
         public async Task<IActionResult> SaveData([FromQuery]string url, [FromQuery] string password, [FromQuery] string login, [FromQuery] string name)
         {
             var uri = new Uri(url);
@@ -53,33 +53,11 @@ namespace Extension.WebAPI.Controllers
             var model = new WebSiteModel(name, login, password, host, false);
             _dbclient.Insert(model);
             await _dbclient.SaveChangesAsync();
+            
             return Ok();
         }
 
-        [HttpPost("setpassword")]
-        public IActionResult SetPassword()
-        {
-
-            var context = HttpContext;
-            var responce = context.Request;
-            string? auth = responce.Headers.Authorization;
-            if (auth != null && auth.StartsWith("Basic"))
-            {
-                if (AuthenticationHeaderValue.TryParse(auth,out var encodedPassword) && encodedPassword.Parameter != null)
-                {
-                    string password = Encoding.UTF8.GetString(Convert.FromBase64String(encodedPassword.Parameter));
-                    string salt = _options.Value.Salt;
-                    var key = DatabaseEncoding.GetEcryptionKey(password, salt);
-                    DbConnectionStringSingleton.SetPassword(key);
-                    return Ok();
-                }
-                else return BadRequest(new { Message = "Authorization header is not correct" });
-
-            }
-            else return BadRequest(new { Message = "Authorization header is empty or not basic" });
-
-            
-        }
+        
 
     }
 }

@@ -1,7 +1,0 @@
-{
-  "Authorization": {
-    "Hash": "68e957e3ba654087b5a1b6ce4635a73bbcbe4ba1095a252c88c4c59f5f5c6835",
-    "ConnectionString": "passwordmanager.db",
-    "Salt": "wzMGX5jdccDkcmWqdyvJrg=="
-  }
-}

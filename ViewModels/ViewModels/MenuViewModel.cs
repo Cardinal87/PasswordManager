@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 
 
 using System.Text.RegularExpressions;
+using Models.DataConnectors;
 
 
 
@@ -54,7 +55,7 @@ namespace ViewModels
             if (!String.IsNullOrEmpty(password))
             {
                 var salt = _loggingOpt.Value.Salt;
-                var hash = await GetHash(password, salt);
+                var hash = await EncodingKeys.GetHash(password, salt);
                 IsCorrectPass = _loggingOpt.Value.Hash.Equals(hash);
                 if (IsCorrectPass)
                     await _startApp(password);
@@ -66,7 +67,7 @@ namespace ViewModels
             if (!String.IsNullOrEmpty(password))
             {
                 var salt = GenerateSalt();
-                var hash = await GetHash(password, salt);
+                var hash = await EncodingKeys.GetHash(password, salt);
                 _loggingOpt.Update(opt =>
                 {
                     opt.Hash = hash;
@@ -91,18 +92,7 @@ namespace ViewModels
             OnPropertyChanged(nameof(HasPassword));
         }
         
-        private async Task<string> GetHash(string password, string salt)
-        {
-            int iterCount = 300000;
-            int keySize = 32;
-            using (var pbkdf2 = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), iterCount, HashAlgorithmName.SHA256))
-            {
-                
-                var hash = await Task.Run(() => pbkdf2.GetBytes(keySize));
-                var hashString = BitConverter.ToString(hash).ToLower().Replace("-", "");
-                return hashString;
-            }
-        }
+        
         private string GenerateSalt()
         {
             using (var rng = RandomNumberGenerator.Create())

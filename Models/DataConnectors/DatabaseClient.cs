@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Configuration.EFModelsConfiguration;
 using Models;
+using System.Linq.Expressions;
 
 
 
@@ -60,10 +61,10 @@ namespace Models.DataConnectors
             }
         }
         
-        public async Task<IEnumerable<T>> GetByPredicate<T>(Predicate<T> pred) where T: ModelBase
+        public async Task<IEnumerable<T>> GetByPredicate<T>(Expression<Func<T, bool>> pred) where T: ModelBase
         {
-            var set = Set<T>();
-            var list = await Task.Run(() => set.Where(t => pred(t)).ToList());
+            var set = Set<T>().Where(pred);
+            var list = await Task.Run(() => set.ToList());
             return list;
         } 
 
