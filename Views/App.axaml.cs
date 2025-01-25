@@ -17,6 +17,7 @@ using System.IO;
 
 using System.Threading.Tasks;
 using ViewModels.Services.AppConfiguration;
+using System;
 
 
 namespace Views;
@@ -28,7 +29,7 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
         
     }
-
+    private string _configPath = "";
     public override void OnFrameworkInitializationCompleted()
     {
         // Line below is needed to remove Avalonia data validation.
@@ -37,24 +38,31 @@ public partial class App : Application
 
 
 
-        if (!File.Exists("config.json"))
+        var roaminPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        var directory = Path.Combine(roaminPath, "PasswordManager");
+        if (!Directory.Exists(directory))
         {
-            var model = new 
+            Directory.CreateDirectory(directory);
+        }
+        var condfigPath = Path.Combine(directory, "config.json");
+        if (!File.Exists(condfigPath))
+        {
+            var model = new
             {
                 Authorization = new
                 {
                     Hash = "",
-                    ConnectionString = "passwordmanager.db",
+                    ConnectionString = Path.Combine(directory, "passwordmanager.db"),
                     Salt = ""
                 }
             };
             var json = JsonConvert.SerializeObject(model, Formatting.Indented);
-            File.WriteAllText("config.json", json);
+            File.WriteAllText(condfigPath, json);
         }
+        _configPath = condfigPath;
 
-        
         var conf = new ConfigurationBuilder()
-            .AddJsonFile("config.json")
+            .AddJsonFile(condfigPath)
             .Build();
 
         var services = new ServiceCollection();
@@ -87,7 +95,7 @@ public partial class App : Application
         services.AddScoped<IClipboardService, ClipboardService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
-        services.AddWritebleOptions<AppAuthorizationOptions>(config.GetSection(AppAuthorizationOptions.Section), "config.json");
+        services.AddWritebleOptions<AppAuthorizationOptions>(config.GetSection(AppAuthorizationOptions.Section), _configPath);
         services.AddTransient<StartUpViewModel>(prov =>
         {
             return new StartUpViewModel(prov.GetRequiredService<IWritableOptions<AppAuthorizationOptions>>(),
