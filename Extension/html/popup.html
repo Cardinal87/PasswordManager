@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <div style="width: 300px; height: 150px;">
+        <div style=" visibility:hidden; text-align:center" id="form">
+            <p>Enter password to activate extension</p>
+            <input id="password" placeholder="Enter master password" type="password" />
+            <p>password is not correct</p>
+            <p>
+                <button type="button" id="cancel">Cancel</button>
+                <button type="button" id="submit">Submit</button>
+            </p>
+        </div>
+        <div style="text-align: center; width: 300px; height: 150px; position: absolute; top: 50px; visibility: hidden" id="text">
+            <p>Extension activated</p>
+        </div>
+    </div>
+    <script src="/scripts/popup.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome",
+      "url": "http://stackoverflow.com",
+      "port": 9222,
+      "runtimeArgs": [
+        "--load-extension=${workspaceFolder}",
+        "--remote-debugging-port=9222"
+      ]
+    }
+    
+  ]
+}
