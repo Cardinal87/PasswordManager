@@ -12,14 +12,11 @@ using System.Text.RegularExpressions;
 using Models.DataConnectors;
 
 
-
-
-
 namespace ViewModels
 {
     public class MenuViewModel : ViewModelBase
     {
-        private const string passwordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,50}$";
+        private const string passwordPattern = @"^(?=.*?[A-Z].*?[A-Z])(?=.*?[a-z].*?[a-z])(?=.*?\d.*?\d)(?=.*?[@$!%*?&].*?[@$!%*?&]).{10,50}$";
         
         
         public MenuViewModel(IWritableOptions<AppAuthorizationOptions> loggingOpt, Func<string, Task> startApp) 

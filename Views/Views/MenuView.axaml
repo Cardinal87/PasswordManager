@@ -42,7 +42,7 @@
 				<TextBlock Text="" Foreground="{DynamicResource WarningBrush}"
 									   Grid.Row="0" HorizontalAlignment="Center" Margin="0,2,0,0"
 									   VerticalAlignment="Top" IsVisible="{Binding !IsCorrectPass}">
-					password must contain at least 1 upper and 1 lower case letter, 1 digit, 1 special character
+					password must contain at least 2 upper and 2 lower case letter, 2 digit, 2 special character
 					<LineBreak/> and be between 10 and 50 characters
 				</TextBlock>
 

@@ -107,7 +107,7 @@
 										 Text="{Binding Number}" HorizontalAlignment="Left"
 										 Classes="dataBox" Width="325"
 										 HorizontalContentAlignment="Left" CornerRadius="15"
-										 KeyDown="ConfirmData" MaxLength="16"/>
+										 KeyDown="ConfirmData" MaxLength="19"/>
 							</DockPanel>
 							<TextBlock Text="card number is not correct" Foreground="{DynamicResource WarningBrush}"
 									   Margin="115,2,0,0" Grid.Row="1"

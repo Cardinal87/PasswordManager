@@ -16,7 +16,7 @@ namespace ViewModels.CardViewModels
     {
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string cvcPattern = @"^\d{3}$";
-        private const string numberPattern = @"^(\d\s*){12,15}\d$";
+        private const string numberPattern = @"^(\d\s*){12,19}\d$";
         private const string ownerPattern = @"[a-zA-Z0-9._%+-]+|^$";
 
 

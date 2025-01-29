@@ -42,7 +42,7 @@ namespace Extension.WebAPI.Controllers
                     var key = await EncodingKeys.GetEcryptionKey(password, salt);
                     DbConnectionStringSingleton.SetCreditals(key, _appOptions.ConnectionString);
                     var token = CreateToken(name);
-                    return Ok(token);
+                    return Ok(new { token });
                 }
                 else return BadRequest(new { Message = "Authorization header is not correct" });
 

@@ -8,4 +8,4 @@ Get {{Extension.WebAPI_HostAddress}}/api/authorization/get?url=http://discord.co
 
 ###
 GET {{Extension.WebAPI_HostAddress}}/api/login/tom
-Authorization: Basic JXNheSZzQGZnayphc2QhMjRG
+Authorization: Basic JXNhWSZzQGZnayphc2QhMjRG

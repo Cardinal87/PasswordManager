@@ -6,7 +6,8 @@
   "permissions": [
     "activeTab",
     "storage",
-    "<all_urls>"
+    "tabs",
+    "scripting"
   ],
   "host_permissions": [
     "https://*/*",
@@ -20,6 +21,15 @@
     "48": "img/icons32.png",
     "16": "img/icons16.png"
   },
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "js": [
+        "/scripts/content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
   "action": {
     "default_icon": "img/icons16.png",
     "default_popup": "/html/popup.html"
