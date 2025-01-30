@@ -38,36 +38,40 @@ async function getData() {
                     'Authorization': token
                 }
             });
-            return await responce.json();
+            var data = await responce.json();
+            chrome.runtime.sendMessage({ message: 'SELECT_USER', users: data});
         }
         else {
             chrome.storage.local.remove(['token']);
-            chrome.runtime.sendMessage({ type: 'TOKEN_EXPIRED' });
-            return undefined;
+            chrome.runtime.sendMessage({ message: 'TOKEN_EXPIRED' });
         }
     }
 
 }
 
 async function main() {
-    var login = document.getElementById('signup-modal-email');
+    var pass = document.querySelector('[type="password"]');
     
-    if (login != undefined) {
-        debugger;
-        login.addEventListener('focus', async () => {
-            var data = await getData();
-            if (data != undefined) {
-                login.value = data.login;
-            }
+    if (pass != undefined) {
+        
+        pass.addEventListener('focus', async () => {
+            await getData();
         });
     }
 
     
 }
 
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener(async (message) => {
     if (message.type === 'NEW_TOKEN_RECEIVED') {
-        main(); 
+        await getData();
+    }
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.type === 'USER_SELECTED') {
+        var pass = document.querySelector('[type="password"]');
+        pass.value = message.password;
     }
 });
 
