@@ -37,8 +37,8 @@ namespace Extension.WebAPI.Controllers
                     string password = Encoding.UTF8.GetString(Convert.FromBase64String(encodedPassword.Parameter));
                     string salt = _appOptions.Salt;
 
-                    var hash = await EncodingKeys.GetHash(password, salt);
-                    if (hash != _appOptions.Hash) return BadRequest(new { Message = "Password is not correct" });
+                    var iscorrect = EncodingKeys.CompareHash(password, _appOptions.Hash);
+                    if (!iscorrect) return BadRequest(new { Message = "Password is not correct" });
                     var key = await EncodingKeys.GetEcryptionKey(password, salt);
                     DbConnectionStringSingleton.SetCreditals(key, _appOptions.ConnectionString);
                     var token = CreateToken(name);

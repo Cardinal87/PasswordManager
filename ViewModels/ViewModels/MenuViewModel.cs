@@ -51,9 +51,7 @@ namespace ViewModels
         {
             if (!String.IsNullOrEmpty(password))
             {
-                var salt = _loggingOpt.Value.Salt;
-                var hash = await EncodingKeys.GetHash(password, salt);
-                IsCorrectPass = _loggingOpt.Value.Hash.Equals(hash);
+                IsCorrectPass = EncodingKeys.CompareHash(_loggingOpt.Value.Hash, password);
                 if (IsCorrectPass)
                     await _startApp(password);
             }
@@ -64,7 +62,7 @@ namespace ViewModels
             if (!String.IsNullOrEmpty(password))
             {
                 var salt = GenerateSalt();
-                var hash = await EncodingKeys.GetHash(password, salt);
+                var hash = await EncodingKeys.GetHash(password);
                 _loggingOpt.Update(opt =>
                 {
                     opt.Hash = hash;
@@ -94,7 +92,7 @@ namespace ViewModels
         {
             using (var rng = RandomNumberGenerator.Create())
             {
-                byte[] salt = new byte[16];
+                byte[] salt = new byte[32];
                 rng.GetBytes(salt);
                 return Convert.ToBase64String(salt);
             }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Scrypt;
 using System.Threading.Tasks;
 
 namespace Models.DataConnectors
@@ -23,17 +24,19 @@ namespace Models.DataConnectors
             }
         }
 
-        public async static Task<string> GetHash(string password, string salt)
+        public async static Task<string> GetHash(string password)
         {
-            int iterCount = 300000;
-            int keySize = 32;
-            using (var pbkdf2 = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), iterCount, HashAlgorithmName.SHA256))
-            {
+            var scrypt = new ScryptEncoder();
+            var hash = await Task.Run(() => scrypt.Encode(password));
+            return hash;
+            
+        }
 
-                var hash = await Task.Run(() => pbkdf2.GetBytes(keySize));
-                var hashString = BitConverter.ToString(hash).ToLower().Replace("-", "");
-                return hashString;
-            }
+        public static bool CompareHash(string password, string hash)
+        {
+            var scrypt = new ScryptEncoder();
+            bool b = scrypt.Compare(password, hash);
+            return b;
         }
 
     }
