@@ -1,7 +1,7 @@
 @Extension.WebAPI_HostAddress = http://localhost:5167
 
-Get {{Extension.WebAPI_HostAddress}}/api/authorization/get?url=http://discord.com
-
+Get {{Extension.WebAPI_HostAddress}}/api/authorization/get?url=https%253A%252F%252Fstackoverflow.com%252F
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InVzZXIiLCJuYmYiOjE3Mzg0MTU1NzYsImV4cCI6MTczODQyOTk3NiwiaWF0IjoxNzM4NDE1NTc2LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJleHRlbnNpb24ifQ.9ps29hl7ZSpg7-CfUSg5--uMIORrDyCx6BgERhIrJho
 
 
 

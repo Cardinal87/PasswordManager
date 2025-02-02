@@ -11,16 +11,19 @@ using System.Xml.Linq;
 using ViewModels.Services.AppConfiguration;
 namespace Extension.WebAPI.Controllers
 {
+    
     [ApiController]
     [Route("api/[controller]")]
     public class LoginController : Controller
     {
         private JwtOptions _jwtOptions;
         private AppAuthorizationOptions _appOptions;
-        public LoginController(IOptions<JwtOptions> jwtOptions, IOptions<AppAuthorizationOptions> appOptions) 
+        private JwtKeyService _jwtKeyService;
+        public LoginController(IOptions<JwtOptions> jwtOptions, IOptions<AppAuthorizationOptions> appOptions, JwtKeyService keyService) 
         { 
             _jwtOptions = jwtOptions.Value;
             _appOptions = appOptions.Value;
+            _jwtKeyService = keyService;
         }
         
         [HttpGet("{name}")]
@@ -55,7 +58,7 @@ namespace Extension.WebAPI.Controllers
         private string CreateToken(string name)
         {
             var claims = new List<Claim>() { new Claim(ClaimTypes.Name, name) };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtOptions.Key));
+            var key = new SymmetricSecurityKey(_jwtKeyService.GetJwtKey());
             var descriptor = new SecurityTokenDescriptor
             {
                 Expires = DateTime.UtcNow.AddHours(4),

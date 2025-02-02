@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Models.DataConnectors;
 using Newtonsoft.Json;
 using NuGet.Configuration;
+using System.Security.Cryptography;
 using System.Text;
 using ViewModels.Services;
 using ViewModels.Services.AppConfiguration;
@@ -38,15 +39,17 @@ namespace Extension.WebAPI
                         Hash = "",
                         ConnectionString = Path.Combine(directory, "passwordmanager.db"),
                         Salt = ""
-                    }
+                    },
+
                 };
                 var json = JsonConvert.SerializeObject(model, Formatting.Indented);
                 File.WriteAllText(condfigPath, json);
             }
             _configPath = condfigPath;
-
+            
             builder.Configuration.AddJsonFile(_configPath)
-                .AddUserSecrets<Program>().Build();
+                .AddUserSecrets<Program>()
+                .Build();
             ConfigureServices(builder.Services, builder.Configuration);
             
             var app = builder.Build();
@@ -58,22 +61,22 @@ namespace Extension.WebAPI
         public static void ConfigureServices(IServiceCollection services, IConfiguration conf)
         {
             var jwt = conf.GetRequiredSection(JwtOptions.Section);
-            
+            var keyService = new JwtKeyService();
             
             services.AddAuthorization();
             services.AddControllers();
             services.AddHttpContextAccessor();
+            services.AddSingleton<JwtKeyService>(keyService);
+            services.AddHostedService<JwtKeyRotationService>();
             services.AddWritebleOptions<AppAuthorizationOptions>(conf.GetSection(AppAuthorizationOptions.Section), _configPath);
             services.Configure<JwtOptions>(conf.GetSection(JwtOptions.Section));
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
-                var key = Encoding.UTF8.GetBytes(jwt["key"] ?? throw new Exception("jwt key is null or empty"));
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = jwt["issuer"],
                     ValidAudience = jwt["audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    IssuerSigningKey = new SymmetricSecurityKey(keyService.GetJwtKey()),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
@@ -88,5 +91,6 @@ namespace Extension.WebAPI
             });
         }
        
+        
     }
 }
