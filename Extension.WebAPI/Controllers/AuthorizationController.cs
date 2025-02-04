@@ -14,6 +14,7 @@ using ViewModels.Services.AppConfiguration;
 
 namespace Extension.WebAPI.Controllers
 {
+    
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]

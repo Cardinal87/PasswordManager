@@ -11,7 +11,6 @@ using System.Xml.Linq;
 using ViewModels.Services.AppConfiguration;
 namespace Extension.WebAPI.Controllers
 {
-    
     [ApiController]
     [Route("api/[controller]")]
     public class LoginController : Controller
@@ -26,8 +25,8 @@ namespace Extension.WebAPI.Controllers
             _jwtKeyService = keyService;
         }
         
-        [HttpGet("{name}")]
-        public async Task<IActionResult> GetToken(string name)
+        [HttpGet("get")]
+        public async Task<IActionResult> GetToken()
         {
             
             var context = HttpContext;
@@ -44,7 +43,7 @@ namespace Extension.WebAPI.Controllers
                     if (!iscorrect) return BadRequest(new { Message = "Password is not correct" });
                     var key = await EncodingKeys.GetEcryptionKey(password, salt);
                     DbConnectionStringSingleton.SetCreditals(key, _appOptions.ConnectionString);
-                    var token = CreateToken(name);
+                    var token = CreateToken();
                     return Ok(new { token });
                 }
                 else return BadRequest(new { Message = "Authorization header is not correct" });
@@ -55,14 +54,12 @@ namespace Extension.WebAPI.Controllers
 
         }
 
-        private string CreateToken(string name)
+        private string CreateToken()
         {
-            var claims = new List<Claim>() { new Claim(ClaimTypes.Name, name) };
             var key = new SymmetricSecurityKey(_jwtKeyService.GetJwtKey());
             var descriptor = new SecurityTokenDescriptor
             {
                 Expires = DateTime.UtcNow.AddHours(4),
-                Subject = new ClaimsIdentity(claims),
                 Issuer = _jwtOptions.Issuer,
                 Audience = _jwtOptions.Audience,
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)

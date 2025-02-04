@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ViewModels.Services;
 using ViewModels.Services.AppConfiguration;
+using System.Net;
 namespace Extension.WebAPI
 {
     public class Program
@@ -40,7 +41,6 @@ namespace Extension.WebAPI
                         ConnectionString = Path.Combine(directory, "passwordmanager.db"),
                         Salt = ""
                     },
-
                 };
                 var json = JsonConvert.SerializeObject(model, Formatting.Indented);
                 File.WriteAllText(condfigPath, json);
@@ -51,8 +51,15 @@ namespace Extension.WebAPI
                 .AddUserSecrets<Program>()
                 .Build();
             ConfigureServices(builder.Services, builder.Configuration);
-            
+
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Listen(IPAddress.Loopback, 5167);
+            });
+
             var app = builder.Build();
+            app.UseCors("MainPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
@@ -63,6 +70,7 @@ namespace Extension.WebAPI
             var jwt = conf.GetRequiredSection(JwtOptions.Section);
             var keyService = new JwtKeyService();
             
+            
             services.AddAuthorization();
             services.AddControllers();
             services.AddHttpContextAccessor();
@@ -70,6 +78,19 @@ namespace Extension.WebAPI
             services.AddHostedService<JwtKeyRotationService>();
             services.AddWritebleOptions<AppAuthorizationOptions>(conf.GetSection(AppAuthorizationOptions.Section), _configPath);
             services.Configure<JwtOptions>(conf.GetSection(JwtOptions.Section));
+            services.AddCors(pol =>
+            {
+                pol.AddPolicy("MainPolicy", opt =>
+                {
+                    opt.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+            //services.AddHttpsRedirection(opt =>
+            //{
+            //    opt.HttpsPort = 7254;
+            //});
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
                 opt.TokenValidationParameters = new TokenValidationParameters

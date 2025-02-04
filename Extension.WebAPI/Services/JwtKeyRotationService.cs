@@ -16,8 +16,8 @@ namespace Extension.WebAPI.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _jwtKeyService.GenerateJwtKey();
                 await Task.Delay(interval, stoppingToken);
+                _jwtKeyService.GenerateJwtKey();
             }
         }
     }
