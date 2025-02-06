@@ -4,22 +4,155 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
+    <style>
+        :root {
+            --background-brush: #060c14;
+            --second-background-brush: #1b2026;
+            --main-green-brush: #176e4e;
+            --main-dark-green-brush: #135c41;
+            --warning-brush: #de1818;
+            --border-brush: #545151;
+            --highlighted-border-brush: #827e7e;
+            --main-red-brush: #961414;
+            --list-highlighted-brush: #3b414a;
+        }
+        body{
+            margin: 0;
+        }
+        div.container {
+            margin: 0px;
+            display: none;
+            position: relative;
+            background: var(--background-brush);
+            text-align:center;
+            
+            
+        }
+        div.child{
+            
+            height: 100%;
+            width: 100%;
+            max-height: 100%;
+            position: absolute;
+            visibility: visible;
+            text-align: center;
+        }
+        input.password-input {
+            background: var(--second-background-brush);
+            border: 1px;
+            border-style: solid;
+            border-color: var(--background-brush);
+            color: white;
+            height: 25px;
+            width: 250px;
+            margin-top: 20px;
+            margin-bottom: 0px;
+        }
+        input.password-input:focus{
+            outline: none;
+            border-style: solid;
+            border-color: var(--main-green-brush);
+        }
+        input.password-input:hover:not(:focus) {
+            outline: none;
+            border-style: solid;
+            border-color: var(--highlighted-border-brush);
+        }
+        p.text{
+            color: white;
+        }
+        li {
+            color: white;
+            text-align: left;
+            font-size:17px;
+            margin-bottom: 6px;
+            margin-right: 5px;
+        }
+        li:hover{
+            background: var(--list-highlighted-brush);
+        }
+        ul{
+            margin: 0px 20px 0px 20px;
+            list-style-type: none;
+            padding-left: 0px;
+            overflow-y: auto;
+            max-height: 140px;
+        }
+        p.warning{
+            color: var(--warning-brush);
+            text-align: right;
+            margin: 0px 30px 0px 0px;
+            visibility: visible;
+        }
+        button.cancel{
+            border: 0px;
+            padding: 3px 6px 3px 6px;
+            background: var(--main-red-brush);
+            color: white;
+            border-radius: 5px;
+        }
+        button.confirm {
+            border: 0px;
+            padding: 3px 6px 3px 6px;
+            background: var(--main-green-brush);
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover{
+            opacity: 0.8;
+        }
+        ::-webkit-scrollbar {
+            width: 12px;
+            background-color: dimgrey;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb{
+            background: var(--main-green-brush);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--main-dark-green-brush);
+        }
+
+    </style>
 </head>
 <body>
-    <div style="width: 300px; height: 150px;">
-        <div style=" visibility:hidden; text-align:center" id="form">
-            <p>Enter password to activate extension</p>
-            <input id="password" placeholder="Enter master password" type="password" />
-            <p>password is not correct</p>
-            <p>
-                <button type="button" id="cancel">Cancel</button>
-                <button type="button" id="submit">Submit</button>
-            </p>
+    
+    <div class="container" style="width: 300px; height: 110px;" id="passwordFrom">
+        <div class="child" id="form">
+            <input id="password" placeholder="Enter master password" type="password" class="password-input" />
+            <p class="warning" id="warn" style="visibility: hidden">password is not correct</p>
+            <button type="button" class="cancel" name="cancel" style="margin: 15px 2px 0px 165px">Cancel</button>
+            <button type="button" class="confirm" id="submitPassword">Submit</button>
+
         </div>
-        <div style="text-align: center; width: 300px; height: 150px; position: absolute; top: 50px; visibility: hidden" id="text">
-            <p>Extension activated</p>
+        <div class="child" id="text" style="visibility: hidden">
+            <p class="text" style="margin-top: 40px; font-size: 20px">Extension activated</p>
         </div>
     </div>
+    <div class="container" style="width: 225px; height: 180px; display: inline-block" id="confirmationForm">
+        <div class="child" id="manyUsers" style="visibility: hidden">
+            <p class="text" style="margin-top:5px; font-size: 20px;">Choose account</p>
+            <ul id="userList">
+                <li>Login1</li>
+                <li>Login2</li>
+                <li>Login3</li>
+                <li>Login4</li>
+                <li>Login5</li>
+                <li>Login6</li>
+                <li>Login7</li>
+
+            </ul>
+        </div>
+        <div id="singleUser" class="child" style="visibility: visible">
+            <p style="font-size: 20px" class="text">Insert data?</p>
+            <div style="margin: 60px 0px 0px 0px">
+                <button type="button" name="cancel" class="cancel" style="margin-right: 10px; padding: 5px 6px 5px 6px">Cancel</button>
+                <button type="button" id="submitData" class="confirm" style="padding: 5px 6px 5px 6px">Confirm</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="/scripts/popup.js"></script>
 </body>
 
