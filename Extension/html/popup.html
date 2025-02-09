@@ -18,6 +18,8 @@
         }
         body{
             margin: 0;
+            background: var(--background-brush);
+            font-size:0;
         }
         div.container {
             margin: 0px;
@@ -119,10 +121,10 @@
 <body>
     
     <div class="container" style="width: 300px; height: 110px;" id="passwordFrom">
-        <div class="child" id="form">
+        <div class="child" id="form" style="visibility: hidden">
             <input id="password" placeholder="Enter master password" type="password" class="password-input" />
             <p class="warning" id="warn" style="visibility: hidden">password is not correct</p>
-            <button type="button" class="cancel" name="cancel" style="margin: 15px 2px 0px 165px">Cancel</button>
+            <button type="button" class="cancel" name="cancel" style="margin: 30px 2px 0px 165px">Cancel</button>
             <button type="button" class="confirm" id="submitPassword">Submit</button>
 
         </div>
@@ -130,21 +132,13 @@
             <p class="text" style="margin-top: 40px; font-size: 20px">Extension activated</p>
         </div>
     </div>
-    <div class="container" style="width: 225px; height: 180px; display: inline-block" id="confirmationForm">
+    <div class="container" style="width: 225px; height: 180px" id="confirmationForm">
         <div class="child" id="manyUsers" style="visibility: hidden">
             <p class="text" style="margin-top:5px; font-size: 20px;">Choose account</p>
             <ul id="userList">
-                <li>Login1</li>
-                <li>Login2</li>
-                <li>Login3</li>
-                <li>Login4</li>
-                <li>Login5</li>
-                <li>Login6</li>
-                <li>Login7</li>
-
             </ul>
         </div>
-        <div id="singleUser" class="child" style="visibility: visible">
+        <div id="singleUser" class="child" style="visibility: hidden">
             <p style="font-size: 20px" class="text">Insert data?</p>
             <div style="margin: 60px 0px 0px 0px">
                 <button type="button" name="cancel" class="cancel" style="margin-right: 10px; padding: 5px 6px 5px 6px">Cancel</button>

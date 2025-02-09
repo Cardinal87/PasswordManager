@@ -29,21 +29,23 @@ function checkToken(token) {
 
 async function getData() {
     const currentUrl = window.location.href;
-    var token = await getToken("token");
-    debugger;
+    var token = await getToken("token")
     if (token != undefined) {
         var b = checkToken(token);
         if (b) {
             var params = new URLSearchParams();
             params.append("url", currentUrl);
-            var conStr = "https://localhost:5167/api/authorization/get?url=" + params;
+            var conStr = "http://localhost:5167/api/authorization/get?" + params;
             var responce = await fetch(conStr, {
                 method: 'GET',
                 headers: {
                     'Authorization': "Bearer " + token,
                 }
-            }).catch((error) => console.log(error));
-            debugger;
+            }).catch((error) => console.error(error));
+            if (responce.status == 401) {
+                chrome.storage.local.remove(['token']);
+                chrome.runtime.sendMessage({ type: 'TOKEN_EXPIRED' });
+            }
             var data = await responce.json();
             chrome.runtime.sendMessage({ type: 'SELECT_USER', users: data });
         }

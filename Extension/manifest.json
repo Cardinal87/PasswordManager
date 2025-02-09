@@ -8,10 +8,10 @@
     "storage",
     "tabs",
     "scripting"
+    
   ],
   "host_permissions": [
-    "https://*/*",
-    "http://*/*"
+    "http://localhost:5167/*"
   ],
   "background": {
     "service_worker": "/scripts/background.js"
