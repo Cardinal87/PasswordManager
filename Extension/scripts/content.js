@@ -61,13 +61,22 @@ async function getData() {
 }
 
 async function main() {
-    var pass = document.querySelector('[type="password"]');
+    var pass = document.querySelector('input[type="password"]');
     
     if (pass != undefined) {
-        
-        pass.addEventListener('focus', async () => {
+
+        var container = document.createElement('div');
+        container.className = 'btnContainer';
+        var button = document.createElement('button');
+        var parent = pass.closest('form');
+        button.className = 'insertbtn';
+        button.innerHTML = 'insert';
+        button.addEventListener('click', async () => {
             await getData();
         });
+        container.appendChild(button);
+        parent.insertAdjacentElement('afterend', container);
+
     }
 
     
@@ -76,7 +85,7 @@ async function main() {
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.type === 'USER_SELECTED') {
-        var pass = document.querySelector('[type="password"]');
+        var pass = document.querySelector('input[type="password"]');
         pass.value = message.user.password;
     }
 });

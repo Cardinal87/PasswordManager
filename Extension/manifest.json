@@ -27,7 +27,8 @@
       "js": [
         "/scripts/content.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_end",
+      "css": [ "/html/button_styles.css" ]
     }
   ],
   "action": {
