@@ -21,8 +21,7 @@ namespace Extension.WebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
+            
 
             var roaminPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var directory = Path.Combine(roaminPath, "PasswordManager");
@@ -41,6 +40,11 @@ namespace Extension.WebAPI
                         ConnectionString = Path.Combine(directory, "passwordmanager.db"),
                         Salt = ""
                     },
+                    Jwt = new 
+                    { 
+                        Issuer = "localhost",
+                        Audience = "extension"
+                    }
                 };
                 var json = JsonConvert.SerializeObject(model, Formatting.Indented);
                 File.WriteAllText(condfigPath, json);
@@ -48,7 +52,6 @@ namespace Extension.WebAPI
             _configPath = condfigPath;
             
             builder.Configuration.AddJsonFile(_configPath)
-                .AddUserSecrets<Program>()
                 .Build();
             ConfigureServices(builder.Services, builder.Configuration);
 
@@ -87,10 +90,7 @@ namespace Extension.WebAPI
                     .AllowAnyMethod();
                 });
             });
-            //services.AddHttpsRedirection(opt =>
-            //{
-            //    opt.HttpsPort = 7254;
-            //});
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
                 opt.TokenValidationParameters = new TokenValidationParameters
