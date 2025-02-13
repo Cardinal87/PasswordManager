@@ -6,12 +6,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.DataConnectors;
 using Newtonsoft.Json;
-using NuGet.Configuration;
-using System.Security.Cryptography;
-using System.Text;
-using ViewModels.Services;
+
 using ViewModels.Services.AppConfiguration;
 using System.Net;
+using Newtonsoft.Json.Linq;
+using static System.Collections.Specialized.BitVector32;
+using Microsoft.Extensions.Hosting.WindowsServices;
 namespace Extension.WebAPI
 {
     public class Program
@@ -20,53 +20,81 @@ namespace Extension.WebAPI
 
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-            
-
-            var roaminPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var directory = Path.Combine(roaminPath, "PasswordManager");
-            if (!Directory.Exists(directory))
+            try
             {
-                Directory.CreateDirectory(directory);
-            }
-            var condfigPath = Path.Combine(directory, "config.json");
-            if (!File.Exists(condfigPath))
-            {
-                var model = new
+                var builder = WebApplication.CreateBuilder(args);
+                builder.Host.UseWindowsService(opt =>
                 {
-                    Authorization = new
+                    opt.ServiceName = "ExtensionAPI";
+                });
+                var roaminPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var directory = Path.Combine(roaminPath, "PasswordManager");
+                if (WindowsServiceHelpers.IsWindowsService())
+                {
+                    string path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+                    var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
+                    var section = jObj["Config"]!;
+                    directory = section["ConfigPath"]!.ToString();
+
+                }
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+                var configPath = Path.Combine(directory, "config.json");
+                if (args.Contains("--save"))
+                {
+                    string path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+                    var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
+                    var section = jObj["Config"]!;
+                    section["ConfigPath"] = directory;
+                    jObj["Config"] = JObject.Parse(JsonConvert.SerializeObject(section));
+                    string json = JsonConvert.SerializeObject(jObj, Formatting.Indented);
+                    File.WriteAllText(path, json);
+                    return;
+                }
+                if (!File.Exists(configPath))
+                {
+                    var model = new
                     {
-                        Hash = "",
-                        ConnectionString = Path.Combine(directory, "passwordmanager.db"),
-                        Salt = ""
-                    },
-                    Jwt = new 
-                    { 
-                        Issuer = "localhost",
-                        Audience = "extension"
-                    }
-                };
-                var json = JsonConvert.SerializeObject(model, Formatting.Indented);
-                File.WriteAllText(condfigPath, json);
+                        Authorization = new
+                        {
+                            Hash = "",
+                            ConnectionString = Path.Combine(directory, "passwordmanager.db"),
+                            Salt = ""
+                        },
+                        Jwt = new
+                        {
+                            Issuer = "localhost",
+                            Audience = "extension"
+                        }
+                    };
+                    var json = JsonConvert.SerializeObject(model, Formatting.Indented);
+                    File.WriteAllText(configPath, json);
+                }
+                _configPath = configPath;
+
+                builder.Configuration.AddJsonFile(_configPath)
+                    .Build();
+                ConfigureServices(builder.Services, builder.Configuration);
+
+
+                builder.WebHost.ConfigureKestrel(options =>
+                {
+                    options.Listen(IPAddress.Loopback, 5167);
+                });
+
+                var app = builder.Build();
+                app.UseCors("MainPolicy");
+                app.UseAuthentication();
+                app.UseAuthorization();
+                app.MapControllers();
+                app.Run();
             }
-            _configPath = condfigPath;
-            
-            builder.Configuration.AddJsonFile(_configPath)
-                .Build();
-            ConfigureServices(builder.Services, builder.Configuration);
-
-
-            builder.WebHost.ConfigureKestrel(options =>
+            catch(Exception ex)
             {
-                options.Listen(IPAddress.Loopback, 5167);
-            });
-
-            var app = builder.Build();
-            app.UseCors("MainPolicy");
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.MapControllers();
-            app.Run();
+                Console.WriteLine(ex.Message);
+            }
         }
         public static void ConfigureServices(IServiceCollection services, IConfiguration conf)
         {
