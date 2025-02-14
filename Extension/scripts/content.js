@@ -61,25 +61,39 @@ async function getData() {
 }
 
 async function main() {
-    var pass = document.querySelector('input[type="password"]');
     
+    var attemps = 0;
+    var pass = document.querySelector('input[type="password"]');
+    if (attemps === 5) return;
     if (pass != undefined) {
 
-        var container = document.createElement('div');
-        container.className = 'btnContainer';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'btnContainer';
+        var sibling = pass.nextElementSibling;
         var button = document.createElement('button');
-        var parent = pass.closest('form');
-        button.className = 'insertbtn';
         button.innerHTML = 'insert';
+        button.className = 'insertbtn';
+        if (sibling != undefined && sibling.matches('button[type=button]')) {
+            var s_right = parseFloat(getComputedStyle(sibling).right);
+            var s_width = parseFloat(getComputedStyle(sibling).width);
+            var res = 5 + s_right + s_width;
+            button.style.right = res + 'px';
+        }
+        else {
+            button.style.right = '5px';
+        }
+
+        pass.parentNode.insertBefore(wrapper, pass);
+        wrapper.appendChild(button);
+        wrapper.appendChild(pass);
+
         button.addEventListener('click', async () => {
             await getData();
         });
-        container.appendChild(button);
-        parent.insertAdjacentElement('afterend', container);
-
+        return;
     }
-
-    
+    attemps += 1;
+    setTimeout(main, 500);
 }
 
 

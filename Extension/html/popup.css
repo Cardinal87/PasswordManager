@@ -14,11 +14,12 @@ body {
     margin: 0;
     background: var(--background-brush);
     font-size: 0;
+    width: 200px;
 }
 
 div.container {
     margin: 0px;
-    display: inline-block;
+    display: none;
     position: relative;
     background: var(--background-brush);
     text-align: center;
@@ -40,24 +41,24 @@ input.password-input {
     border-color: var(--background-brush);
     color: white;
     height: 25px;
-    width: 250px;
+    width: 150px;
     margin-top: 20px;
     margin-bottom: 0px;
 }
 
-    input.password-input:focus {
-        outline: none;
-        border-style: solid;
-        border-color: var(--main-green-brush);
-    }
+input.password-input:focus {
+    outline: none;
+    border-style: solid;
+    border-color: var(--main-green-brush);
+}
 
-    input.password-input:hover:not(:focus) {
-        outline: none;
-        border-style: solid;
-        border-color: var(--highlighted-border-brush);
-    }
+input.password-input:hover:not(:focus) {
+    outline: none;
+    border-style: solid;
+    border-color: var(--highlighted-border-brush);
+}
 
-p.text {
+p.text, h3.text {
     color: white;
 }
 
@@ -69,9 +70,9 @@ li {
     margin-right: 5px;
 }
 
-    li:hover {
-        background: var(--list-highlighted-brush);
-    }
+li:hover {
+    background: var(--list-highlighted-brush);
+}
 
 ul {
     margin: 0px 20px 0px 20px;
@@ -119,6 +120,6 @@ button:hover {
     border-radius: 5px;
 }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--main-dark-green-brush);
-    }
+::-webkit-scrollbar-thumb:hover {
+    background: var(--main-dark-green-brush);
+}
