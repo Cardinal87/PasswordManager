@@ -1,7 +1,7 @@
 let isDOMReady = false;
 const messageQueue = [];
 
-
+//gttint jwt token
 function getToken(key) {
     return new Promise((resolve) => {
         chrome.storage.local.get(['token'], (result) => {
@@ -11,6 +11,7 @@ function getToken(key) {
 }
 
 
+//main listener
 document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("passwordFrom").style.display = "inline-block";
@@ -35,6 +36,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     messageQueue.forEach(handleMessage);
 });
 
+
+//message listener
 chrome.runtime.onMessage.addListener((message) => {
     
     if (!isDOMReady) {
@@ -45,6 +48,8 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 })
 
+
+//hanfling messages
 function handleMessage(message) {
     if (message.type == "SHOW_SELECTION_WINDOW") {
         if (message.users.length === 1) {
@@ -73,6 +78,8 @@ function showSingleUser(users) {
     
 }
 
+
+
 function showManyUsers(users) {
     document.getElementById("passwordFrom").style.display = "none";
     document.getElementById("confirmationForm").style.display = "inline-block";
@@ -95,6 +102,10 @@ function showManyUsers(users) {
     
 }
 
+
+
+
+//check if the password is correct
 function configurePasswordForm() {
     document.getElementById("submitPassword").addEventListener("click", async () => {
         var pass = document.getElementById("password").value;
