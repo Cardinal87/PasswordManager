@@ -1,28 +1,43 @@
 :root {
-    --background-brush: #060c14;
-    --second-background-brush: #1b2026;
-    --main-green-brush: #176e4e;
-    --main-dark-green-brush: #135c41;
-    --warning-brush: #de1818;
-    --border-brush: #545151;
-    --highlighted-border-brush: #827e7e;
-    --main-red-brush: #961414;
-    --list-highlighted-brush: #3b414a;
+    --background: #060c14;    
+    --text: #e3f2ed;
+    --text-secondary: #8da099;
+    --input-background: #0a1219;
+    --input-hover: #234556;
+    --input-focus: #176e4e;
+    --input-border: #1a2a33;
+    --li-background: ;
+    --cancel-background: #c44536;
+    --cancel-hover: #d9534f;  
+    --conform-background: #176e4e;
+    --confirm-hover: #1d9b73;
+    --warning: #c44536;
+    --scrollbar-background: #060c14;;
+    --scrollbar-thumb: #1d9b73;
+    --scrollbar-thumb-hover:  #1d9b73;
+    --li-background:  #0d1a22;
+    --li-hover:  #12232e;
+    --li-border: #1a2a33;
+    --ul-background: #0a1219;
+
+
+
 }
 
 body {
     margin: 0;
-    background: var(--background-brush);
+    background: var(--background);
+    color: var(--text);
     font-size: 0;
     width: 200px;
 }
 
 div.container {
     margin: 0px;
-    display: none;
     position: relative;
-    background: var(--background-brush);
+    background: var(--background);
     text-align: center;
+    display: none;
 }
 
 div.child {
@@ -35,43 +50,45 @@ div.child {
 }
 
 input.password-input {
-    background: var(--second-background-brush);
+    background: var(--input-background);
     border: 1px;
     border-style: solid;
-    border-color: var(--background-brush);
-    color: white;
+    border-color: var(--input-border);
+    border-radius: 8px;
+    color: var(--text);
     height: 25px;
     width: 150px;
-    margin-top: 20px;
+    margin-top: 75px;
     margin-bottom: 0px;
 }
 
 input.password-input:focus {
     outline: none;
-    border-style: solid;
-    border-color: var(--main-green-brush);
+    border-color: var(--input-focus);
 }
 
 input.password-input:hover:not(:focus) {
     outline: none;
     border-style: solid;
-    border-color: var(--highlighted-border-brush);
+    border-color: var(--input-hover);
 }
 
 p.text, h3.text {
-    color: white;
+    color:var(--text);
 }
 
 li {
-    color: white;
+    color: var(--text);
     text-align: left;
     font-size: 17px;
     margin-bottom: 6px;
     margin-right: 5px;
+    border: 1px solid var(--li-border);
+    background-color: var(--li-background);
 }
 
 li:hover {
-    background: var(--list-highlighted-brush);
+    background: var(--li-hover);
 }
 
 ul {
@@ -83,7 +100,7 @@ ul {
 }
 
 p.warning {
-    color: var(--warning-brush);
+    color: var(--warning);
     text-align: right;
     margin: 0px 30px 0px 0px;
     visibility: visible;
@@ -92,34 +109,39 @@ p.warning {
 button.cancel {
     border: 0px;
     padding: 3px 6px 3px 6px;
-    background: var(--main-red-brush);
-    color: white;
+    background: var(--cancel-background);
+    color: var(--text);
     border-radius: 5px;
+    margin: 65px 12px 0px 45px;
+}
+button.cancel:hover{
+    background-color: var(--cancel-hover);
 }
 
 button.confirm {
     border: 0px;
     padding: 3px 6px 3px 6px;
-    background: var(--main-green-brush);
-    color: white;
+    background: var(--conform-background);
+    color: var(--text);
     border-radius: 5px;
 }
 
-button:hover {
-    opacity: 0.8;
+button.confirm:hover{
+    background-color: var(--confirm-hover);
 }
 
+
 ::-webkit-scrollbar {
-    width: 12px;
-    background-color: dimgrey;
+    width: 8px;
+    background-color: var(--scrollbar-background);
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--main-green-brush);
-    border-radius: 5px;
+    background: var(--scrollbar-thumb);
+    border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--main-dark-green-brush);
+    background: var(--scrollbar-thumb-hover);
 }

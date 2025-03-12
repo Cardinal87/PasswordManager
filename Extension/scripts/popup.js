@@ -52,39 +52,18 @@ chrome.runtime.onMessage.addListener((message) => {
 //hanfling messages
 function handleMessage(message) {
     if (message.type == "SHOW_SELECTION_WINDOW") {
-        if (message.users.length === 1) {
-            showSingleUser(message.users);
-        }
-        else {
-            showManyUsers(message.users);
-        }
+        showUserList(message.users)
+        
     }
 }
 
 
-function showSingleUser(users) {
+
+
+function showUserList(users) {
     document.getElementById("passwordFrom").style.display = "none";
     document.getElementById("confirmationForm").style.display = "inline-block";
-    document.getElementById("manyUsers").style.visibility = "hidden";
-    document.getElementById("singleUser").style.visibility = "visible";
-    
-    document.getElementById("submitData").addEventListener("click", () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            var curTab = tabs[0];
-            chrome.tabs.sendMessage(curTab, { type: "USER_SELECTED", user: users[0] });
-            window.close();
-        });
-    });
-    
-}
-
-
-
-function showManyUsers(users) {
-    document.getElementById("passwordFrom").style.display = "none";
-    document.getElementById("confirmationForm").style.display = "inline-block";
-    document.getElementById("manyUsers").style.visibility = "visible";
-    document.getElementById("singleUser").style.visibility = "hidden";
+    document.getElementById("userList").style.visibility = "visible";
     const list = document.getElementById('userList');
     users.forEach(user => {
         const li = document.createElement('li');

@@ -8,27 +8,21 @@
 
 </head>
 <body>
-    <div class="container" style="width: 200px; height: 100px;" id="passwordFrom">
+    <div class="container" style="width: 200px; height: 200px;" id="passwordFrom">
         <div class="child" id="form" style="visibility: hidden">
             <input id="password" placeholder="Enter master password" type="password" class="password-input" />
             <p class="warning" id="warn" style="visibility: hidden">password is not correct</p>
-            <button type="button" class="cancel" name="cancel" style="margin: 15px 12px 0px 45px">Cancel</button>
+            <button type="button" class="cancel" name="cancel" >Cancel</button>
             <button type="button" class="confirm" id="submitPassword">Submit</button>
         </div>
         <div class="child" id="text" style="visibility: hidden">
-            <h3 class="text" style="margin-top: 30px; font-size: 20px">Extension activated</h3>
+            <h3 class="text" style="margin-top: 75px; font-size: 20px">Extension activated</h3>
         </div>
-        <div id="singleUser" class="child" style="visibility: hidden">
-            <h3 style="font-size: 20px" class="text">Insert data?</h3>
-            <div>
-                <button type="button" name="cancel" class="cancel" style="padding: 5px 6px 5px 6px">Cancel</button>
-                <button type="button" id="submitData" class="confirm" style="padding: 5px 6px 5px 6px; margin-left: 40px">Confirm</button>
-            </div>
-        </div>
+        
     </div>  
     <div class="container" style="width: 200px; height: 200px" id="confirmationForm">
-        <div class="child" id="manyUsers" style="visibility: hidden">
-            <p class="text" style="margin-top:5px; font-size: 20px;">Choose account</p>
+        <div class="child" id="userList" style="visibility: visible">
+            <h3 class="text" style="margin-top:5px; font-size: 20px;">Choose account</h3>
             <ul id="userList">
             </ul>
         </div>
