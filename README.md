@@ -20,19 +20,18 @@ Scrypt is used as the hashing algorithm\
 AES-256 is used to encrypt SQLite database, the key is also not stored anywhere, but is obtained from the password\
 JWT token authorization is used for extension security\
 The token is generated at web API startup and is rotated every 4 hours
-## Instalation
+## Installation
 Download and unpack the archive
 ### App
 * run PasswordManager.exe from the root folder of the application
 ### Extension
-For a one-time launch, run Extension.WebAPI.exe from the root folder of the application\
+For a one-time launch, run Extension.WebAPI.exe from the ExtensionAPI/ folder of the application\
 For installation in Windows service:
-* run install.bat as administrator
-* reboot the computer
+* run ExtensionAPI/install_service.bat as administrator
 
 to add an extension to your browser:
 * Go to your browser and type chrome://extensions/ in the address bar
 * enable developer mode
-* click “download packaged extension” and specify the path to the /Extension folder in the root directory of the application
+* click “download packaged extension” and specify the path to the Extension/ folder in the root directory of the application
 
-to remove an extension from windows services use uninstall.bat
+to remove an extension from windows services run ExtensionAPI/uninstall_service.bat as administrator
