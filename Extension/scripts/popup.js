@@ -1,5 +1,9 @@
 let isDOMReady = false;
 const messageQueue = [];
+var password;
+var login;
+var currentUrl;
+
 
 //gttint jwt token
 function getToken(key) {
@@ -32,6 +36,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    //saving new password
+    document.getElementById('saveEntry').addEventListener('click', async () => {
+        let name = document.getElementById('name').value;
+        if (name === ""){
+            document.getElementById('name-warn').style.visibility = "visible";
+        }
+        else {
+            var params = new URLSearchParams();
+            params.append("url", currentUrl);
+            params.append("password", password);
+            params.append("login", login);
+            params.append("name", name)
+            var responce = await fetch("http://localhost:5167/api/authorization/post?" + params, {
+                method: 'POST',
+                headers: {
+                    'Authorization': "Bearer " + token,
+                }
+            });
+            if (responce.ok){
+                document.getElementById("add-form").style.visibility = "hidden";
+                document.getElementById("successful").style.visibility = "visible";
+                setTimeout(() => {
+                    document.getElementById('successful').style.display = 'hidden';
+                    window.close();
+                }, 1000);
+            }
+            else{
+                document.getElementById("add-form").style.visibility = "hidden";
+                document.getElementById("bad").style.visibility = "visible";
+                document.getElementById("error-mes").innerHTML = responce.statusText;
+            }
+        }
+    });
+
     isDOMReady = true;
     messageQueue.forEach(handleMessage);
 });
@@ -53,17 +91,30 @@ chrome.runtime.onMessage.addListener((message) => {
 function handleMessage(message) {
     if (message.type == "SHOW_SELECTION_WINDOW") {
         showUserList(message.users)
-        
+    }
+    if (message.type == "SAVE_PASSWORD"){
+        showAddingWindow(message);
     }
 }
 
 
+//showing window for saving new password
+function showAddingWindow(message){
+    document.getElementById("passwordFrom").style.display = "none";
+    document.getElementById("confirmationForm").style.display = "inline-block";
+    document.getElementById("add-form").style.visibility = "visible";
+    password = message.password;
+    currentUrl = message.url;
+    login = message.login;
+}
 
 
+
+//forming list of users
 function showUserList(users) {
     document.getElementById("passwordFrom").style.display = "none";
     document.getElementById("confirmationForm").style.display = "inline-block";
-    document.getElementById("userList").style.visibility = "visible";
+    document.getElementById("users").style.visibility = "visible";
     const list = document.getElementById('userList');
     users.forEach(user => {
         const li = document.createElement('li');
@@ -90,14 +141,24 @@ function configurePasswordForm() {
         var pass = document.getElementById("password").value;
         var encodedPass = btoa(pass);
         if (pass !== "") {
+            
             var responce = await fetch("http://localhost:5167/api/login/get", {
                 headers: {
                     'Authorization': "Basic " + encodedPass,
                 }
             });
-            var data = await responce.json();
-            chrome.storage.local.set({ token: data.token });
-            window.close();
+            if (responce.ok){
+                document.getElementById('password-warn').style.visibility = "hidden";
+                var data = await responce.json();
+                chrome.storage.local.set({ token: data.token });
+                window.close();
+            }
+            else{
+                document.getElementById('password-warn').style.visibility = "visible";
+            }
+        }
+        else{
+            document.getElementById('password-warn').style.visibility = "visible";
         }
     });
 }

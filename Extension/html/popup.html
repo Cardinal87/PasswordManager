@@ -10,8 +10,9 @@
 <body>
     <div class="container" style="width: 200px; height: 200px;" id="passwordFrom">
         <div class="child" id="form" style="visibility: hidden">
-            <input id="password" placeholder="Enter master password" type="password" class="password-input" />
-            <p class="warning" id="warn" style="visibility: hidden">password is not correct</p>
+            <h3 class="text">Enter master password</h3>
+            <input id="password" placeholder="Enter master password" type="password" class="data" />
+            <p class="warning" id="password-warn" style="visibility: hidden">password is not correct</p>
             <button type="button" class="cancel" name="cancel" >Cancel</button>
             <button type="button" class="confirm" id="submitPassword">Submit</button>
         </div>
@@ -21,10 +22,25 @@
         
     </div>  
     <div class="container" style="width: 200px; height: 200px" id="confirmationForm">
-        <div class="child" id="userList" style="visibility: visible">
+        <div class="child" id="users" style="visibility: hidden">
             <h3 class="text" style="margin-top:5px; font-size: 20px;">Choose account</h3>
             <ul id="userList">
             </ul>
+        </div>
+        <div class="child" id="add-form" style="visibility: hidden">
+            <h3 class="text">Save password</h3>
+            <input id="name" placeholder="Enter name" type="text" class="data" />
+            <p class="warning" id="name-warn" style="visibility: hidden">field must not be empty</p>
+            <button type="button" class="cancel" name="cancel" >Cancel</button>
+            <button type="button" class="confirm" id="saveEntry">Save</button>
+        </div>
+        <div class="child" id="successful" style="visibility: hidden;">
+            <p class="s-resp">password was successfully saved</p>
+        </div>
+        <div class="child" id="bad" style="visibility: hidden;">
+            <h3 class="b-resp">Error</h3>
+            <p id="error-mes" class="error-mes"></p>
+            <button id="ok" class="confirm">Ok</button>
         </div>
     </div>
     

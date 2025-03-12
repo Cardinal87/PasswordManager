@@ -2,7 +2,11 @@ var attemps = 0;
 var pass_f;
 var login_f;
 var submit_b;
+var user_data = []
 
+
+
+//detecting submit button
 function findSubmitButton() {
     const candidates = Array.from(document.querySelectorAll(
         'button, input[type="submit"], input[type="button"], [role="button"]'
@@ -33,13 +37,11 @@ function findSubmitButton() {
 
         const form = element.closest('form');
         if (form) {
-            // Наличие полей логина/пароля в форме
             const hasLoginFields = form.querySelector(
                 'input[type="email"], input[type="text"], input[type="password"]'
             );
             if (hasLoginFields) score += 40;
             
-            // Наличие формы с действием авторизации
             const formAction = (form.getAttribute('action') || '').toLowerCase();
             if (formAction.includes('login') || formAction.includes('auth')) {
                 score += 30;
@@ -68,6 +70,8 @@ function findSubmitButton() {
     return result;
 };
 
+
+//detecting login field
 function findLoginField (){
     
     const candidates = Array.from(document.querySelectorAll('input'))
@@ -165,35 +169,38 @@ function checkToken(token) {
 }
 
 async function getData() {
-    const currentUrl = window.location.href;
-    var token = await getToken("token")
-    if (token != undefined) {
-        var b = checkToken(token);
-        if (b) {
-            var params = new URLSearchParams();
-            params.append("url", currentUrl);
-            var conStr = "http://localhost:5167/api/authorization/get?" + params;
-            var responce = await fetch(conStr, {
-                method: 'GET',
-                headers: {
-                    'Authorization': "Bearer " + token,
+    if (user_data.length === 0){
+        const currentUrl = window.location.href;
+        var token = await getToken("token")
+        if (token != undefined) {
+            var b = checkToken(token);
+            if (b) {
+                var params = new URLSearchParams();
+                params.append("url", currentUrl);
+                var conStr = "http://localhost:5167/api/authorization/get?" + params;
+                var responce = await fetch(conStr, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': "Bearer " + token,
+                    }
+                }).catch((error) => console.error(error));
+                if (responce.status == 401) {
+                    chrome.storage.local.remove(['token']);
+                    chrome.runtime.sendMessage({ type: 'TOKEN_EXPIRED' });
                 }
-            }).catch((error) => console.error(error));
-            if (responce.status == 401) {
+                var data = await responce.json();
+                user_data = data;
+            }
+            else {
                 chrome.storage.local.remove(['token']);
                 chrome.runtime.sendMessage({ type: 'TOKEN_EXPIRED' });
             }
-            var data = await responce.json();
-            chrome.runtime.sendMessage({ type: 'SELECT_USER', users: data });
         }
         else {
-            chrome.storage.local.remove(['token']);
             chrome.runtime.sendMessage({ type: 'TOKEN_EXPIRED' });
         }
     }
-    else {
-        chrome.runtime.sendMessage({ type: 'TOKEN_EXPIRED' });
-    }
+    
 
 }
 
@@ -229,9 +236,28 @@ async function main() {
         wrapper.appendChild(button);
         wrapper.appendChild(pass);
         
-        
+        submit.addEventListener('click', async () => {
+            ex = false;
+            if (user_data.length == 0) {
+                await getData()
+            }
+            user_data.forEach((user) => {
+                if (user.login === login.value){
+                    ex = true;
+                }
+            });
+            var token = await getToken("token")
+            if (token == undefined){
+                chrome.runtime.sendMessage({ type: 'TOKEN_EXPIRED' });
+            }
+            if (pass_f.value !== '' && !ex){
+                chrome.runtime.sendMessage({type: "SAVE_PASSWORD", url: window.location.href, password: pass_f.value, login: login_f.value});
+                user_data = []
+            }
+        });
         button.addEventListener('click', async () => {
             await getData();
+            chrome.runtime.sendMessage({ type: 'SELECT_USER', users: user_data });
         });
         return;
     }

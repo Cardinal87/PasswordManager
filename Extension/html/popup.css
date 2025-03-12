@@ -19,6 +19,8 @@
     --li-hover:  #12232e;
     --li-border: #1a2a33;
     --ul-background: #0a1219;
+    --successful-resp: #2ecc71;
+    --error-resp: #c44536;
 
 
 
@@ -49,7 +51,7 @@ div.child {
     text-align: center;
 }
 
-input.password-input {
+input.data {
     background: var(--input-background);
     border: 1px;
     border-style: solid;
@@ -58,23 +60,60 @@ input.password-input {
     color: var(--text);
     height: 25px;
     width: 150px;
-    margin-top: 75px;
+    margin-top: 45px;
     margin-bottom: 0px;
 }
 
-input.password-input:focus {
+input.data:focus {
     outline: none;
     border-color: var(--input-focus);
 }
 
-input.password-input:hover:not(:focus) {
+input.data:hover:not(:focus) {
     outline: none;
     border-style: solid;
     border-color: var(--input-hover);
 }
 
-p.text, h3.text {
+h3.text {
     color:var(--text);
+    font-size: 16px;
+    margin: 10px 0px 0px 0px;
+}
+p.text{
+    color:var(--text);
+    font-size: 12px;
+}
+p.s-resp{
+    color: var(--successful-resp);
+    font-size: 16px;
+    width: 150px;
+    overflow-wrap: break-word;
+    transform: translateX(-50%);
+    left: 50%;
+    position: relative;
+}
+h3.b-resp{
+    color: var(--text);
+    font-size: 16px;
+}
+p.error-mes{
+    color: var(--error-resp);
+    word-break: inherit;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    font-size: 14px;
+    height: 100px;
+    text-align: left;
+    margin: 0px 10px 20px 10px;
+}
+
+p.warning {
+    color: var(--warning);
+    text-align: right;
+    margin: 0px 30px 0px 0px;
+    visibility: visible;
+    font-size: 12px;
 }
 
 li {
@@ -92,19 +131,14 @@ li:hover {
 }
 
 ul {
-    margin: 0px 20px 0px 20px;
+    margin: 10px 20px 0px 20px;
     list-style-type: none;
     padding-left: 0px;
     overflow-y: auto;
-    max-height: 140px;
+    max-height: 130px;
 }
 
-p.warning {
-    color: var(--warning);
-    text-align: right;
-    margin: 0px 30px 0px 0px;
-    visibility: visible;
-}
+
 
 button.cancel {
     border: 0px;
@@ -112,7 +146,7 @@ button.cancel {
     background: var(--cancel-background);
     color: var(--text);
     border-radius: 5px;
-    margin: 65px 12px 0px 45px;
+    margin: 50px 12px 0px 45px;
 }
 button.cancel:hover{
     background-color: var(--cancel-hover);

@@ -51,7 +51,7 @@ namespace ViewModels
         {
             if (!String.IsNullOrEmpty(password))
             {
-                IsCorrectPass = EncodingKeys.CompareHash(_loggingOpt.Value.Hash, password);
+                IsCorrectPass = EncodingKeys.CompareHash(password, _loggingOpt.Value.Hash);
                 if (IsCorrectPass)
                     await _startApp(password);
             }
