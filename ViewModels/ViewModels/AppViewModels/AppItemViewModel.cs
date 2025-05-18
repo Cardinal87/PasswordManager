@@ -7,7 +7,7 @@ using ViewModels.BaseClasses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using ViewModels.Services;
+using Interfaces;
 using Models.DataConnectors;
 
 namespace ViewModels.AppViewModels

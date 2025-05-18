@@ -1,6 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
-using ViewModels.Services;
+using Interfaces;
 
 using Models;
 using System.Diagnostics.CodeAnalysis;

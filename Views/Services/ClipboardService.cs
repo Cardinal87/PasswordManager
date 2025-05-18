@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
-using ViewModels.Services;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

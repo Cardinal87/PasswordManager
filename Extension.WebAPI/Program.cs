@@ -6,12 +6,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.DataConnectors;
 using Newtonsoft.Json;
-
-using ViewModels.Services.AppConfiguration;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using static System.Collections.Specialized.BitVector32;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using ViewModels.AppConfiguration;
 namespace Extension.WebAPI
 {
     public class Program

@@ -4,8 +4,8 @@ using ViewModels;
 using Models;
 
 using ViewModels.BaseClasses;
-using ViewModels.Interfaces;
-using ViewModels.Services;
+
+using Interfaces;
 
 
 using System.Text.RegularExpressions;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ViewModels.WebSiteViewModels
 {
-    public partial class WebSiteDialogViewModel : DialogViewModelBase, IDialogResultHelper
+    public partial class WebSiteDialogViewModel : DialogViewModelBase
     {
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string loginPattern = @"^((\+?\\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9})|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|([a-zA-Z0-9._]{4,}))$";
@@ -124,7 +124,6 @@ namespace ViewModels.WebSiteViewModels
         public RelayCommand AddCommand { get; set; }
         public RelayCommand CloseCommand { get; set; }
 
-        public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
 
         private void ShowPasswordGenerator()
         {
@@ -143,7 +142,7 @@ namespace ViewModels.WebSiteViewModels
                 Model = new WebSiteModel(Name, Login, Password, WebAddress, IsFavourite);
                 Model.Id = Id;
 
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+                RequestClose(new DialogResultEventArgs(dialogResult));
             }
             else
             {
@@ -212,10 +211,10 @@ namespace ViewModels.WebSiteViewModels
             }
         }
         private bool isChecked = false;
-        protected override void Close()
+        public override void Close()
         {
             dialogResult = false;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            RequestClose(new DialogResultEventArgs(dialogResult));
         }
 
         

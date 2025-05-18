@@ -1,18 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using Models.Services;
+using Interfaces.PasswordGenerator;
 using ViewModels.BaseClasses;
-using ViewModels.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Interfaces;
 
 namespace ViewModels
 {
-    public class PasswordGeneratorViewModel : DialogViewModelBase, IDialogResultHelper
+    public class PasswordGeneratorViewModel : DialogViewModelBase
     {
         
         public PasswordGeneratorViewModel(IServiceProvider provider) 
@@ -28,7 +28,6 @@ namespace ViewModels
         public RelayCommand ConfirmCommand { get;private set; }
         public RelayCommand CancelCommand { get; private set; }
         public RelayCommand GeneratePasswordCommand { get; private set; }
-        public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
         private bool dialogResult;
         private string password = "";
         private bool activateUpcase = true;
@@ -125,13 +124,14 @@ namespace ViewModels
             if (CanClose)
             {
                 dialogResult = true;
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+
+                RequestClose(new DialogResultEventArgs(dialogResult));
             }
         }
-        protected override void Close()
+        public override void Close()
         {
             dialogResult = false;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            RequestClose(new DialogResultEventArgs(dialogResult));
         }
 
 

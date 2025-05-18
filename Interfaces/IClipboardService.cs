@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ViewModels.Services
+namespace Interfaces
 {
     public interface IClipboardService
     {

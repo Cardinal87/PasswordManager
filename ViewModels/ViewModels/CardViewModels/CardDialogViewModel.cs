@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 
 using ViewModels.BaseClasses;
-using ViewModels.Interfaces;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ViewModels.CardViewModels
 {
-    public class CardDialogViewModel : DialogViewModelBase, IDialogResultHelper
+    public class CardDialogViewModel : DialogViewModelBase
     {
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string cvcPattern = @"^\d{3}$";
@@ -47,7 +47,6 @@ namespace ViewModels.CardViewModels
 
         public bool dialogResult;
         
-        public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
         public bool IsNew { get; private set; }
         public RelayCommand AddCommand { get; private set; }
         public RelayCommand CloseCommand { get; private set; }
@@ -175,7 +174,8 @@ namespace ViewModels.CardViewModels
                 dialogResult = true;
                 Model = new CardModel(Number, Month, Year, Cvc, Owner, Name, IsFavourite);
                 Model.Id = Id;
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+
+                RequestClose(new DialogResultEventArgs(dialogResult));
             }
             else
             {
@@ -251,10 +251,10 @@ namespace ViewModels.CardViewModels
 
         private bool isChecked = false;
 
-        protected override void Close()
+        public override void Close()
         {
             dialogResult = false;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            RequestClose(new DialogResultEventArgs(dialogResult));
         }
     }
 }

@@ -3,11 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ViewModels.Services;
+using Interfaces;
 using Models.DataConnectors;
 using Models;
 using ViewModels.BaseClasses;
-using ViewModels.Interfaces;
 using System.Linq;
 using System.Collections.ObjectModel;
 

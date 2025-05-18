@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Models.DataConnectors;
 using System.Net.Http.Headers;
 using System.Xml.Linq;
-using ViewModels.Services.AppConfiguration;
+using ViewModels.AppConfiguration;
 namespace Extension.WebAPI.Controllers
 {
     [ApiController]

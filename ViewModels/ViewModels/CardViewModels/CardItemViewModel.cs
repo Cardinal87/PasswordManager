@@ -6,7 +6,7 @@ using ViewModels.BaseClasses;
 using ViewModels.WebSiteViewModels;
 using System;
 using System.Collections.Generic;
-using ViewModels.Services;
+using Interfaces;
 using Models.DataConnectors;
 
 using System.Diagnostics.CodeAnalysis;

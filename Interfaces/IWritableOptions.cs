@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 
 
-namespace ViewModels.Services
+namespace Interfaces
 {
     public interface IWritableOptions<T> : IOptions<T> where T : class, new()
     {

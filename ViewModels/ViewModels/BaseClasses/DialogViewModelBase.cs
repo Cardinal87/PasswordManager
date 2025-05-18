@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Interfaces;
 
 namespace ViewModels.BaseClasses
 {
-    public abstract class DialogViewModelBase : ViewModelBase
+    public abstract class DialogViewModelBase : ViewModelBase, IDialogViewModel, IDialogResultHelper
     {
         public abstract bool CanClose { get;}
-        protected abstract void Close();
+
+        public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
+
+        public abstract void Close();
+
+        protected void RequestClose(DialogResultEventArgs args)
+        {
+            dialogResultRequest?.Invoke(this, args);
+        }
     }
 }

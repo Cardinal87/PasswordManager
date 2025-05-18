@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using ViewModels.Services;
+using Interfaces;
 using Models.DataConnectors;
 using Models;
 using ViewModels.BaseClasses;
-using ViewModels.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 
 namespace ViewModels.AppViewModels
 {
-    public class AppDialogViewModel : DialogViewModelBase, IDialogResultHelper
+    public class AppDialogViewModel : DialogViewModelBase
     {
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string passwordPattern = @"^[a-zA-Z0-9~!@#$%^*()_+={}[]|:,.?/-]{1,30}$";
@@ -50,7 +50,6 @@ namespace ViewModels.AppViewModels
         private string password = "";
         IServiceProvider provider;
         IDialogService dialogService;
-        public event EventHandler<DialogResultEventArgs>? dialogResultRequest;
         public RelayCommand ShowPasswordGeneratorCommand { get; set; }
         public RelayCommand AddCommand { get; private set; }
         public RelayCommand CloseCommand { get; private set; }
@@ -112,7 +111,7 @@ namespace ViewModels.AppViewModels
                 Model = new AppModel(Name, Password, IsFavourite);
                 Model.Id = id;
 
-                dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+                RequestClose(new DialogResultEventArgs(dialogResult));
             }
             else
             {
@@ -152,10 +151,10 @@ namespace ViewModels.AppViewModels
             }
         }
         private bool isChecked = false;
-        protected override void Close()
+        public override void Close()
         {
             dialogResult = false;
-            dialogResultRequest?.Invoke(this, new DialogResultEventArgs(dialogResult));
+            RequestClose(new DialogResultEventArgs(dialogResult));
         }
         
     }

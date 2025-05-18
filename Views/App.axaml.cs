@@ -9,15 +9,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Views.Configuration.OptionExtensions;
 using ViewModels;
-using Models.Services;
+using Interfaces.PasswordGenerator;
 using Views.Services;
-using ViewModels.Services;
 using Views;
 using System.IO;
-
+using Interfaces;
 using System.Threading.Tasks;
-using ViewModels.Services.AppConfiguration;
 using System;
+using ViewModels.AppConfiguration;
 
 
 namespace Views;

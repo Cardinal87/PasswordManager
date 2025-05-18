@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using ViewModels.BaseClasses;
-using ViewModels.Services;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +16,10 @@ namespace Views.Services
     {
         private List<Window?> openedWindows = [];
         
-        private void RegisterView(DialogViewModelBase viewmodel, Window dialog) => dialog.DataContext = viewmodel;
+        private void RegisterView(IDialogViewModel viewmodel, Window dialog) => dialog.DataContext = viewmodel;
         
         
-        public void OpenDialog(DialogViewModelBase DialogVm)
+        public void OpenDialog(IDialogViewModel DialogVm)
         {
             Window owner = ((IClassicDesktopStyleApplicationLifetime)Application.Current!.ApplicationLifetime!)!.MainWindow!;
            
@@ -29,7 +29,7 @@ namespace Views.Services
             dialog.ShowDialog(owner);
         }
 
-        private Window CreateWindow(DialogViewModelBase viewmodel)
+        private Window CreateWindow(IDialogViewModel viewmodel)
         {
             string name = viewmodel.GetType().FullName!.Replace( "ViewModel", "View");
             var type = Type.GetType(name);
@@ -41,7 +41,7 @@ namespace Views.Services
             else throw new Exception();
         }
 
-        public void CloseDialog(DialogViewModelBase dialogVM)
+        public void CloseDialog(IDialogViewModel dialogVM)
         {
             Window? win = openedWindows.FirstOrDefault(x => x!.DataContext == dialogVM);
             if (win != null)

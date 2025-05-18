@@ -5,7 +5,7 @@ using Avalonia.Diagnostics;
 using Avalonia.Markup.Xaml;
 using ViewModels.AppViewModels;
 using ViewModels.CardViewModels;
-using ViewModels.Interfaces;
+using Interfaces;
 using ViewModels.WebSiteViewModels;
 
 namespace Views.WebSiteViews;

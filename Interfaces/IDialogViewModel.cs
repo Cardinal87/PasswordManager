@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.Services
+namespace Interfaces
 {
-    public interface IPasswordGenerator
+    public interface IDialogViewModel
     {
-        public string GeneratePassword(PasswordGeneratorArgs args);
+        bool CanClose { get; }
+        void Close();
+
     }
 }

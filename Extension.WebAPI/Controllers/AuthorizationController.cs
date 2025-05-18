@@ -9,8 +9,8 @@ using Models;
 using Models.DataConnectors;
 using System.Net.Http.Headers;
 using System.Text;
+using ViewModels.AppConfiguration;
 using ViewModels.Services;
-using ViewModels.Services.AppConfiguration;
 
 namespace Extension.WebAPI.Controllers
 {

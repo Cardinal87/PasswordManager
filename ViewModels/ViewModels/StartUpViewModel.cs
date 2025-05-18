@@ -3,14 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using ViewModels.Services;
+using Interfaces;
 using Models.DataConnectors;
-
-using ViewModels.Services.AppConfiguration;
 using ViewModels.BaseClasses;
 
 using System.Security.Cryptography;
 using System.Text;
+using ViewModels.AppConfiguration;
 
 
 namespace ViewModels
