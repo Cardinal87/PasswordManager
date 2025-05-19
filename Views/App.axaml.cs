@@ -4,20 +4,17 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Views.Configuration.OptionExtensions;
+using Services.Extensions;
 using ViewModels;
 using Interfaces.PasswordGenerator;
 using Views.Services;
-using Views;
 using System.IO;
 using Interfaces;
-using System.Threading.Tasks;
 using System;
 using ViewModels.AppConfiguration;
-
+using Services;
 
 namespace Views;
 

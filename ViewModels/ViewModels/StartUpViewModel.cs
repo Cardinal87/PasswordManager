@@ -1,14 +1,10 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-
+using Services;
 using Microsoft.Extensions.DependencyInjection;
-
 using Interfaces;
 using Models.DataConnectors;
 using ViewModels.BaseClasses;
-
-using System.Security.Cryptography;
-using System.Text;
 using ViewModels.AppConfiguration;
 
 
@@ -47,7 +43,7 @@ namespace ViewModels
         private async Task StartApp(string password)
         {
 
-            string key = await EncodingKeys.GetEcryptionKey(password, _options.Salt);
+            string key = await EncodingKeysService.GetEcryptionKey(password, _options.Salt);
             _services.AddDbContextFactory<DatabaseClient>(opt =>
             {
                 opt.UseSqlite(new SqliteConnectionStringBuilder

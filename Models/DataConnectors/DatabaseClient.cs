@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Models.Configuration.EFModelsConfiguration;
+using Models.DataConnectors.EFModelsConfiguration;
 using Models;
 using System.Linq.Expressions;
 

@@ -1,15 +1,9 @@
-﻿using Avalonia.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Interfaces.PasswordGenerator;
+﻿using Interfaces.PasswordGenerator;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Views.Services;
+namespace Services;
 
-internal class PasswordGenerator : IPasswordGenerator
+public class PasswordGenerator : IPasswordGenerator
 {
     private const string LowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
     private const string UppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

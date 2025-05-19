@@ -1,14 +1,10 @@
 ﻿
 using ViewModels.BaseClasses;
 using System.Security.Cryptography;
-using System;
-using System.Text;
 using Interfaces;
 using CommunityToolkit.Mvvm.Input;
-
-
+using Services;
 using System.Text.RegularExpressions;
-using Models.DataConnectors;
 using ViewModels.AppConfiguration;
 
 
@@ -51,7 +47,7 @@ namespace ViewModels
         {
             if (!String.IsNullOrEmpty(password))
             {
-                IsCorrectPass = EncodingKeys.CompareHash(password, _loggingOpt.Value.Hash);
+                IsCorrectPass = EncodingKeysService.CompareHash(password, _loggingOpt.Value.Hash);
                 if (IsCorrectPass)
                     await _startApp(password);
             }
@@ -62,7 +58,7 @@ namespace ViewModels
             if (!String.IsNullOrEmpty(password))
             {
                 var salt = GenerateSalt();
-                var hash = await EncodingKeys.GetHash(password);
+                var hash = await EncodingKeysService.GetHash(password);
                 _loggingOpt.Update(opt =>
                 {
                     opt.Hash = hash;

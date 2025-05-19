@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
 
 
-namespace Models.Configuration.EFModelsConfiguration
+namespace Models.DataConnectors.EFModelsConfiguration
 {
     class CardModelConfiguration : IEntityTypeConfiguration<CardModel>
     {

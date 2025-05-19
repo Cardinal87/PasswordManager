@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.Configuration.EFModelsConfiguration
+namespace Models.DataConnectors.EFModelsConfiguration
 {
     class WebSiteModelConfiguration : IEntityTypeConfiguration<WebSiteModel>
     {
