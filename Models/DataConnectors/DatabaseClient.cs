@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models.DataConnectors.EFModelsConfiguration;
-using Models;
 using System.Linq.Expressions;
 
 
@@ -60,12 +59,18 @@ namespace Models.DataConnectors
             }
         }
         
-        public async Task<IEnumerable<T>> GetByPredicate<T>(Expression<Func<T, bool>> pred) where T: ModelBase
+        public async Task<IEnumerable<T>> GetByPredicateAsync<T>(Expression<Func<T, bool>> pred) where T: ModelBase
         {
             var set = Set<T>().Where(pred);
             var list = await Task.Run(() => set.ToList());
             return list;
-        } 
+        }
+
+        public T? GetById<T>(int id) where T : ModelBase
+        {
+            var list = Set<T>();
+            return list.FirstOrDefault(x => x.Id == id);
+        }
 
         public async Task<T?> GetByIdAsync<T>(int id) where T : ModelBase
         {

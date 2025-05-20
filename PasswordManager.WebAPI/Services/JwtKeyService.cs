@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
-namespace Extension.WebAPI.Services
+namespace PasswordManager.WebAPI.Services
 {
     public class JwtKeyService
     {

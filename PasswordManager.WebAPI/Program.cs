@@ -1,8 +1,7 @@
 
-using Extension.WebAPI.Services;
+using PasswordManager.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.DataConnectors;
 using Newtonsoft.Json;
@@ -11,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Models.AppConfiguration;
 using Services.Extensions;
-namespace Extension.WebAPI;
+namespace PasswordManager.WebAPI;
 
 
 public class Program
@@ -134,9 +133,8 @@ public class Program
         });
         services.AddDbContext<DatabaseClient>((prov,opt) =>
         {
-            var settings = prov.GetRequiredService<IOptions<AppAuthorizationOptions>>();
-            var factory = DbConnectionStringSingleton.GetInstance();
-            opt.UseSqlite(factory.ConnectionString);
+            var connStr = DbConnectionStringSingleton.GetInstance();
+            opt.UseSqlite(connStr.ConnectionString);
         });
     }
    

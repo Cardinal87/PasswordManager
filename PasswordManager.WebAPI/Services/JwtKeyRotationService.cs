@@ -1,5 +1,5 @@
 ﻿
-namespace Extension.WebAPI.Services
+namespace PasswordManager.WebAPI.Services
 {
     public class JwtKeyRotationService : BackgroundService
     {

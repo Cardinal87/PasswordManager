@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Extension.WebAPI.Services;
+using PasswordManager.WebAPI.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using Models.AppConfiguration;
 using Services;
 
-namespace Extension.WebAPI.Controllers;
+namespace PasswordManager.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

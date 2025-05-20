@@ -1,10 +1,5 @@
-﻿using Extension.WebAPI.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Models;
 using Models.DataConnectors;
 using System.Net.Http.Headers;
@@ -12,7 +7,7 @@ using System.Text;
 using Models.AppConfiguration;
 using Interfaces;
 
-namespace Extension.WebAPI.Controllers
+namespace PasswordManager.WebAPI.Controllers
 {
     
     [Authorize]
@@ -33,11 +28,10 @@ namespace Extension.WebAPI.Controllers
         [HttpGet("get")]
         public async Task<IActionResult> GetData([FromQuery] string url)
         {
-            var inst = DbConnectionStringSingleton.GetInstance();
             var uri = new Uri(url);
             var host = uri.Host;
             
-            var dataList = await _dbclient.GetByPredicate<WebSiteModel>(m => m.WebAddress == host);
+            var dataList = await _dbclient.GetByPredicateAsync<WebSiteModel>(m => m.WebAddress == host);
             if (dataList.Count() > 0)
             {
                 return Ok(dataList);
