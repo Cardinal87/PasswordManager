@@ -131,7 +131,12 @@ public class Program
                 ValidateLifetime = true
             };
         });
-        services.AddDbContext<DatabaseClient>((prov,opt) =>
+        services.AddDbContext<DatabaseClient>((opt) =>
+        {
+            var connStr = DbConnectionStringSingleton.GetInstance();
+            opt.UseSqlite(connStr.ConnectionString);
+        });
+        services.AddDbContext<WebSiteContext>((opt) =>
         {
             var connStr = DbConnectionStringSingleton.GetInstance();
             opt.UseSqlite(connStr.ConnectionString);

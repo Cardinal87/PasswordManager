@@ -10,9 +10,9 @@ namespace PasswordManager.WebAPI.Controllers;
 [Route("api")]
 public class WebSiteController : Controller
 {
-    private DatabaseClient _client;
+    private WebSiteContext _client;
     
-    public WebSiteController(DatabaseClient client)
+    public WebSiteController(WebSiteContext client)
     {
         _client = client;
     }
@@ -22,7 +22,7 @@ public class WebSiteController : Controller
     {
         try
         {
-            var list = _client.GetListOfType<WebSiteModel>();
+            var list = _client.List();
             return Ok(list);
         }
         catch
@@ -37,16 +37,16 @@ public class WebSiteController : Controller
     {
         try
         {
-            var item = _client.GetById<WebSiteModel>(id);
+            var item = _client.GetById(id);
             if (item != null)
             {
-                _client.Delete<WebSiteModel>(item);
+                _client.Delete(item);
                 _client.SaveChanges();
                 return Ok(item);
             }
             else
             {
-                return BadRequest(new { error = "no model with such id" });
+                return BadRequest(new { error = $"entity with {id} was not found" });
             }
         }
         catch
@@ -60,18 +60,14 @@ public class WebSiteController : Controller
     {
         try
         {
-            var item = _client.GetById<WebSiteModel>(id);
-            model.Id = id;
-            if (item != null)
-            {
-                _client.Replace<WebSiteModel>(model);
-                _client.SaveChanges();
-                return Ok(model);
-            }
-            else
-            {
-                return BadRequest(new { error = "no model with such id" });
-            }
+            var result = _client.Update(model, id);
+            _client.SaveChanges();
+            return Ok(result);
+            
+        }
+        catch(KeyNotFoundException)
+        {
+            return BadRequest(new { error = $"entity with {id} was not found" });
         }
         catch
         {
@@ -87,13 +83,13 @@ public class WebSiteController : Controller
             if (model != null)
             {
                 model.Id = 0;
-                _client.Insert<WebSiteModel>(model);
+                _client.Insert(model);
                 _client.SaveChanges();
                 return Ok(model);
             }
             else
             {
-                return BadRequest(new { error = "data not found" });
+                return BadRequest(new { error = "no necessary data in body" });
             }
         }
         catch
