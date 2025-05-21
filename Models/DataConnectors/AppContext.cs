@@ -3,7 +3,7 @@ using Models.DataConnectors.EFModelsConfiguration;
 
 namespace Models.DataConnectors
 {
-    class AppContext : DbContext
+    public class AppContext : DbContext
     {
         public AppContext(DbContextOptions<AppContext> options) : base(options)
         {

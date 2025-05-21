@@ -38,16 +38,13 @@ public class WebSiteController : Controller
         try
         {
             var item = _client.GetById(id);
-            if (item != null)
-            {
-                _client.Delete(item);
-                _client.SaveChanges();
-                return Ok(item);
-            }
-            else
+            if (item == null)
             {
                 return BadRequest(new { error = $"entity with {id} was not found" });
             }
+            _client.Delete(item);
+            _client.SaveChanges();
+            return Ok(item);
         }
         catch
         {
@@ -80,17 +77,11 @@ public class WebSiteController : Controller
     {
         try
         {
-            if (model != null)
-            {
-                model.Id = 0;
-                _client.Insert(model);
-                _client.SaveChanges();
-                return Ok(model);
-            }
-            else
-            {
-                return BadRequest(new { error = "no necessary data in body" });
-            }
+            
+            model.Id = 0;
+            _client.Insert(model);
+            _client.SaveChanges();
+            return Ok(model);
         }
         catch
         {
