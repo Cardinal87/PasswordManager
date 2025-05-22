@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Interfaces;
 using Models.DataConnectors;
 using ViewModels.BaseClasses;
-using ViewModels.AppConfiguration;
+using Models.AppConfiguration;
 
 
 namespace ViewModels

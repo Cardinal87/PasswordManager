@@ -13,7 +13,7 @@ using Views.Services;
 using System.IO;
 using Interfaces;
 using System;
-using ViewModels.AppConfiguration;
+using Models.AppConfiguration;
 using Services;
 
 namespace Views;

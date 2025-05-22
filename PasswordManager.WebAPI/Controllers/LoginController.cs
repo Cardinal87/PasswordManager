@@ -8,6 +8,9 @@ using Models.DataConnectors;
 using System.Net.Http.Headers;
 using Models.AppConfiguration;
 using Services;
+using Interfaces;
+using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace PasswordManager.WebAPI.Controllers;
 
@@ -16,45 +19,49 @@ namespace PasswordManager.WebAPI.Controllers;
 public class LoginController : Controller
 {
     private JwtOptions _jwtOptions;
-    private AppAuthorizationOptions _appOptions;
+    private IWritableOptions<AppAuthorizationOptions> _appOptions;
     private JwtKeyService _jwtKeyService;
-    public LoginController(IOptions<JwtOptions> jwtOptions, IOptions<AppAuthorizationOptions> appOptions, JwtKeyService keyService) 
+    public LoginController(IOptions<JwtOptions> jwtOptions, 
+        IWritableOptions<AppAuthorizationOptions> appOptions,
+        JwtKeyService keyService) 
     { 
         _jwtOptions = jwtOptions.Value;
-        _appOptions = appOptions.Value;
+        _appOptions = appOptions;
         _jwtKeyService = keyService;
     }
     
-    [HttpGet("get")]
-    public async Task<IActionResult> GetToken()
+    [HttpPost("tokens")]
+    public async Task<IActionResult> CreateToken()
     {
         
         var context = HttpContext;
-        var responce = context.Request;
-        string? auth = responce.Headers.Authorization;
-        if (auth != null && auth.StartsWith("Basic"))
+        var request = context.Request;
+        string? auth = request.Headers.Authorization;
+        (bool isCorrect, string message) = TryParseBasicAuth(auth, out string password);
+        if (!isCorrect)
         {
-            if (AuthenticationHeaderValue.TryParse(auth, out var encodedPassword) && encodedPassword.Parameter != null)
-            {
-                string password = Encoding.UTF8.GetString(Convert.FromBase64String(encodedPassword.Parameter));
-                string salt = _appOptions.Salt;
-
-                var iscorrect = EncodingKeysService.CompareHash(password, _appOptions.Hash);
-                if (!iscorrect) return BadRequest(new { Message = "Password is not correct" });
-                var key = await EncodingKeysService.GetEcryptionKey(password, salt);
-                DbConnectionStringSingleton.SetCreditals(key, _appOptions.ConnectionString);
-                var token = CreateToken();
-                return Ok(new { token });
-            }
-            else return BadRequest(new { Message = "Authorization header is not correct" });
-
+            return BadRequest(new { error = message });
         }
-        else return BadRequest(new { Message = "Authorization header is empty or not basic" });
 
-
+        if (String.IsNullOrEmpty(_appOptions.Value.Hash))
+        {
+            InitializeConfiguration(password);
+        }
+        else
+        {
+            var iscorrect = EncodingKeysService.CompareHash(password, _appOptions.Value.Hash);
+            if (!iscorrect) return BadRequest(new { Message = "Password is not correct" });
+        }
+        var key = await EncodingKeysService.GetEcryptionKey(password, _appOptions.Value.Salt);
+        DbConnectionStringSingleton.SetCreditals(key, _appOptions.Value.ConnectionString);
+        InitializeDatabase();
+        var token = InitializeToken();
+        return Ok(new { token });
+            
     }
 
-    private string CreateToken()
+
+    private string InitializeToken()
     {
         var key = new SymmetricSecurityKey(_jwtKeyService.GetJwtKey());
         var descriptor = new SecurityTokenDescriptor
@@ -68,5 +75,40 @@ public class LoginController : Controller
         var token = tokenHandler.CreateToken(descriptor);
         return tokenHandler.WriteToken(token);
 
+    }
+
+    private (bool, string) TryParseBasicAuth(string? header, out string password)
+    {
+        password = "";
+        if (header != null && header.StartsWith("Basic"))
+        {
+            if (AuthenticationHeaderValue.TryParse(header, out var encodedPassword) && encodedPassword.Parameter != null)
+            {
+                password = Encoding.UTF8.GetString(Convert.FromBase64String(encodedPassword.Parameter));
+                return (true, "");
+            }
+            else return (false, "Authorization header is not correct");
+        }
+        else return (false, "Authorization header is empty or not basic");
+    }
+
+
+    private void InitializeConfiguration(string password)
+    {
+        string salt = EncodingKeysService.GenerateSalt();
+        string hash = EncodingKeysService.GetHash(password);
+        _appOptions.Update(opt => {
+            opt.Hash = hash;
+            opt.Salt = salt;
+        });
+    }
+
+    private void InitializeDatabase()
+    {
+        string connStr = DbConnectionStringSingleton.GetInstance().ConnectionString!;
+        var optionsBuilder = new DbContextOptionsBuilder<WebSiteContext>();
+        optionsBuilder.UseSqlite(connStr);
+        using var tempContext = new WebSiteContext(optionsBuilder.Options);
+        tempContext.Database.EnsureCreated();
     }
 }

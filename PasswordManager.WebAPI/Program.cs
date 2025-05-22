@@ -30,7 +30,7 @@ public class Program
             var directory = Path.Combine(roaminPath, "PasswordManager");
             if (WindowsServiceHelpers.IsWindowsService())
             {
-                string path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+                string path = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
                 var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
                 var section = jObj["Config"]!;
                 directory = section["ConfigPath"]!.ToString();
@@ -43,7 +43,7 @@ public class Program
             var configPath = Path.Combine(directory, "config.json");
             if (args.Contains("--save"))
             {
-                string path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+                string path = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
                 var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
                 var section = jObj["Config"]!;
                 section["ConfigPath"] = directory;
@@ -137,6 +137,16 @@ public class Program
             opt.UseSqlite(connStr.ConnectionString);
         });
         services.AddDbContext<WebSiteContext>((opt) =>
+        {
+            var connStr = DbConnectionStringSingleton.GetInstance();
+            opt.UseSqlite(connStr.ConnectionString);
+        });
+        services.AddDbContext<Models.DataConnectors.AppContext>((opt) =>
+        {
+            var connStr = DbConnectionStringSingleton.GetInstance();
+            opt.UseSqlite(connStr.ConnectionString);
+        });
+        services.AddDbContext<CardContext>((opt) =>
         {
             var connStr = DbConnectionStringSingleton.GetInstance();
             opt.UseSqlite(connStr.ConnectionString);

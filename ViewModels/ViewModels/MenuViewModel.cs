@@ -5,7 +5,7 @@ using Interfaces;
 using CommunityToolkit.Mvvm.Input;
 using Services;
 using System.Text.RegularExpressions;
-using ViewModels.AppConfiguration;
+using Models.AppConfiguration;
 
 
 namespace ViewModels
@@ -57,14 +57,14 @@ namespace ViewModels
         {
             if (!String.IsNullOrEmpty(password))
             {
-                var salt = GenerateSalt();
-                var hash = await EncodingKeysService.GetHash(password);
+                var salt = EncodingKeysService.GenerateSalt();
+                var hash = EncodingKeysService.GetHash(password);
                 _loggingOpt.Update(opt =>
                 {
                     opt.Hash = hash;
                     opt.Salt = salt;
                 });
-                IsCorrectPass = Regex.IsMatch(password, passwordPattern);
+                IsCorrectPass = EncodingKeysService.IsCorrectPassword(password);
                 if (IsCorrectPass)
                     await _startApp(password);
             }
@@ -84,16 +84,6 @@ namespace ViewModels
         }
         
         
-        private string GenerateSalt()
-        {
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                byte[] salt = new byte[32];
-                rng.GetBytes(salt);
-                return Convert.ToBase64String(salt);
-            }
-        }
-
         
     }
 }

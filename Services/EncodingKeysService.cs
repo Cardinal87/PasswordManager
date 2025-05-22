@@ -1,11 +1,14 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Scrypt;
 
 namespace Services;
 
 public static class EncodingKeysService
 {
+    private const string passwordPattern = @"^(?=.*?[A-Z].*?[A-Z])(?=.*?[a-z].*?[a-z])(?=.*?\d.*?\d)(?=.*?[@$!%*?&].*?[@$!%*?&]).{10,50}$";
+
     public async static Task<string> GetEcryptionKey(string password, string salt)
     {
         int iterCount = 100000;
@@ -19,10 +22,10 @@ public static class EncodingKeysService
         }
     }
 
-    public async static Task<string> GetHash(string password)
+    public static string GetHash(string password)
     {
         var scrypt = new ScryptEncoder();
-        var hash = await Task.Run(() => scrypt.Encode(password));
+        var hash = scrypt.Encode(password);
         return hash;
         
     }
@@ -34,4 +37,18 @@ public static class EncodingKeysService
         return b;
     }
 
+    public static bool IsCorrectPassword(string password)
+    {
+        return Regex.IsMatch(password, passwordPattern);
+    }
+
+    public static string GenerateSalt()
+    {
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            byte[] salt = new byte[32];
+            rng.GetBytes(salt);
+            return Convert.ToBase64String(salt);
+        }
+    }
 }
