@@ -9,7 +9,6 @@ using System.Net.Http.Headers;
 using Models.AppConfiguration;
 using Services;
 using Interfaces;
-using System.Net;
 using Microsoft.EntityFrameworkCore;
 
 namespace PasswordManager.WebAPI.Controllers;
