@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Interfaces.PasswordGenerator;
 
 
 namespace ViewModels.AppViewModels
@@ -19,10 +20,10 @@ namespace ViewModels.AppViewModels
     {
         private const string namePattern = @"[a-zA-Z0-9._%+-]+|^$";
         private const string passwordPattern = @"^[a-zA-Z0-9~!@#$%^*()_+={}[]|:,.?/-]{1,30}$";
-        public AppDialogViewModel(IServiceProvider provider) 
+        public AppDialogViewModel(IDialogService dialogService, IPasswordGenerator passwordGenerator) 
         {
-            this.provider = provider;
-            dialogService = provider.GetRequiredService<IDialogService>();
+            _dialogService = dialogService;
+            _passwordGenerator = passwordGenerator;
             ShowPasswordGeneratorCommand = new RelayCommand(ShowPasswordGenerator);
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
@@ -30,10 +31,10 @@ namespace ViewModels.AppViewModels
             IsNew = true;
             
         }
-        public AppDialogViewModel(AppModel model, IServiceProvider provider)
+        public AppDialogViewModel(AppModel model, IDialogService dialogService, IPasswordGenerator passwordGenerator)
         {
-            this.provider = provider;
-            dialogService = provider.GetRequiredService<IDialogService>();
+            _dialogService = dialogService;
+            _passwordGenerator = passwordGenerator;
             Model = model;
             Name = model.Name!;
             Password = model.Password;
@@ -48,8 +49,8 @@ namespace ViewModels.AppViewModels
         private bool dialogResult;
         private string name = "";
         private string password = "";
-        IServiceProvider provider;
-        IDialogService dialogService;
+        IDialogService _dialogService;
+        IPasswordGenerator _passwordGenerator;
         public RelayCommand ShowPasswordGeneratorCommand { get; set; }
         public RelayCommand AddCommand { get; private set; }
         public RelayCommand CloseCommand { get; private set; }
@@ -97,9 +98,9 @@ namespace ViewModels.AppViewModels
         
         private void ShowPasswordGenerator()
         {
-            var vm = new PasswordGeneratorViewModel(provider);
+            var vm = new PasswordGeneratorViewModel(_passwordGenerator);
             vm.dialogResultRequest += GetDialogResult;
-            dialogService.OpenDialog(vm);
+            _dialogService.OpenDialog(vm);
         }
        
         private void Add()
@@ -128,7 +129,7 @@ namespace ViewModels.AppViewModels
             if (sender is PasswordGeneratorViewModel vm && e.DialogResult)
             {
                 Password = vm.Password;
-                dialogService.CloseDialog(vm);
+                _dialogService.CloseDialog(vm);
             }
         }
 

@@ -19,14 +19,12 @@ namespace ViewModels.CardViewModels
         private const string numberPattern = @"^(\d\s*){12,19}\d$";
         private const string ownerPattern = @"[a-zA-Z0-9._%+-]+|^$";
 
-
-
-
         public CardDialogViewModel() 
         { 
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
             isFavourite = false;
+            Id = 0;
             IsNew = true;
         }
         public CardDialogViewModel(CardModel model)
@@ -35,6 +33,7 @@ namespace ViewModels.CardViewModels
             CloseCommand = new RelayCommand(Close);
             isFavourite = model.IsFavourite;
             IsNew = false;
+            Id = model.Id;
             Name = model.Name!;
             Owner = model.Owner;
             Number = model.Number;

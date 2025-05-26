@@ -5,7 +5,7 @@ namespace Interfaces
     {
         Task<List<T>> GetList();
 
-        Task Post(T model);
+        Task<int> Post(T model);
 
         Task Put(T model, int id);
 

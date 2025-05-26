@@ -78,9 +78,10 @@ namespace PasswordManager.WebAPI.Controllers
         {
             try
             {
+                model.Id = 0;
                 _client.Insert(model);
                 _client.SaveChanges();
-                return Ok();
+                return Ok(model);
             }
             catch
             {

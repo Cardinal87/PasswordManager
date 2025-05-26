@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace PasswordManager.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class LoginController : Controller
 {
     private JwtOptions _jwtOptions;
@@ -105,9 +105,9 @@ public class LoginController : Controller
     private void InitializeDatabase()
     {
         string connStr = DbConnectionStringSingleton.GetInstance().ConnectionString!;
-        var optionsBuilder = new DbContextOptionsBuilder<WebSiteContext>();
-        optionsBuilder.UseSqlite(connStr);
-        using var tempContext = new WebSiteContext(optionsBuilder.Options);
-        tempContext.Database.EnsureCreated();
+        var options = new DbContextOptionsBuilder<DatabaseClient>();
+        options.UseSqlite(connStr);
+        using var mainContext = new DatabaseClient(options.Options);
+        mainContext.Database.EnsureCreated();
     }
 }

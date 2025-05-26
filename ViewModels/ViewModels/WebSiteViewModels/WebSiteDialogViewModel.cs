@@ -10,6 +10,7 @@ using Interfaces;
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Interfaces.PasswordGenerator;
 
 namespace ViewModels.WebSiteViewModels
 {
@@ -23,10 +24,10 @@ namespace ViewModels.WebSiteViewModels
 
 
         private bool dialogResult;
-        public WebSiteDialogViewModel(IServiceProvider provider)
+        public WebSiteDialogViewModel(IDialogService dialogService, IPasswordGenerator passwordGenerator)
         {
-            this.provider = provider;
-            dialogService = provider.GetRequiredService<IDialogService>();
+            _dialogService = dialogService;
+            _passwordGenerator = passwordGenerator;
             GeneratePasswordCommand = new RelayCommand(ShowPasswordGenerator);
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
@@ -35,10 +36,13 @@ namespace ViewModels.WebSiteViewModels
             Id = 0;
         }
 
-        public WebSiteDialogViewModel(WebSiteModel item, IServiceProvider provider)
+        public WebSiteDialogViewModel(WebSiteModel item,
+            IDialogService dialogService,
+            IPasswordGenerator passwordGenerator)
         {
-            this.provider = provider;
-            dialogService = provider.GetRequiredService<IDialogService>();
+
+            _dialogService = dialogService;
+            _passwordGenerator = passwordGenerator;
             GeneratePasswordCommand = new RelayCommand(ShowPasswordGenerator);
             AddCommand = new RelayCommand(Add);
             CloseCommand = new RelayCommand(Close);
@@ -52,8 +56,8 @@ namespace ViewModels.WebSiteViewModels
             IsNew = false;
 
         }
-        IServiceProvider provider;
-        IDialogService dialogService;
+        IDialogService _dialogService;
+        IPasswordGenerator _passwordGenerator;
         public WebSiteModel? Model { get; private set; }
         
         private string password = "";
@@ -127,9 +131,9 @@ namespace ViewModels.WebSiteViewModels
 
         private void ShowPasswordGenerator()
         {
-            var vm = new PasswordGeneratorViewModel(provider);
+            var vm = new PasswordGeneratorViewModel(_passwordGenerator);
             vm.dialogResultRequest += GetDialogResult;
-            dialogService.OpenDialog(vm);
+            _dialogService.OpenDialog(vm);
         }
 
         protected void Add()
@@ -159,7 +163,7 @@ namespace ViewModels.WebSiteViewModels
             if (sender is PasswordGeneratorViewModel vm && e.DialogResult)
             {
                 Password = vm.Password;
-                dialogService.CloseDialog(vm);
+                _dialogService.CloseDialog(vm);
             }
         }
 
@@ -189,7 +193,7 @@ namespace ViewModels.WebSiteViewModels
             get
             {
                 if (!isChecked) return true;
-                return Regex.IsMatch(WebAddress, namePattern);
+                return Regex.IsMatch(WebAddress, webAdressPattern);
             }
         }
         public bool IsValidLogin

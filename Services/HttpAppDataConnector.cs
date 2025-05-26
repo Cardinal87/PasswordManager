@@ -44,10 +44,10 @@ namespace Services
             return apps;
         }
 
-        async public Task Post(AppModel model)
+        async public Task<int> Post(AppModel model)
         {
             var json = JsonConvert.SerializeObject(model);
-            var content = new StringContent(json);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             var request = new HttpRequestMessage(HttpMethod.Post, $"api/apps/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
@@ -57,12 +57,16 @@ namespace Services
             {
                 await HandleResponse(response);
             }
+            var responsed_model = await response.Content.ReadFromJsonAsync<AppModel>();
+            if (responsed_model == null)
+                throw new NullReferenceException("no valid json was received from the server");
+            return responsed_model.Id;
         }
 
         async public Task Put(AppModel model, int id)
         {
             var json = JsonConvert.SerializeObject(model);
-            var content = new StringContent(json);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             var request = new HttpRequestMessage(HttpMethod.Put, $"api/apps/{id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);

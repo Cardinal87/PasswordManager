@@ -1,19 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using ViewModels;
-using Models;
 using ViewModels.AppViewModels;
 using ViewModels.BaseClasses;
 using ViewModels.CardViewModels;
 using ViewModels.WebSiteViewModels;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ViewModels.AllEntriesViewModels
 {

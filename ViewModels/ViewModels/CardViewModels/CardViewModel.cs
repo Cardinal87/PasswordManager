@@ -1,40 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Models.DataConnectors;
-
-using ViewModels;
 using Models;
-using ViewModels.AppViewModels;
 using ViewModels.BaseClasses;
 using Interfaces;
-using ViewModels.WebSiteViewModels;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ViewModels.CardViewModels
 {
     public class CardViewModel : ViewModelBase
     {
         
-        public static async Task<CardViewModel> CreateAsync(IServiceProvider provider)
-        {
-            var cardVm = new CardViewModel(provider);
-            await cardVm.LoadViewModelsListAsync();
-            return cardVm;
-        }
         
-        
-        private CardViewModel(IServiceProvider provider) 
+        public CardViewModel(IHttpDataConnector<CardModel> dataConnector,
+                              IDialogService dialogService,
+                              IClipboardService clipboardService) 
         {
-            this.provider = provider;
-            contextFactory = provider.GetRequiredService<IDbContextFactory<DatabaseClient>>();
-            dialogService = provider.GetRequiredService<IDialogService>();
+            _dialogService = dialogService;
+            _dataConnector = dataConnector;
+            _clipboardService = clipboardService;
             AddToFavouriteCommand = new AsyncRelayCommand<CardItemViewModel>(AddToFavouriteAsync);
             DeleteCommand = new AsyncRelayCommand<CardItemViewModel>(DeleteAsync);
             ChangeCommand = new RelayCommand<CardItemViewModel>(ShowChangeDialog);
@@ -43,9 +25,9 @@ namespace ViewModels.CardViewModels
             
         }
         private string searchKey = "";
-        private IDbContextFactory<DatabaseClient> contextFactory;
-        private IDialogService dialogService;
-        IServiceProvider provider;
+        IHttpDataConnector<CardModel> _dataConnector;
+        IDialogService _dialogService;
+        IClipboardService _clipboardService;
         public CardItemViewModel? currentItem;
         
         public CardItemViewModel? CurrentItem
@@ -89,19 +71,17 @@ namespace ViewModels.CardViewModels
 
         private async Task DeleteAsync(CardItemViewModel? cardItem)
         {
-            using (var dbClient = await contextFactory.CreateDbContextAsync())
+            
+            if (cardItem != null)
             {
-                if (cardItem != null)
-                {
-                    dbClient.Delete(cardItem.Model);
-                    Cards.Remove(cardItem);
-                    if (Cards.Count > 0) CurrentItem = Cards[0];
-                    OnPropertyChanged(nameof(FilteredCollection));
-                    OnPropertyChanged(nameof(IsEmptyCollection));
-                    await dbClient.SaveChangesAsync();
-                }
-                
+                await _dataConnector.Delete(cardItem.Id);
+                Cards.Remove(cardItem);
+                if (Cards.Count > 0) CurrentItem = Cards[0];
+                OnPropertyChanged(nameof(FilteredCollection));
+                OnPropertyChanged(nameof(IsEmptyCollection));
             }
+                
+            
         }
 
         private void ShowDialog(CardDialogViewModel? Dialog)
@@ -109,7 +89,7 @@ namespace ViewModels.CardViewModels
             if (Dialog != null)
             {
                 Dialog.dialogResultRequest += GetDialogResult;
-                dialogService.OpenDialog(Dialog);
+                _dialogService.OpenDialog(Dialog);
             }
         }
         private void ShowChangeDialog(CardItemViewModel? cardItem)
@@ -126,75 +106,62 @@ namespace ViewModels.CardViewModels
 
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            using (var dbClient = await contextFactory.CreateDbContextAsync())
+            if (sender is CardDialogViewModel vm)
             {
-                if (sender is CardDialogViewModel vm)
+                if (e.DialogResult && vm.Model != null)
                 {
+                    CardModel model = vm.Model;
 
-                    if (e.DialogResult && vm.Model != null)
+                    if (vm.IsNew)
                     {
-                        CardModel model = vm.Model;
-
-                        if (vm.IsNew)
-                        {
-                            dbClient.Insert(model);
-                            await dbClient.SaveChangesAsync();
-                            CardItemViewModel item = new CardItemViewModel(model, provider);
-                            Cards.Add(item);
-                            CurrentItem = null;
-                            CurrentItem = item;
-                        }
-                        else
-                        {
-                            dbClient.Replace(model);
-                            var a = Cards.FirstOrDefault(x => x.Id == model.Id);
-                            a?.UpdateModel(model);
-                            await dbClient.SaveChangesAsync();
-                        }
-                        OnPropertyChanged(nameof(FilteredCollection));
-                        OnPropertyChanged(nameof(IsEmptyCollection));
+                        int id = await _dataConnector.Post(model);
+                        model.Id = id;
+                        CardItemViewModel item = new CardItemViewModel(model, _clipboardService);
+                        Cards.Add(item);
+                        CurrentItem = null;
+                        CurrentItem = item;
                     }
-                    dialogService.CloseDialog(vm!);
+                    else
+                    {
+                        await _dataConnector.Put(model, model.Id);
+                        var a = Cards.FirstOrDefault(x => x.Id == model.Id);
+                        a?.UpdateModel(model);
+                    }
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
                 }
-                
+                _dialogService.CloseDialog(vm!);
             }
-            
-            
-        }
+                
+        }  
+        
 
         private async Task AddToFavouriteAsync(CardItemViewModel? cardItem)
         {
-            using (var dbClient = await contextFactory.CreateDbContextAsync())
+            
+            if (cardItem != null)
             {
-                if (cardItem != null)
-                {
-                    
-                    CardModel? el = await dbClient.GetByIdAsync<CardModel>(cardItem.Id);
-                    if (el != null)
-                    {
-                        cardItem.IsFavourite = !cardItem.IsFavourite;
-                        el.IsFavourite = !el.IsFavourite;
-                        await dbClient.SaveChangesAsync();
-                    }
-
-                }
-            }
-        }
-        private async Task LoadViewModelsListAsync()
-        {
-            using (var dbClient = await contextFactory.CreateDbContextAsync())
-            {
+                var el = cardItem.Model;   
+                cardItem.IsFavourite = !cardItem.IsFavourite;
+                el.IsFavourite = !el.IsFavourite;
+                await _dataConnector.Put(el, el.Id);
                 
-                var models = await dbClient.GetListOfTypeAsync<CardModel>();
-                var viewmodels = new ObservableCollection<CardItemViewModel>();
-                await foreach (var model in models.ToAsyncEnumerable())
-                {
-                    var item = new CardItemViewModel(model, provider);
-                    viewmodels.Add(item);
-                }
-                if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
-                Cards = viewmodels;
+
             }
+            
+        }
+        public async Task LoadViewModelsListAsync()
+        {
+            var models = await _dataConnector.GetList();
+            var viewmodels = new ObservableCollection<CardItemViewModel>();
+            foreach (var model in models)
+            {
+                var item = new CardItemViewModel(model, _clipboardService);
+                viewmodels.Add(item);
+            }
+            if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
+            Cards = viewmodels;
+            
 
         }
 

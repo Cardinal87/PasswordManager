@@ -1,14 +1,10 @@
 ﻿
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Interfaces;
-using Models.DataConnectors;
 using Models;
 using ViewModels.BaseClasses;
-using System.Linq;
 using System.Collections.ObjectModel;
+using Interfaces.PasswordGenerator;
 
 
 namespace ViewModels.AppViewModels
@@ -16,28 +12,25 @@ namespace ViewModels.AppViewModels
     public partial class AppViewModel : ViewModelBase
     {
         
-        public static async Task<AppViewModel> CreateAsync(IServiceProvider provider)
+        public AppViewModel(IHttpDataConnector<AppModel> dataConnector,
+                            IDialogService dialogService,
+                            IClipboardService clipboardService,
+                            IPasswordGenerator passwordGenerator)
         {
-            var appVm = new AppViewModel(provider);
-            await appVm.LoadViewModelListAsync();
-            return appVm;
-        }
-        
-        private AppViewModel(IServiceProvider provider)
-        {
-            this.provider = provider;
-            contextFactory = provider.GetRequiredService<IDbContextFactory<DatabaseClient>>();
-            dialogService = provider.GetRequiredService<IDialogService>();
-            
+            _dataConnector = dataConnector;
+            _dialogService = dialogService;
+            _clipboardService = clipboardService;
+            _passwordGenerator = passwordGenerator;
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
             AddToFavouriteCommand = new AsyncRelayCommand<AppItemViewModel>(AddToFavouriteAsync);
             DeleteCommand = new AsyncRelayCommand<AppItemViewModel>(DeleteAsync);
             ChangeCommand = new RelayCommand<AppItemViewModel>(ShowChangeDialog);
             
         }
-        IServiceProvider provider;
-        IDbContextFactory<DatabaseClient> contextFactory;
-        IDialogService dialogService;
+        IHttpDataConnector<AppModel> _dataConnector;
+        IDialogService _dialogService;
+        IClipboardService _clipboardService;
+        IPasswordGenerator _passwordGenerator;
         private AppItemViewModel? currentItem;
         private string searchKey = "";
         public ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
@@ -80,28 +73,24 @@ namespace ViewModels.AppViewModels
         
         private async Task DeleteAsync(AppItemViewModel? appItem)
         {
-            using (var dbClient = await contextFactory.CreateDbContextAsync()) 
+            if (appItem != null)
             {
-                if (appItem != null)
-                {
-                    dbClient.Delete(appItem.Model);
-                    Apps.Remove(appItem);
-                    CurrentItem = Apps.Count != 0 ? Apps[0] : null;
-                    OnPropertyChanged(nameof(FilteredCollection));
-                    OnPropertyChanged(nameof(IsEmptyCollection));
-                    await dbClient.SaveChangesAsync();
-                }
+                await _dataConnector.Delete(appItem.Id);
+                Apps.Remove(appItem);
+                CurrentItem = Apps.Count != 0 ? Apps[0] : null;
+                OnPropertyChanged(nameof(FilteredCollection));
+                OnPropertyChanged(nameof(IsEmptyCollection));
             }
         }
         
         private void ShowChangeDialog(AppItemViewModel? appItem)
         {
             if (appItem != null && appItem.Model != null)
-                ShowDialog(new AppDialogViewModel(appItem.Model, provider));
+                ShowDialog(new AppDialogViewModel(appItem.Model, _dialogService, _passwordGenerator));
         }
         private void ShowAddNewDialog()
         {
-            ShowDialog(new AppDialogViewModel(provider));
+            ShowDialog(new AppDialogViewModel(_dialogService, _passwordGenerator));
         }
 
         private void ShowDialog(AppDialogViewModel? dialogVM)
@@ -109,76 +98,61 @@ namespace ViewModels.AppViewModels
             if (dialogVM != null)
             {
                 dialogVM.dialogResultRequest += GetDialogResult;
-                dialogService.OpenDialog(dialogVM);
+                _dialogService.OpenDialog(dialogVM);
             }
         }
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            using (var dbClient = contextFactory.CreateDbContext())
+            if (sender is AppDialogViewModel vm)
             {
-                
-                if (sender is AppDialogViewModel vm)
-                {
 
-                    if (e.DialogResult && vm.Model != null)
+                if (e.DialogResult && vm.Model != null)
+                {
+                    if (vm.IsNew)
                     {
-                        if (vm.IsNew)
-                        {
-                            dbClient.Insert(vm.Model);
-                            await dbClient.SaveChangesAsync();
-                            AppItemViewModel item = new AppItemViewModel(vm.Model, provider);
-                            Apps.Add(item);
-                            CurrentItem = null;
-                            CurrentItem = item;
-                        }
-                        else
-                        {
-                            dbClient.Replace(vm.Model);
-                            var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
-                            a?.UpdateModel(vm.Model);
-                            await dbClient.SaveChangesAsync();
-                        }
-                        OnPropertyChanged(nameof(FilteredCollection));
-                        OnPropertyChanged(nameof(IsEmptyCollection));
+                        int id = await _dataConnector.Post(vm.Model);
+                        vm.Model.Id = id;
+                        AppItemViewModel item = new AppItemViewModel(vm.Model, _clipboardService);
+                        Apps.Add(item);
+                        CurrentItem = null;
+                        CurrentItem = item;
                     }
-                    dialogService.CloseDialog(vm);
+                    else
+                    {
+                        await _dataConnector.Put(vm.Model, vm.Model.Id);
+                        var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
+                        a?.UpdateModel(vm.Model);
+                    }
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
                 }
+                _dialogService.CloseDialog(vm);
             }
+            
             
         }
         private async Task AddToFavouriteAsync(AppItemViewModel? appItem)
         {
             if (appItem != null)
             {
+                var model = appItem.Model;
                 appItem.IsFavourite = !appItem.IsFavourite;
-                using (var dbClient = await contextFactory.CreateDbContextAsync())
-                {
-                    AppModel? el = await dbClient.GetByIdAsync<AppModel>(appItem.Id);
-                    if (el != null)
-                    {
-                        el.IsFavourite = !el.IsFavourite;
-                        await dbClient.SaveChangesAsync();
-                    }
-
-                }
+                model.IsFavourite = !model.IsFavourite;
+                await _dataConnector.Put(model, appItem.Id);
             }
         }
-        private async Task LoadViewModelListAsync()
+        public async Task LoadViewModelListAsync()
         {
-
-            using (var dbClient = contextFactory.CreateDbContext())
+            var models = await _dataConnector.GetList();
+            var viewmodels = new ObservableCollection<AppItemViewModel>();
+            foreach (var model in models)
             {
-                await Task.Yield();
-                var models = await dbClient.GetListOfTypeAsync<AppModel>();
-                var viewmodels = new ObservableCollection<AppItemViewModel>();
-                await foreach (var model in models.ToAsyncEnumerable())
-                {
-                    var item = new AppItemViewModel(model, provider);
-                    viewmodels.Add(item);
-                }
-                if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
-                Apps = viewmodels;
+                var item = new AppItemViewModel(model, _clipboardService);
+                viewmodels.Add(item);
             }
+            if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
+            Apps = viewmodels;
+            
             
         }
         

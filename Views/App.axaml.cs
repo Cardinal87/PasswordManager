@@ -15,6 +15,10 @@ using Interfaces;
 using System;
 using Models.AppConfiguration;
 using Services;
+using Models;
+using ViewModels.CardViewModels;
+using ViewModels.AppViewModels;
+using ViewModels.WebSiteViewModels;
 
 namespace Views;
 
@@ -50,6 +54,11 @@ public partial class App : Application
                     Hash = "",
                     ConnectionString = Path.Combine(directory, "passwordmanager.db"),
                     Salt = ""
+                },
+                Jwt = new
+                {
+                    Issuer = "localhost",
+                    Audience = "extension"
                 }
             };
             var json = JsonConvert.SerializeObject(model, Formatting.Indented);
@@ -65,13 +74,12 @@ public partial class App : Application
         SetUpContainer(services, conf);
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            using (var provider = services.BuildServiceProvider())
+            var provider = services.BuildServiceProvider();
+            desktop.MainWindow = new MainWindow
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = provider.GetRequiredService<StartUpViewModel>()
-                };
-            }
+                DataContext = provider.GetRequiredService<StartUpViewModel>()
+            };
+            
             
            
         }
@@ -92,10 +100,16 @@ public partial class App : Application
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
         services.AddWritebleOptions<AppAuthorizationOptions>(config.GetSection(AppAuthorizationOptions.Section), _configPath);
-        services.AddTransient<StartUpViewModel>(prov =>
-        {
-            return new StartUpViewModel(prov.GetRequiredService<IWritableOptions<AppAuthorizationOptions>>(),
-                services);
-        });
+        services.AddHttpClient();
+        services.AddSingleton<IHttpDataConnector<AppModel>, HttpAppDataConnector>();
+        services.AddSingleton<IHttpDataConnector<CardModel>, HttpCardDataConnector>();
+        services.AddSingleton<IHttpDataConnector<WebSiteModel>, HttpWebSiteDataConnector>();
+        services.AddSingleton<TokenHandlerService>();
+        services.AddTransient<CardViewModel>();
+        services.AddTransient<AppViewModel>();
+        services.AddTransient<MenuViewModel>();
+        services.AddTransient<WebSiteViewModel>();
+        services.AddTransient<MainViewModel>();
+        services.AddTransient<StartUpViewModel>();
     }
 }

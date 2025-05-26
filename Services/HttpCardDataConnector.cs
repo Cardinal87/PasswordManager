@@ -46,10 +46,10 @@ namespace Services
 
         }
 
-        async public Task Post(CardModel model)
+        async public Task<int> Post(CardModel model)
         {
             var json = JsonConvert.SerializeObject(model);
-            var content = new StringContent(json);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             var request = new HttpRequestMessage(HttpMethod.Post, $"api/cards/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
@@ -59,14 +59,18 @@ namespace Services
             {
                 await HandleResponse(response);
             }
+            var responsed_model = await response.Content.ReadFromJsonAsync<CardModel>();
+            if (responsed_model == null)
+                throw new NullReferenceException("no valid json was received from the server");
+            return responsed_model.Id;
         }
 
         async public Task Put(CardModel model, int id)
         {
             var json = JsonConvert.SerializeObject(model);
-            var content = new StringContent(json);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            var request = new HttpRequestMessage(HttpMethod.Put, $"api/websites/{id}");
+            var request = new HttpRequestMessage(HttpMethod.Put, $"api/cards/{id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             request.Content = content;
             using var response = await _client.SendAsync(request);

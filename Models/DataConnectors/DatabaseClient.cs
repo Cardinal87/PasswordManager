@@ -15,8 +15,7 @@ namespace Models.DataConnectors
         public DbSet<WebSiteModel> WebSites { get; set; }
         public DbSet<AppModel> Apps { get; set; }
         public DbSet<CardModel> Cards { get; set; }
-        
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new WebSiteModelConfiguration());

@@ -14,17 +14,17 @@ namespace ViewModels.AppViewModels
 {
     public partial class AppItemViewModel : ItemViewModelBase
     {
-        public AppItemViewModel(AppModel app, IServiceProvider provider)
+        public AppItemViewModel(AppModel app, IClipboardService clipboardService)
         {
             
             UpdateModel(app);
-            clipBoard = provider.GetRequiredService<IClipboardService>();
+            _clipboardService = clipboardService;
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipBoard);
             
         }
         
         public RelayCommand<string> CopyToClipboardCommand { get; }
-        IClipboardService clipBoard;
+        IClipboardService _clipboardService;
 
 
         public AppModel Model { get; private set; }
@@ -50,7 +50,7 @@ namespace ViewModels.AppViewModels
         private void CopyToClipBoard(string? text)
         {
             if (text != null)
-                clipBoard.SaveToClipBoard(text);
+                _clipboardService.SaveToClipBoard(text);
         }
         
         

@@ -15,9 +15,9 @@ namespace ViewModels
     public class PasswordGeneratorViewModel : DialogViewModelBase
     {
         
-        public PasswordGeneratorViewModel(IServiceProvider provider) 
+        public PasswordGeneratorViewModel(IPasswordGenerator passwordGenerator) 
         {
-            _generator = provider.GetRequiredService<IPasswordGenerator>();
+            _generator = passwordGenerator;
             GeneratePasswordCommand = new RelayCommand(GeneratePassword);
             ConfirmCommand = new RelayCommand(Confirm);
             CancelCommand = new RelayCommand(Close);

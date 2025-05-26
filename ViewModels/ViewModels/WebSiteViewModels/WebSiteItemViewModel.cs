@@ -14,13 +14,13 @@ namespace ViewModels.WebSiteViewModels
     {
         
         public WebSiteModel Model { get; private set; }
-        private IClipboardService clipBoardService;
+        private IClipboardService _clipBoardService;
         
-        public WebSiteItemViewModel(WebSiteModel model, IServiceProvider provider) 
+        public WebSiteItemViewModel(WebSiteModel model, IClipboardService clipboardService) 
         {
             
             UpdateModel(model);
-            clipBoardService = provider.GetRequiredService<IClipboardService>();
+            _clipBoardService = clipboardService;
 
             OpenWebSiteCommand = new RelayCommand(OpenWebSite);
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);
@@ -84,7 +84,7 @@ namespace ViewModels.WebSiteViewModels
         private void CopyToClipboard(string? text)
         {
             if (text != null)
-                clipBoardService.SaveToClipBoard(text);
+                _clipBoardService.SaveToClipBoard(text);
         }
 
         private void OpenWebSite()

@@ -12,19 +12,20 @@ namespace ViewModels
 {
     public class MenuViewModel : ViewModelBase
     {
-        private const string passwordPattern = @"^(?=.*?[A-Z].*?[A-Z])(?=.*?[a-z].*?[a-z])(?=.*?\d.*?\d)(?=.*?[@$!%*?&].*?[@$!%*?&]).{10,50}$";
+       
         
-        
-        public MenuViewModel(IWritableOptions<AppAuthorizationOptions> loggingOpt, Func<string, Task> startApp) 
+        public MenuViewModel(IWritableOptions<AppAuthorizationOptions> loggingOpt,
+                             TokenHandlerService tokenService) 
         {
-            _startApp = startApp;
             _loggingOpt = loggingOpt;
+            _tokenService = tokenService;
             DeleteStorageCommand = new RelayCommand(DeleteStorage);
             SavePasswordCommand = new AsyncRelayCommand<string>(SavePassword);
             CheckPasswordCommand = new AsyncRelayCommand<string>(CheckPassword);
         }
-        private Func<string, Task> _startApp;
+        private Func<string, Task>? _startApp;
         private IWritableOptions<AppAuthorizationOptions> _loggingOpt;
+        private TokenHandlerService _tokenService;
         public RelayCommand DeleteStorageCommand { get; private set; }
         public AsyncRelayCommand<string> SavePasswordCommand { get; private set; }
         public AsyncRelayCommand<string> CheckPasswordCommand { get; private set; }
@@ -45,28 +46,33 @@ namespace ViewModels
 
         private async Task CheckPassword(string? password)
         {
+            if (_startApp == null)
+                throw new NullReferenceException("start up action is not set");
+            
             if (!String.IsNullOrEmpty(password))
             {
                 IsCorrectPass = EncodingKeysService.CompareHash(password, _loggingOpt.Value.Hash);
                 if (IsCorrectPass)
+                    await _tokenService.FetchToken(password);
                     await _startApp(password);
             }
         }
 
         private async Task SavePassword(string? password)
         {
+            if (_startApp == null)
+                throw new NullReferenceException("start up action is not set");
+
             if (!String.IsNullOrEmpty(password))
             {
                 var salt = EncodingKeysService.GenerateSalt();
                 var hash = EncodingKeysService.GetHash(password);
-                _loggingOpt.Update(opt =>
-                {
-                    opt.Hash = hash;
-                    opt.Salt = salt;
-                });
                 IsCorrectPass = EncodingKeysService.IsCorrectPassword(password);
                 if (IsCorrectPass)
+                {
+                    await _tokenService.FetchToken(password);
                     await _startApp(password);
+                }
             }
         }
         private void DeleteStorage()
@@ -83,7 +89,10 @@ namespace ViewModels
             OnPropertyChanged(nameof(HasPassword));
         }
         
-        
+        public void SetStartAction(Func<string, Task> startApp)
+        {
+            _startApp = startApp;
+        }
         
     }
 }

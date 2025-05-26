@@ -45,12 +45,10 @@ namespace Services
             
         }
 
-        async public Task Post(WebSiteModel model)
+        async public Task<int> Post(WebSiteModel model)
         {
             var json = JsonConvert.SerializeObject(model);
-            var content = new StringContent(json);
-
-
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             var request = new HttpRequestMessage(HttpMethod.Post, $"api/websites/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             request.Content = content;
@@ -59,12 +57,16 @@ namespace Services
             {
                 await HandleResponse(response);
             }
+            var responsed_model = await response.Content.ReadFromJsonAsync<WebSiteModel>();
+            if (responsed_model == null)
+                throw new NullReferenceException("no valid json was received from the server");
+            return responsed_model.Id;
         }
 
         async public Task Put(WebSiteModel model, int id)
         {
             var json = JsonConvert.SerializeObject(model);
-            var content = new StringContent(json);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             var request = new HttpRequestMessage(HttpMethod.Put, $"api/websites/{id}");
             request.Content = content;

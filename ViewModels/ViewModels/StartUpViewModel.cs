@@ -12,21 +12,18 @@ namespace ViewModels
 {
     public class StartUpViewModel : ViewModelBase
     {
-        
-        IServiceCollection _services;
-        AppAuthorizationOptions _options;
         private ViewModelBase? currentPage;
-
-        public StartUpViewModel(IWritableOptions<AppAuthorizationOptions> options, IServiceCollection services)
+        public StartUpViewModel(MainViewModel mainViewModel,
+                                MenuViewModel menuViewModel)
         {
-            _options = options.Value;
-            _services = services;
-            MenuViewModel = new MenuViewModel(options, StartApp);
+            MainViewModel = mainViewModel;
+            MenuViewModel = menuViewModel;
+            MenuViewModel.SetStartAction(StartApp);
             CurrentPage = MenuViewModel;
         }
 
-        public MainViewModel? MainViewModel { get; set; }
-        public MenuViewModel? MenuViewModel { get; set; }
+        public MainViewModel MainViewModel { get; set; }
+        public MenuViewModel MenuViewModel { get; set; }
 
 
         public ViewModelBase? CurrentPage
@@ -41,35 +38,9 @@ namespace ViewModels
         }
 
         private async Task StartApp(string password)
-        {
-
-            string key = await EncodingKeysService.GetEcryptionKey(password, _options.Salt);
-            _services.AddDbContextFactory<DatabaseClient>(opt =>
-            {
-                opt.UseSqlite(new SqliteConnectionStringBuilder
-                {
-                    DataSource = _options.ConnectionString,
-                    Password = key
-                    
-                }.ToString());
-            });
-
-            var provider = _services.BuildServiceProvider();
-            if (!File.Exists(_options.ConnectionString))
-            {
-                var factory = provider.GetRequiredService<IDbContextFactory<DatabaseClient>>();
-                using var context = factory.CreateDbContext();
-                context.Database.EnsureCreated();
-            }
-            
-            var vm = await MainViewModel.CreateAsync(provider);
-            MainViewModel = vm;
+        { 
+            await MainViewModel.InizializeViewModelsAsync();
             CurrentPage = MainViewModel;
-            
-
         }
-        
-        
-
     }
 }

@@ -15,9 +15,9 @@ namespace ViewModels.CardViewModels
 {
     public class CardItemViewModel : ItemViewModelBase
     {
-        public CardItemViewModel(CardModel model, IServiceProvider provider) 
+        public CardItemViewModel(CardModel model, IClipboardService clipboardService) 
         {
-            clipboardService = provider.GetRequiredService<IClipboardService>();
+            _clipboardService = clipboardService;
             CopyToClipboardCommand = new RelayCommand<string>(CopyToClipboard);
             
             
@@ -25,7 +25,7 @@ namespace ViewModels.CardViewModels
             UpdateModel(model);
         
         }
-        private IClipboardService clipboardService;
+        private IClipboardService _clipboardService;
 
         public CardModel Model { get; private set; }
         
@@ -98,7 +98,7 @@ namespace ViewModels.CardViewModels
         private void CopyToClipboard(string? text)
         {
             if (text != null)
-                clipboardService.SaveToClipBoard(text);
+                _clipboardService.SaveToClipBoard(text);
         }
 
         
