@@ -3,24 +3,29 @@ using Models;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 using System.Net;
+using System.Net.Http.Headers;
 
 namespace Services
 {
     public class HttpCardDataConnector : IHttpDataConnector<CardModel>
     {
         private HttpClient _client;
+        private TokenHandlerService _token;
 
-        public HttpCardDataConnector(IHttpClientFactory factory)
+        public HttpCardDataConnector(IHttpClientFactory factory, TokenHandlerService token)
         {
             _client = factory.CreateClient();
             _client.BaseAddress = new Uri(@"http://localhost:5167/");
+            _token = token;
         }
 
 
         async public Task Delete(int id)
         {
 
-            using var response = await _client.DeleteAsync($"api/cards/{id}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/cards/{id}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
@@ -29,13 +34,15 @@ namespace Services
 
         async public Task<List<CardModel>> GetList()
         {
-            using var response = await _client.GetAsync(@"api/cards/");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/cards/");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
             }
-            var webSites = await response.Content.ReadFromJsonAsync<List<CardModel>>() ?? throw new InvalidDataException("Failed to deserialize data");
-            return webSites;
+            var cards = await response.Content.ReadFromJsonAsync<List<CardModel>>() ?? throw new InvalidDataException("Failed to deserialize data");
+            return cards;
 
         }
 
@@ -44,7 +51,10 @@ namespace Services
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json);
 
-            using var response = await _client.PostAsync("api/cards/", content);
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/cards/");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            request.Content = content;
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
@@ -56,7 +66,10 @@ namespace Services
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json);
 
-            using var response = await _client.PutAsync($"api/cards/{id}", content);
+            var request = new HttpRequestMessage(HttpMethod.Put, $"api/websites/{id}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            request.Content = content;
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);

@@ -2,6 +2,7 @@
 using Models;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Services
@@ -10,16 +11,20 @@ namespace Services
     {
 
         private HttpClient _client;
+        private TokenHandlerService _token;
 
-        public HttpAppDataConnector(IHttpClientFactory factory)
+        public HttpAppDataConnector(IHttpClientFactory factory, TokenHandlerService token)
         {
             _client = factory.CreateClient();
             _client.BaseAddress = new Uri(@"http://localhost:5167/");
+            _token = token;
         }
 
         async public Task Delete(int id)
         {
-            using var response = await _client.DeleteAsync($"api/apps/{id}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/apps/{id}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
@@ -28,7 +33,9 @@ namespace Services
 
         async public Task<List<AppModel>> GetList()
         {
-            using var response = await _client.GetAsync(@"api/apps/");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/apps/");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
@@ -42,7 +49,10 @@ namespace Services
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json);
 
-            using var response = await _client.PostAsync("api/apps/", content);
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/apps/");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            request.Content = content;
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
@@ -54,7 +64,10 @@ namespace Services
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json);
 
-            using var response = await _client.PutAsync($"api/cards/{id}", content);
+            var request = new HttpRequestMessage(HttpMethod.Put, $"api/apps/{id}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
+            request.Content = content;
+            using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
