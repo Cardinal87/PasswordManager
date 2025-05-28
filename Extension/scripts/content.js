@@ -177,7 +177,7 @@ async function getData() {
             if (b) {
                 var params = new URLSearchParams();
                 params.append("url", currentUrl);
-                var conStr = "http://localhost:5167/api/authorization/get?" + params;
+                var conStr = "http://localhost:5167/api/websites?" + params;
                 var responce = await fetch(conStr, {
                     method: 'GET',
                     headers: {

@@ -5,7 +5,7 @@ var login;
 var currentUrl;
 
 
-//gttint jwt token
+//getting jwt token
 function getToken(key) {
     return new Promise((resolve) => {
         chrome.storage.local.get(['token'], (result) => {
@@ -43,16 +43,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById('name-warn').style.visibility = "visible";
         }
         else {
-            var params = new URLSearchParams();
-            params.append("url", currentUrl);
-            params.append("password", password);
-            params.append("login", login);
-            params.append("name", name)
-            var responce = await fetch("http://localhost:5167/api/authorization/post?" + params, {
+            body = JSON.stringify({ login: login, password: password, name: name, webaddress: currentUrl })
+            var responce = await fetch("http://localhost:5167/api/websites", {
                 method: 'POST',
                 headers: {
                     'Authorization': "Bearer " + token,
-                }
+                    'Content-Type': 'application/json'
+                },
+                body: body
             });
             if (responce.ok){
                 document.getElementById("add-form").style.visibility = "hidden";
@@ -142,7 +140,8 @@ function configurePasswordForm() {
         var encodedPass = btoa(pass);
         if (pass !== "") {
             
-            var responce = await fetch("http://localhost:5167/api/login/get", {
+            var responce = await fetch("http://localhost:5167/api/auth/tokens", {
+                method: 'POST',
                 headers: {
                     'Authorization': "Basic " + encodedPass,
                 }

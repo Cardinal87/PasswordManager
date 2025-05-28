@@ -32,6 +32,10 @@ namespace Models.DataConnectors
         {
             WebSites.Remove(model);
         }
+        public IEnumerable<WebSiteModel> GetByDomain(string url)
+        {
+            return WebSites.Where(x => x.WebAddress == url);
+        }
 
         public WebSiteModel Update(WebSiteModel model, int id)
         {

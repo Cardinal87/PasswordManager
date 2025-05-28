@@ -18,10 +18,22 @@ public class WebSiteController : Controller
     }
 
     [HttpGet("websites")]
-    public IActionResult Get()
+    public IActionResult Get([FromQuery] string? url)
     {
         try
         {
+            if (!String.IsNullOrEmpty(url))
+            {
+                var uri = new Uri(url);
+                var host = uri.Host;
+
+                var dataList = _client.GetByDomain(host);
+                if (dataList.Count() == 0)
+                    return BadRequest(new { message = "data for this domain was not found" });
+
+                return Ok(dataList);
+            }
+
             var list = _client.List();
             return Ok(list);
         }
@@ -31,6 +43,7 @@ public class WebSiteController : Controller
         }
     }
 
+    
 
     [HttpDelete("websites/{id}")]
     public IActionResult Delete([FromRoute] int id)
