@@ -15,12 +15,12 @@ namespace PasswordManager.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class LoginController : Controller
+public class AuthController : Controller
 {
     private JwtOptions _jwtOptions;
     private IWritableOptions<AppAuthorizationOptions> _appOptions;
     private JwtKeyService _jwtKeyService;
-    public LoginController(IOptions<JwtOptions> jwtOptions, 
+    public AuthController(IOptions<JwtOptions> jwtOptions, 
         IWritableOptions<AppAuthorizationOptions> appOptions,
         JwtKeyService keyService) 
     { 
@@ -107,7 +107,7 @@ public class LoginController : Controller
         string connStr = DbConnectionStringSingleton.GetInstance().ConnectionString!;
         var options = new DbContextOptionsBuilder<DatabaseClient>();
         options.UseSqlite(connStr);
-        using var mainContext = new DatabaseClient(options.Options);
-        mainContext.Database.EnsureCreated();
+        using var dbClient = new DatabaseClient(options.Options);
+        dbClient.Database.EnsureCreated();
     }
 }
