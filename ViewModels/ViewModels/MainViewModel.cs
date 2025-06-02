@@ -60,4 +60,12 @@ public partial class MainViewModel : ViewModelBase
         CurrentPage = WebSiteVm;
     }
 
+    public void ResetData()
+    {
+        AppVm.Apps.Clear();
+        WebSiteVm.WebSites.Clear();
+        CardVm.Cards.Clear();
+        AllEntriesVm?.Items.Clear();
+    }
+
 }

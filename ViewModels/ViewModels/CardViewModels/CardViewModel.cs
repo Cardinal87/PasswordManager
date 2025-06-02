@@ -71,17 +71,22 @@ namespace ViewModels.CardViewModels
 
         private async Task DeleteAsync(CardItemViewModel? cardItem)
         {
-            
-            if (cardItem != null)
+            try
             {
-                await _dataConnector.Delete(cardItem.Id);
-                Cards.Remove(cardItem);
-                if (Cards.Count > 0) CurrentItem = Cards[0];
-                OnPropertyChanged(nameof(FilteredCollection));
-                OnPropertyChanged(nameof(IsEmptyCollection));
+                if (cardItem != null)
+                {
+                    await _dataConnector.Delete(cardItem.Id);
+                    Cards.Remove(cardItem);
+                    if (Cards.Count > 0) CurrentItem = Cards[0];
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
+                }
             }
-                
-            
+            catch (UnauthorizedAccessException)
+            {
+
+            }
+
         }
 
         private void ShowDialog(CardDialogViewModel? Dialog)
@@ -106,64 +111,87 @@ namespace ViewModels.CardViewModels
 
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (sender is CardDialogViewModel vm)
+            try
             {
-                if (e.DialogResult && vm.Model != null)
+                if (sender is CardDialogViewModel vm)
                 {
-                    CardModel model = vm.Model;
+                    if (e.DialogResult && vm.Model != null)
+                    {
+                        CardModel model = vm.Model;
 
-                    if (vm.IsNew)
-                    {
-                        int id = await _dataConnector.Post(model);
-                        model.Id = id;
-                        CardItemViewModel item = new CardItemViewModel(model, _clipboardService);
-                        Cards.Add(item);
-                        CurrentItem = null;
-                        CurrentItem = item;
+                        if (vm.IsNew)
+                        {
+
+                            int id = await _dataConnector.Post(model);
+                            if (id != -1)
+                            {
+                                model.Id = id;
+                                CardItemViewModel item = new CardItemViewModel(model, _clipboardService);
+                                Cards.Add(item);
+                                CurrentItem = null;
+                                CurrentItem = item;
+                            }
+                        }
+                        else
+                        {
+                            await _dataConnector.Put(model, model.Id);
+                            var a = Cards.FirstOrDefault(x => x.Id == model.Id);
+                            a?.UpdateModel(model);
+                        }
+                        OnPropertyChanged(nameof(FilteredCollection));
+                        OnPropertyChanged(nameof(IsEmptyCollection));
                     }
-                    else
-                    {
-                        await _dataConnector.Put(model, model.Id);
-                        var a = Cards.FirstOrDefault(x => x.Id == model.Id);
-                        a?.UpdateModel(model);
-                    }
-                    OnPropertyChanged(nameof(FilteredCollection));
-                    OnPropertyChanged(nameof(IsEmptyCollection));
+                    _dialogService.CloseDialog(vm!);
                 }
-                _dialogService.CloseDialog(vm!);
+            }            
+            catch(UnauthorizedAccessException)
+            {
+
             }
-                
-        }  
+
+}  
         
 
         private async Task AddToFavouriteAsync(CardItemViewModel? cardItem)
         {
-            
-            if (cardItem != null)
+            try
             {
-                var el = cardItem.Model;   
-                cardItem.IsFavourite = !cardItem.IsFavourite;
-                el.IsFavourite = !el.IsFavourite;
-                await _dataConnector.Put(el, el.Id);
-                
+                if (cardItem != null)
+                {
+                    var el = cardItem.Model;
+                    cardItem.IsFavourite = !cardItem.IsFavourite;
+                    el.IsFavourite = !el.IsFavourite;
+                    await _dataConnector.Put(el, el.Id);
+
+
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
 
             }
-            
         }
         public async Task LoadViewModelsListAsync()
         {
-            var models = await _dataConnector.GetList();
-            var viewmodels = new ObservableCollection<CardItemViewModel>();
-            foreach (var model in models)
+            try
             {
-                var item = new CardItemViewModel(model, _clipboardService);
-                viewmodels.Add(item);
-            }
-            if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
-            Cards = viewmodels;
-            
+                var models = await _dataConnector.GetList();
+                var viewmodels = new ObservableCollection<CardItemViewModel>();
+                foreach (var model in models)
+                {
+                    var item = new CardItemViewModel(model, _clipboardService);
+                    viewmodels.Add(item);
+                }
+                if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
+                Cards = viewmodels;
+            }           
+            catch(UnauthorizedAccessException)
+            {
 
-        }
+            }
+
+
+}
 
 
     }

@@ -15,7 +15,7 @@ namespace ViewModels
        
         
         public MenuViewModel(IWritableOptions<AppAuthorizationOptions> loggingOpt,
-                             TokenHandlerService tokenService) 
+                             ITokenHandlerService tokenService) 
         {
             _loggingOpt = loggingOpt;
             _tokenService = tokenService;
@@ -25,7 +25,7 @@ namespace ViewModels
         }
         private Func<string, Task>? _startApp;
         private IWritableOptions<AppAuthorizationOptions> _loggingOpt;
-        private TokenHandlerService _tokenService;
+        private ITokenHandlerService _tokenService;
         public RelayCommand DeleteStorageCommand { get; private set; }
         public AsyncRelayCommand<string> SavePasswordCommand { get; private set; }
         public AsyncRelayCommand<string> CheckPasswordCommand { get; private set; }

@@ -1,5 +1,4 @@
-﻿
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -75,10 +74,17 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var provider = services.BuildServiceProvider();
-            desktop.MainWindow = new MainWindow
+            using (var scope = provider.CreateScope())
             {
-                DataContext = provider.GetRequiredService<StartUpViewModel>()
-            };
+                desktop.MainWindow = new MainWindow
+                {
+                    
+                    DataContext = scope.ServiceProvider.GetRequiredService<StartUpViewModel>()
+                    
+
+                };
+            }
+            
             
             
            
@@ -104,12 +110,12 @@ public partial class App : Application
         services.AddSingleton<IHttpDataConnector<AppModel>, HttpAppDataConnector>();
         services.AddSingleton<IHttpDataConnector<CardModel>, HttpCardDataConnector>();
         services.AddSingleton<IHttpDataConnector<WebSiteModel>, HttpWebSiteDataConnector>();
-        services.AddSingleton<TokenHandlerService>();
-        services.AddTransient<CardViewModel>();
-        services.AddTransient<AppViewModel>();
-        services.AddTransient<MenuViewModel>();
-        services.AddTransient<WebSiteViewModel>();
-        services.AddTransient<MainViewModel>();
-        services.AddTransient<StartUpViewModel>();
+        services.AddSingleton<ITokenHandlerService, TokenHandlerService>();
+        services.AddScoped<CardViewModel>();
+        services.AddScoped<AppViewModel>();
+        services.AddScoped<MenuViewModel>();
+        services.AddScoped<WebSiteViewModel>();
+        services.AddScoped<MainViewModel>();
+        services.AddScoped<StartUpViewModel>();
     }
 }

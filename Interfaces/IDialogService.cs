@@ -12,6 +12,7 @@ namespace Interfaces
     {
         void OpenDialog(IDialogViewModel DialogVm);
         void CloseDialog(IDialogViewModel dialogVM);
+        void CloseAllDialogs();
         
     }
 }

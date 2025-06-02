@@ -51,6 +51,17 @@ namespace Views.Services
                 
             }
         }
+        public void CloseAllDialogs()
+        {
+            foreach(var win in openedWindows)
+            {
+                if (win != null)
+                {
+                    win.Close();
+                }
+            }
+            openedWindows.Clear();
+        }
         
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Interfaces;
 using Models;
 using ViewModels.BaseClasses;
@@ -73,15 +72,22 @@ namespace ViewModels.AppViewModels
         
         private async Task DeleteAsync(AppItemViewModel? appItem)
         {
-            if (appItem != null)
+            try
             {
-                await _dataConnector.Delete(appItem.Id);
-                Apps.Remove(appItem);
-                CurrentItem = Apps.Count != 0 ? Apps[0] : null;
-                OnPropertyChanged(nameof(FilteredCollection));
-                OnPropertyChanged(nameof(IsEmptyCollection));
+                if (appItem != null)
+                {
+                    await _dataConnector.Delete(appItem.Id);
+                    Apps.Remove(appItem);
+                    CurrentItem = Apps.Count != 0 ? Apps[0] : null;
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
+                }
             }
-        }
+            catch(UnauthorizedAccessException)
+            {
+
+            }
+}
         
         private void ShowChangeDialog(AppItemViewModel? appItem)
         {
@@ -103,57 +109,79 @@ namespace ViewModels.AppViewModels
         }
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            if (sender is AppDialogViewModel vm)
+            try
+            {
+                if (sender is AppDialogViewModel vm)
+                {
+
+                    if (e.DialogResult && vm.Model != null)
+                    {
+                        if (vm.IsNew)
+                        {
+                            int id = await _dataConnector.Post(vm.Model);
+                            if (id != -1)
+                            {
+                                vm.Model.Id = id;
+                                AppItemViewModel item = new AppItemViewModel(vm.Model, _clipboardService);
+                                Apps.Add(item);
+                                CurrentItem = null;
+                                CurrentItem = item;
+                            }
+                        }
+                        else
+                        {
+                            await _dataConnector.Put(vm.Model, vm.Model.Id);
+                            var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
+                            a?.UpdateModel(vm.Model);
+                        }
+                        OnPropertyChanged(nameof(FilteredCollection));
+                        OnPropertyChanged(nameof(IsEmptyCollection));
+                    }
+                    _dialogService.CloseDialog(vm);
+                }
+            }
+            catch(UnauthorizedAccessException)
             {
 
-                if (e.DialogResult && vm.Model != null)
-                {
-                    if (vm.IsNew)
-                    {
-                        int id = await _dataConnector.Post(vm.Model);
-                        vm.Model.Id = id;
-                        AppItemViewModel item = new AppItemViewModel(vm.Model, _clipboardService);
-                        Apps.Add(item);
-                        CurrentItem = null;
-                        CurrentItem = item;
-                    }
-                    else
-                    {
-                        await _dataConnector.Put(vm.Model, vm.Model.Id);
-                        var a = Apps.FirstOrDefault(x => x.Id == vm.Model.Id);
-                        a?.UpdateModel(vm.Model);
-                    }
-                    OnPropertyChanged(nameof(FilteredCollection));
-                    OnPropertyChanged(nameof(IsEmptyCollection));
-                }
-                _dialogService.CloseDialog(vm);
             }
             
             
         }
         private async Task AddToFavouriteAsync(AppItemViewModel? appItem)
         {
-            if (appItem != null)
+            try
             {
-                var model = appItem.Model;
-                appItem.IsFavourite = !appItem.IsFavourite;
-                model.IsFavourite = !model.IsFavourite;
-                await _dataConnector.Put(model, appItem.Id);
+                if (appItem != null)
+                {
+                    var model = appItem.Model;
+                    appItem.IsFavourite = !appItem.IsFavourite;
+                    model.IsFavourite = !model.IsFavourite;
+                    await _dataConnector.Put(model, appItem.Id);
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+
             }
         }
         public async Task LoadViewModelListAsync()
         {
-            var models = await _dataConnector.GetList();
-            var viewmodels = new ObservableCollection<AppItemViewModel>();
-            foreach (var model in models)
-            {
-                var item = new AppItemViewModel(model, _clipboardService);
-                viewmodels.Add(item);
+            try { 
+                var models = await _dataConnector.GetList();
+                var viewmodels = new ObservableCollection<AppItemViewModel>();
+                foreach (var model in models)
+                {
+                    var item = new AppItemViewModel(model, _clipboardService);
+                    viewmodels.Add(item);
+                }
+                if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
+                Apps = viewmodels;
             }
-            if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
-            Apps = viewmodels;
-            
-            
+            catch (UnauthorizedAccessException)
+            {
+
+            }
+
         }
         
     }

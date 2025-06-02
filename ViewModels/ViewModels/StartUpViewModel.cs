@@ -1,12 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Services;
-using Microsoft.Extensions.DependencyInjection;
-using Interfaces;
-using Models.DataConnectors;
+﻿using Interfaces;
 using ViewModels.BaseClasses;
-using Models.AppConfiguration;
-
 
 namespace ViewModels
 {
@@ -14,13 +7,19 @@ namespace ViewModels
     {
         private ViewModelBase? currentPage;
         public StartUpViewModel(MainViewModel mainViewModel,
-                                MenuViewModel menuViewModel)
+                                MenuViewModel menuViewModel, 
+                                IDialogService dialogService,
+                                ITokenHandlerService tokenService)
         {
+            tokenService.TokenExpired += HandleExpirate;
             MainViewModel = mainViewModel;
             MenuViewModel = menuViewModel;
             MenuViewModel.SetStartAction(StartApp);
             CurrentPage = MenuViewModel;
+            _dialogService = dialogService;
+
         }
+        private IDialogService _dialogService;
 
         public MainViewModel MainViewModel { get; set; }
         public MenuViewModel MenuViewModel { get; set; }
@@ -41,6 +40,13 @@ namespace ViewModels
         { 
             await MainViewModel.InizializeViewModelsAsync();
             CurrentPage = MainViewModel;
+        }
+
+        public void HandleExpirate()
+        {
+            _dialogService.CloseAllDialogs();
+            MainViewModel.ResetData();
+            CurrentPage = MenuViewModel;
         }
     }
 }

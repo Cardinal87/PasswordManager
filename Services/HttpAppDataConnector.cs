@@ -11,9 +11,9 @@ namespace Services
     {
 
         private HttpClient _client;
-        private TokenHandlerService _token;
+        private ITokenHandlerService _token;
 
-        public HttpAppDataConnector(IHttpClientFactory factory, TokenHandlerService token)
+        public HttpAppDataConnector(IHttpClientFactory factory, ITokenHandlerService token)
         {
             _client = factory.CreateClient();
             _client.BaseAddress = new Uri(@"http://localhost:5167/");
@@ -22,6 +22,8 @@ namespace Services
 
         async public Task Delete(int id)
         {
+
+            ValidToken();
             var request = new HttpRequestMessage(HttpMethod.Delete, $"api/apps/{id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             using var response = await _client.SendAsync(request);
@@ -33,6 +35,7 @@ namespace Services
 
         async public Task<List<AppModel>> GetList()
         {
+            ValidToken();
             var request = new HttpRequestMessage(HttpMethod.Get, $"api/apps/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             using var response = await _client.SendAsync(request);
@@ -46,6 +49,7 @@ namespace Services
 
         async public Task<int> Post(AppModel model)
         {
+            ValidToken();
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
@@ -65,6 +69,8 @@ namespace Services
 
         async public Task Put(AppModel model, int id)
         {
+
+            ValidToken();
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
@@ -93,6 +99,16 @@ namespace Services
             {
                 throw new HttpRequestException($"Unexpected error: {content}", null, response.StatusCode);
             }
+        }
+
+        private void ValidToken()
+        {
+            if (_token.IsExpired)
+            {
+                _token.HandleExpirate();
+                throw new UnauthorizedAccessException("Token expired");
+            }
+
         }
     }
 }

@@ -1,12 +1,13 @@
-﻿using System.Net;
+﻿using Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
 namespace Services
 {
-    public class TokenHandlerService
+    public class TokenHandlerService : ITokenHandlerService
     {
         private string? token;
         
@@ -26,8 +27,23 @@ namespace Services
                     token = value;
                 }
             }
+        
         }
-            private HttpClient _client;
+        public bool IsExpired
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return true;
+                }
+                var handler = new JwtSecurityTokenHandler();
+                var decodedToken = handler.ReadJwtToken(token);
+                return DateTime.UtcNow > decodedToken.ValidTo;
+            }
+        }
+        public event Action? TokenExpired;
+        private HttpClient _client;
         private object _lock = new object();
         
         public TokenHandlerService(IHttpClientFactory factory)
@@ -71,6 +87,11 @@ namespace Services
             {
                 throw new HttpRequestException($"Unexpected error: {content}", null, response.StatusCode);
             }
+        }
+
+        public void HandleExpirate()
+        {
+            TokenExpired?.Invoke();
         }
     }
 }

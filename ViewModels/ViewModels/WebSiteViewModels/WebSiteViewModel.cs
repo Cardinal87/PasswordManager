@@ -93,17 +93,22 @@ namespace ViewModels.WebSiteViewModels
         
         private async Task DeleteAsync(WebSiteItemViewModel? webSiteItem)
         {
-              
-            if (webSiteItem != null)
+            try
             {
-                await _dataConnector.Delete(webSiteItem.Id);
-                WebSites.Remove(webSiteItem);
-                if (WebSites.Count > 0) CurrentItem = WebSites[0];
-                OnPropertyChanged(nameof(FilteredCollection));
-                OnPropertyChanged(nameof(IsEmptyCollection));
+                if (webSiteItem != null)
+                {
+                    await _dataConnector.Delete(webSiteItem.Id);
+                    WebSites.Remove(webSiteItem);
+                    if (WebSites.Count > 0) CurrentItem = WebSites[0];
+                    OnPropertyChanged(nameof(FilteredCollection));
+                    OnPropertyChanged(nameof(IsEmptyCollection));
+                }
             }
-                
-            
+            catch (UnauthorizedAccessException)
+            {
+
+            }
+
         }
 
         private void ShowDialog(WebSiteDialogViewModel? Dialog)
@@ -118,64 +123,82 @@ namespace ViewModels.WebSiteViewModels
 
         private async void GetDialogResult(object? sender, DialogResultEventArgs e)
         {
-            
-            if (sender is WebSiteDialogViewModel vm)
+            try
             {
-                if (e.DialogResult && vm.Model != null)
+                if (sender is WebSiteDialogViewModel vm)
                 {
-                    WebSiteModel model = vm.Model;
+                    if (e.DialogResult && vm.Model != null)
+                    {
+                        WebSiteModel model = vm.Model;
 
-                    if (vm.IsNew)
-                    {
-                        int id = await _dataConnector.Post(model);
-                        model.Id = id;
-                        WebSiteItemViewModel item = new WebSiteItemViewModel(model, _clipboardService);
-                        WebSites.Add(item);
-                        CurrentItem = null;
-                        CurrentItem = item;
+                        if (vm.IsNew)
+                        {
+                            int id = await _dataConnector.Post(model);
+                            if (id != -1)
+                            {
+                                model.Id = id;
+                                WebSiteItemViewModel item = new WebSiteItemViewModel(model, _clipboardService);
+                                WebSites.Add(item);
+                                CurrentItem = null;
+                                CurrentItem = item;
+                            }
+                        }
+                        else
+                        {
+                            await _dataConnector.Put(model, model.Id);
+                            var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
+                            a?.UpdateModel(model);
+                        }
+                        OnPropertyChanged(nameof(FilteredCollection));
+                        OnPropertyChanged(nameof(IsEmptyCollection));
                     }
-                    else
-                    {
-                        await _dataConnector.Put(model, model.Id);
-                        var a = WebSites.FirstOrDefault(x => x.Id == model.Id);
-                        a?.UpdateModel(model);
-                    }
-                    OnPropertyChanged(nameof(FilteredCollection));
-                    OnPropertyChanged(nameof(IsEmptyCollection));
+                    _dialogService.CloseDialog(vm!);
                 }
-                _dialogService.CloseDialog(vm!);
             }
-                
-            
-            
-           
+            catch (UnauthorizedAccessException)
+            {
+
+            }
+
+
         }
 
         
         private async Task AddToFavouriteAsync(WebSiteItemViewModel? webSiteItem)
         {
-            
-            if (webSiteItem != null)
+            try
             {
-                var el = webSiteItem.Model;  
-                webSiteItem.IsFavourite = !webSiteItem.IsFavourite;
-                el.IsFavourite = !el.IsFavourite;
-                await _dataConnector.Put(el, el.Id);
+                if (webSiteItem != null)
+                {
+                    var el = webSiteItem.Model;
+                    webSiteItem.IsFavourite = !webSiteItem.IsFavourite;
+                    el.IsFavourite = !el.IsFavourite;
+                    await _dataConnector.Put(el, el.Id);
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+
             }
         }
         public async Task LoadViewModelsListAsync()
         {
-            var models = await _dataConnector.GetList();
-            var viewmodels = new ObservableCollection<WebSiteItemViewModel>();
-            foreach (var model in models)
+            try
             {
-                var item = new WebSiteItemViewModel(model, _clipboardService);
-                viewmodels.Add(item);
+                var models = await _dataConnector.GetList();
+                var viewmodels = new ObservableCollection<WebSiteItemViewModel>();
+                foreach (var model in models)
+                {
+                    var item = new WebSiteItemViewModel(model, _clipboardService);
+                    viewmodels.Add(item);
+                }
+                if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
+                WebSites = viewmodels;
             }
-            if (viewmodels.Count > 0) CurrentItem = viewmodels[0];
-            WebSites = viewmodels;
-            
+            catch (UnauthorizedAccessException)
+            {
 
+            }
         }
     }    
     

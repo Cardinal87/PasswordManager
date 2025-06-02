@@ -4,7 +4,7 @@ namespace PasswordManager.WebAPI.Services
     public class JwtKeyRotationService : BackgroundService
     {
 
-        private readonly TimeSpan interval = TimeSpan.FromHours(4);
+        private readonly TimeSpan interval = TimeSpan.FromDays(7);
         private readonly JwtKeyService _jwtKeyService;
 
         public JwtKeyRotationService(JwtKeyService jwtKeyService)
