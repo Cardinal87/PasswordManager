@@ -8,6 +8,7 @@ using ViewModels.BaseClasses;
 using Interfaces;
 using System.Collections.ObjectModel;
 using Interfaces.PasswordGenerator;
+using Microsoft.Extensions.Logging;
 
 
 namespace ViewModels.WebSiteViewModels
@@ -19,8 +20,10 @@ namespace ViewModels.WebSiteViewModels
         public WebSiteViewModel(IHttpDataConnector<WebSiteModel> dataConnector,
                                 IDialogService dialogService,
                                 IClipboardService clipboardService,
-                                IPasswordGenerator passwordGenerator)
+                                IPasswordGenerator passwordGenerator,
+                                ILogger<WebSiteModel> logger)
         {
+            _logger = logger;
             _dataConnector = dataConnector;
             _dialogService = dialogService;
             _clipboardService = clipboardService;
@@ -35,6 +38,7 @@ namespace ViewModels.WebSiteViewModels
         }
         private string searchKey = "";
         IHttpDataConnector<WebSiteModel> _dataConnector;
+        ILogger<WebSiteModel> _logger;
         IDialogService _dialogService;
         IClipboardService _clipboardService;
         IPasswordGenerator _passwordGenerator;
@@ -107,6 +111,7 @@ namespace ViewModels.WebSiteViewModels
             catch (UnauthorizedAccessException)
             {
 
+                _logger.LogInformation("Token expired, app blocked");
             }
 
         }
@@ -158,6 +163,7 @@ namespace ViewModels.WebSiteViewModels
             catch (UnauthorizedAccessException)
             {
 
+                _logger.LogInformation("Token expired, app blocked");
             }
 
 
@@ -179,6 +185,7 @@ namespace ViewModels.WebSiteViewModels
             catch (UnauthorizedAccessException)
             {
 
+                _logger.LogInformation("Token expired, app blocked");
             }
         }
         public async Task LoadViewModelsListAsync()
@@ -198,6 +205,7 @@ namespace ViewModels.WebSiteViewModels
             catch (UnauthorizedAccessException)
             {
 
+                _logger.LogInformation("Token expired, app blocked");
             }
         }
     }    

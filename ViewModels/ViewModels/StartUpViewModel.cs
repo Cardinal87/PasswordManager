@@ -37,7 +37,7 @@ namespace ViewModels
         }
 
         private async Task StartApp(string password)
-        { 
+        {
             await MainViewModel.InizializeViewModelsAsync();
             CurrentPage = MainViewModel;
         }

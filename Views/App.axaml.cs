@@ -18,6 +18,7 @@ using Models;
 using ViewModels.CardViewModels;
 using ViewModels.AppViewModels;
 using ViewModels.WebSiteViewModels;
+using Serilog;
 
 namespace Views;
 
@@ -35,15 +36,14 @@ public partial class App : Application
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
+            
 
-
-        var roaminPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var directory = Path.Combine(roaminPath, "PasswordManager");
-        if (!Directory.Exists(directory))
+        var basePath = AppContext.BaseDirectory;
+        if (!Directory.Exists(basePath))
         {
-            Directory.CreateDirectory(directory);
+            Directory.CreateDirectory(basePath);
         }
-        var condfigPath = Path.Combine(directory, "config.json");
+        var condfigPath = Path.Combine(basePath, "config.json");
         if (!File.Exists(condfigPath))
         {
             var model = new
@@ -51,7 +51,7 @@ public partial class App : Application
                 Authorization = new
                 {
                     Hash = "",
-                    ConnectionString = Path.Combine(directory, "passwordmanager.db"),
+                    ConnectionString = Path.Combine(basePath, "passwordmanager.db"),
                     Salt = ""
                 },
                 Jwt = new
@@ -85,8 +85,6 @@ public partial class App : Application
                 };
             }
             
-            
-            
            
         }
         //else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
@@ -117,5 +115,6 @@ public partial class App : Application
         services.AddScoped<WebSiteViewModel>();
         services.AddScoped<MainViewModel>();
         services.AddScoped<StartUpViewModel>();
+        services.AddLogging(builder => builder.AddSerilog());
     }
 }

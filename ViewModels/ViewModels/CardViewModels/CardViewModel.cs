@@ -3,6 +3,7 @@ using Models;
 using ViewModels.BaseClasses;
 using Interfaces;
 using System.Collections.ObjectModel;
+using Microsoft.Extensions.Logging;
 
 namespace ViewModels.CardViewModels
 {
@@ -12,8 +13,10 @@ namespace ViewModels.CardViewModels
         
         public CardViewModel(IHttpDataConnector<CardModel> dataConnector,
                               IDialogService dialogService,
-                              IClipboardService clipboardService) 
+                              IClipboardService clipboardService,
+                              ILogger<CardViewModel> logger) 
         {
+            _logger = logger;
             _dialogService = dialogService;
             _dataConnector = dataConnector;
             _clipboardService = clipboardService;
@@ -26,6 +29,7 @@ namespace ViewModels.CardViewModels
         }
         private string searchKey = "";
         IHttpDataConnector<CardModel> _dataConnector;
+        ILogger<CardViewModel> _logger;
         IDialogService _dialogService;
         IClipboardService _clipboardService;
         public CardItemViewModel? currentItem;
@@ -84,7 +88,7 @@ namespace ViewModels.CardViewModels
             }
             catch (UnauthorizedAccessException)
             {
-
+                _logger.LogInformation("Token expired, app blocked");
             }
 
         }
@@ -147,6 +151,7 @@ namespace ViewModels.CardViewModels
             catch(UnauthorizedAccessException)
             {
 
+                _logger.LogInformation("Token expired, app blocked");
             }
 
 }  
@@ -169,6 +174,7 @@ namespace ViewModels.CardViewModels
             catch (UnauthorizedAccessException)
             {
 
+                _logger.LogInformation("Token expired, app blocked");
             }
         }
         public async Task LoadViewModelsListAsync()
@@ -188,6 +194,7 @@ namespace ViewModels.CardViewModels
             catch(UnauthorizedAccessException)
             {
 
+                _logger.LogInformation("Token expired, app blocked");
             }
 
 

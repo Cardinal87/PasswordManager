@@ -4,6 +4,7 @@ using Models;
 using ViewModels.BaseClasses;
 using System.Collections.ObjectModel;
 using Interfaces.PasswordGenerator;
+using Microsoft.Extensions.Logging;
 
 
 namespace ViewModels.AppViewModels
@@ -14,12 +15,14 @@ namespace ViewModels.AppViewModels
         public AppViewModel(IHttpDataConnector<AppModel> dataConnector,
                             IDialogService dialogService,
                             IClipboardService clipboardService,
-                            IPasswordGenerator passwordGenerator)
+                            IPasswordGenerator passwordGenerator,
+                            ILogger<AppViewModel> logger)
         {
             _dataConnector = dataConnector;
             _dialogService = dialogService;
             _clipboardService = clipboardService;
             _passwordGenerator = passwordGenerator;
+            _logger = logger;
             AddNewCommand = new RelayCommand(ShowAddNewDialog);
             AddToFavouriteCommand = new AsyncRelayCommand<AppItemViewModel>(AddToFavouriteAsync);
             DeleteCommand = new AsyncRelayCommand<AppItemViewModel>(DeleteAsync);
@@ -30,6 +33,7 @@ namespace ViewModels.AppViewModels
         IDialogService _dialogService;
         IClipboardService _clipboardService;
         IPasswordGenerator _passwordGenerator;
+        ILogger<AppViewModel> _logger;
         private AppItemViewModel? currentItem;
         private string searchKey = "";
         public ObservableCollection<AppItemViewModel> Apps { get; set; } = new ObservableCollection<AppItemViewModel>();
@@ -85,7 +89,7 @@ namespace ViewModels.AppViewModels
             }
             catch(UnauthorizedAccessException)
             {
-
+                _logger.LogInformation("Token expired, app blocked");
             }
 }
         
@@ -142,7 +146,7 @@ namespace ViewModels.AppViewModels
             }
             catch(UnauthorizedAccessException)
             {
-
+                _logger.LogInformation("Token expired, app blocked");
             }
             
             
@@ -161,7 +165,7 @@ namespace ViewModels.AppViewModels
             }
             catch (UnauthorizedAccessException)
             {
-
+                _logger.LogInformation("Token expired, app blocked");
             }
         }
         public async Task LoadViewModelListAsync()
@@ -179,7 +183,7 @@ namespace ViewModels.AppViewModels
             }
             catch (UnauthorizedAccessException)
             {
-
+                _logger.LogInformation("JWT token expired, app blocked");
             }
 
         }

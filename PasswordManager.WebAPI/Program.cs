@@ -10,43 +10,51 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Models.AppConfiguration;
 using Services.Extensions;
+using Serilog;
+using Serilog.Events;
 namespace PasswordManager.WebAPI;
+
 
 
 public class Program
 {
     private static string _configPath = "";
+    
 
     public static void Main(string[] args)
     {
+        Log.Logger = new LoggerConfiguration().
+            WriteTo.File($"{System.AppContext.BaseDirectory}/api-logs/log-.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7).
+            MinimumLevel.Information().CreateLogger();
+
         try
         {
+            
             var builder = WebApplication.CreateBuilder(args);
             builder.Host.UseWindowsService(opt =>
             {
                 opt.ServiceName = "ExtensionAPI";
             });
-            var roaminPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var directory = Path.Combine(roaminPath, "PasswordManager");
+            var basePath = System.AppContext.BaseDirectory;
             if (WindowsServiceHelpers.IsWindowsService())
             {
                 string path = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
                 var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
                 var section = jObj["Config"]!;
-                directory = section["ConfigPath"]!.ToString();
+                basePath = section["ConfigPath"]!.ToString();
 
             }
-            if (!Directory.Exists(directory))
+            if (!Directory.Exists(basePath))
             {
-                Directory.CreateDirectory(directory);
+                Directory.CreateDirectory(basePath);
             }
-            var configPath = Path.Combine(directory, "config.json");
+            var configPath = Path.Combine(basePath, "config.json");
             if (args.Contains("--save"))
             {
                 string path = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
                 var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
                 var section = jObj["Config"]!;
-                section["ConfigPath"] = directory;
+                section["ConfigPath"] = basePath;
                 jObj["Config"] = JObject.Parse(JsonConvert.SerializeObject(section));
                 string json = JsonConvert.SerializeObject(jObj, Formatting.Indented);
                 File.WriteAllText(path, json);
@@ -59,7 +67,7 @@ public class Program
                     Authorization = new
                     {
                         Hash = "",
-                        ConnectionString = Path.Combine(directory, "passwordmanager.db"),
+                        ConnectionString = Path.Combine(basePath, "passwordmanager.db"),
                         Salt = ""
                     },
                     Jwt = new
@@ -73,6 +81,7 @@ public class Program
             }
             _configPath = configPath;
 
+            builder.Host.UseSerilog();
             builder.Configuration.AddJsonFile(_configPath)
                 .Build();
             ConfigureServices(builder.Services, builder.Configuration);
@@ -82,8 +91,9 @@ public class Program
             {
                 options.Listen(IPAddress.Loopback, 5167);
             });
-
+            
             var app = builder.Build();
+            app.UseSerilogRequestLogging();
             app.UseCors("MainPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
@@ -92,7 +102,11 @@ public class Program
         }
         catch(Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Log.Fatal(ex, "Host terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
         }
     }
     public static void ConfigureServices(IServiceCollection services, IConfiguration conf)
