@@ -1,4 +1,6 @@
 ﻿
+using System.Net;
+
 namespace Interfaces
 {
     public interface ITokenHandlerService
@@ -6,7 +8,7 @@ namespace Interfaces
         event Action TokenExpired;
         bool IsExpired { get;}
         string? Token { get; }
-        Task FetchToken(string password);
+        Task<HttpStatusCode> FetchToken(string password);
         void HandleExpirate();
 
     }

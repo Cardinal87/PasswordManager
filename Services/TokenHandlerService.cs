@@ -53,7 +53,7 @@ namespace Services
         }
 
 
-        async public Task FetchToken(string password)
+        async public Task<HttpStatusCode> FetchToken(string password)
         {
 
             var bytes = Encoding.UTF8.GetBytes(password);
@@ -61,6 +61,10 @@ namespace Services
             var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/tokens/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encodedPassword);
             var response = await _client.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return HttpStatusCode.Unauthorized;
+            }
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
@@ -69,6 +73,7 @@ namespace Services
             var json = JsonSerializer.Deserialize<JsonElement>(content);
             token = json.GetProperty("token").GetString();
             Token = token;
+            return HttpStatusCode.OK;
         }
 
         async private Task HandleResponse(HttpResponseMessage response)

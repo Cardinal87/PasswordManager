@@ -36,41 +36,8 @@ public partial class App : Application
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
-            
-
-        var basePath = AppContext.BaseDirectory;
-        if (!Directory.Exists(basePath))
-        {
-            Directory.CreateDirectory(basePath);
-        }
-        var condfigPath = Path.Combine(basePath, "config.json");
-        if (!File.Exists(condfigPath))
-        {
-            var model = new
-            {
-                Authorization = new
-                {
-                    Hash = "",
-                    ConnectionString = Path.Combine(basePath, "passwordmanager.db"),
-                    Salt = ""
-                },
-                Jwt = new
-                {
-                    Issuer = "localhost",
-                    Audience = "extension"
-                }
-            };
-            var json = JsonConvert.SerializeObject(model, Formatting.Indented);
-            File.WriteAllText(condfigPath, json);
-        }
-        _configPath = condfigPath;
-
-        var conf = new ConfigurationBuilder()
-            .AddJsonFile(condfigPath)
-            .Build();
-
         var services = new ServiceCollection();
-        SetUpContainer(services, conf);
+        SetUpContainer(services);
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var provider = services.BuildServiceProvider();
@@ -98,16 +65,16 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void SetUpContainer(IServiceCollection services, IConfiguration config)
+    private void SetUpContainer(IServiceCollection services)
     {
         services.AddScoped<IClipboardService, ClipboardService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
-        services.AddWritebleOptions<AppAuthorizationOptions>(config.GetSection(AppAuthorizationOptions.Section), _configPath);
         services.AddHttpClient();
         services.AddSingleton<IHttpDataConnector<AppModel>, HttpAppDataConnector>();
         services.AddSingleton<IHttpDataConnector<CardModel>, HttpCardDataConnector>();
         services.AddSingleton<IHttpDataConnector<WebSiteModel>, HttpWebSiteDataConnector>();
+        services.AddSingleton<HttpDatabaseManager>();
         services.AddSingleton<ITokenHandlerService, TokenHandlerService>();
         services.AddScoped<CardViewModel>();
         services.AddScoped<AppViewModel>();

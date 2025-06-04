@@ -1,10 +1,8 @@
-﻿
-using ViewModels.BaseClasses;
-using System.Security.Cryptography;
+﻿using ViewModels.BaseClasses;
+using System.Net;
 using Interfaces;
 using CommunityToolkit.Mvvm.Input;
 using Services;
-using System.Text.RegularExpressions;
 using Models.AppConfiguration;
 
 
@@ -14,19 +12,19 @@ namespace ViewModels
     {
        
         
-        public MenuViewModel(IWritableOptions<AppAuthorizationOptions> loggingOpt,
-                             ITokenHandlerService tokenService) 
+        public MenuViewModel(ITokenHandlerService tokenService, HttpDatabaseManager httpDatabaseManager) 
         {
-            _loggingOpt = loggingOpt;
+            _httpDatabaseManager = httpDatabaseManager;
             _tokenService = tokenService;
-            DeleteStorageCommand = new RelayCommand(DeleteStorage);
+            DeleteStorageCommand = new AsyncRelayCommand(DeleteStorage);
             SavePasswordCommand = new AsyncRelayCommand<string>(SavePassword);
             CheckPasswordCommand = new AsyncRelayCommand<string>(CheckPassword);
+            HasPassword = httpDatabaseManager.IsDatabaseExist();
         }
+        private HttpDatabaseManager _httpDatabaseManager;
         private Func<string, Task>? _startApp;
-        private IWritableOptions<AppAuthorizationOptions> _loggingOpt;
         private ITokenHandlerService _tokenService;
-        public RelayCommand DeleteStorageCommand { get; private set; }
+        public AsyncRelayCommand DeleteStorageCommand { get; private set; }
         public AsyncRelayCommand<string> SavePasswordCommand { get; private set; }
         public AsyncRelayCommand<string> CheckPasswordCommand { get; private set; }
         private bool isCorrectPass = true;
@@ -41,7 +39,7 @@ namespace ViewModels
             }
         }
 
-        public bool HasPassword { get => !String.IsNullOrEmpty(_loggingOpt.Value.Hash); }
+        public bool HasPassword { get; private set; }
 
 
         private async Task CheckPassword(string? password)
@@ -51,10 +49,16 @@ namespace ViewModels
             
             if (!String.IsNullOrEmpty(password))
             {
-                IsCorrectPass = EncodingKeysService.CompareHash(password, _loggingOpt.Value.Hash);
-                if (IsCorrectPass)
-                    await _tokenService.FetchToken(password);
-                    await _startApp(password);
+                
+                var status = await _tokenService.FetchToken(password);
+                if (status == HttpStatusCode.Unauthorized)
+                {
+                    IsCorrectPass = false;
+                    return;
+                }
+                await _startApp(password);
+                
+                
             }
         }
 
@@ -65,27 +69,19 @@ namespace ViewModels
 
             if (!String.IsNullOrEmpty(password))
             {
-                var salt = EncodingKeysService.GenerateSalt();
-                var hash = EncodingKeysService.GetHash(password);
-                IsCorrectPass = EncodingKeysService.IsCorrectPassword(password);
+                IsCorrectPass = EncodingKeysService.IsStrongPassword(password);
                 if (IsCorrectPass)
                 {
+                    await _httpDatabaseManager.CreateDatabase(password);
                     await _tokenService.FetchToken(password);
                     await _startApp(password);
                 }
             }
         }
-        private void DeleteStorage()
+        private async Task DeleteStorage()
         {
-            if (File.Exists(_loggingOpt.Value.ConnectionString))
-            {
-                File.Delete(_loggingOpt.Value.ConnectionString);
-            }
-            _loggingOpt.Update(opt =>
-            {
-                opt.Hash = "";
-                opt.Salt = "";
-            });
+            await _httpDatabaseManager.DeleteDatabase();
+            HasPassword = false;
             OnPropertyChanged(nameof(HasPassword));
         }
         

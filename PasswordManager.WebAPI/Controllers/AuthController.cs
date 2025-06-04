@@ -9,7 +9,6 @@ using System.Net.Http.Headers;
 using Models.AppConfiguration;
 using Services;
 using Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace PasswordManager.WebAPI.Controllers;
 
@@ -30,7 +29,7 @@ public class AuthController : Controller
     }
     
     [HttpPost("tokens")]
-    public async Task<IActionResult> CreateToken()
+    public IActionResult CreateToken()
     {
         
         var context = HttpContext;
@@ -41,19 +40,17 @@ public class AuthController : Controller
         {
             return BadRequest(new { error = message });
         }
-
-        if (String.IsNullOrEmpty(_appOptions.Value.Hash))
+        if (String.IsNullOrEmpty(_appOptions.Value.Hash) || !System.IO.File.Exists(_appOptions.Value.ConnectionString))
         {
-            InitializeConfiguration(password);
+            return BadRequest(new { error = "data base was not created yet" });
         }
         else
         {
             var iscorrect = EncodingKeysService.CompareHash(password, _appOptions.Value.Hash);
             if (!iscorrect) return BadRequest(new { Message = "Password is not correct" });
         }
-        var key = await EncodingKeysService.GetEcryptionKey(password, _appOptions.Value.Salt);
+        var key = EncodingKeysService.GetEcryptionKey(password, _appOptions.Value.Salt);
         DbConnectionStringSingleton.SetCreditals(key, _appOptions.Value.ConnectionString);
-        InitializeDatabase();
         var token = InitializeToken();
         return Ok(new { token });
             
@@ -92,22 +89,4 @@ public class AuthController : Controller
     }
 
 
-    private void InitializeConfiguration(string password)
-    {
-        string salt = EncodingKeysService.GenerateSalt();
-        string hash = EncodingKeysService.GetHash(password);
-        _appOptions.Update(opt => {
-            opt.Hash = hash;
-            opt.Salt = salt;
-        });
-    }
-
-    private void InitializeDatabase()
-    {
-        string connStr = DbConnectionStringSingleton.GetInstance().ConnectionString!;
-        var options = new DbContextOptionsBuilder<DatabaseClient>();
-        options.UseSqlite(connStr);
-        using var dbClient = new DatabaseClient(options.Options);
-        dbClient.Database.EnsureCreated();
-    }
 }

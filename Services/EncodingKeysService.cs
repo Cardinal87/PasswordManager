@@ -9,14 +9,14 @@ public static class EncodingKeysService
 {
     private const string passwordPattern = @"^(?=.*?[A-Z].*?[A-Z])(?=.*?[a-z].*?[a-z])(?=.*?\d.*?\d)(?=.*?[@$!%*?&].*?[@$!%*?&]).{10,50}$";
 
-    public async static Task<string> GetEcryptionKey(string password, string salt)
+    public static string GetEcryptionKey(string password, string salt)
     {
         int iterCount = 100000;
         int keySize = 32;
         using (var pbkdf2 = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), iterCount, HashAlgorithmName.SHA256))
         {
 
-            var hash = await Task.Run(() => pbkdf2.GetBytes(keySize));
+            var hash = pbkdf2.GetBytes(keySize);
             var hashString = BitConverter.ToString(hash).ToLower().Replace("-", "");
             return hashString;
         }
@@ -37,7 +37,7 @@ public static class EncodingKeysService
         return b;
     }
 
-    public static bool IsCorrectPassword(string password)
+    public static bool IsStrongPassword(string password)
     {
         return Regex.IsMatch(password, passwordPattern);
     }
