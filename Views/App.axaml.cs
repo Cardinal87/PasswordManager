@@ -2,17 +2,11 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Services.Extensions;
 using ViewModels;
 using Interfaces.PasswordGenerator;
 using Views.Services;
-using System.IO;
 using Interfaces;
-using System;
-using Models.AppConfiguration;
 using Services;
 using Models;
 using ViewModels.CardViewModels;
@@ -29,7 +23,6 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
         
     }
-    private string _configPath = "";
     public override void OnFrameworkInitializationCompleted()
     {
         // Line below is needed to remove Avalonia data validation.

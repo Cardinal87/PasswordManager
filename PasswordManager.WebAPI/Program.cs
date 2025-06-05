@@ -36,30 +36,11 @@ public class Program
                 opt.ServiceName = "ExtensionAPI";
             });
             var basePath = System.AppContext.BaseDirectory;
-            if (WindowsServiceHelpers.IsWindowsService())
-            {
-                string path = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
-                var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
-                var section = jObj["Config"]!;
-                basePath = section["ConfigPath"]!.ToString();
-
-            }
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(basePath);
             }
             var configPath = Path.Combine(basePath, "config.json");
-            if (args.Contains("--save"))
-            {
-                string path = Path.Combine(System.AppContext.BaseDirectory, "appsettings.json");
-                var jObj = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)) ?? throw new FileNotFoundException($"appsettings.json by path {path} was not found");
-                var section = jObj["Config"]!;
-                section["ConfigPath"] = basePath;
-                jObj["Config"] = JObject.Parse(JsonConvert.SerializeObject(section));
-                string json = JsonConvert.SerializeObject(jObj, Formatting.Indented);
-                File.WriteAllText(path, json);
-                return;
-            }
             if (!File.Exists(configPath))
             {
                 var model = new
