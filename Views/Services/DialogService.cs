@@ -2,13 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using ViewModels.BaseClasses;
-using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Interfaces.Dialogs;
 
 namespace Views.Services
 {

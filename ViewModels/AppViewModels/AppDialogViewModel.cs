@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using Interfaces;
 using Models.DataConnectors;
 using Models;
 using ViewModels.BaseClasses;
@@ -12,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Interfaces.PasswordGenerator;
+using Interfaces.Dialogs;
 
 
 namespace ViewModels.AppViewModels

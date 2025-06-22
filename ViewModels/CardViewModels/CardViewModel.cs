@@ -4,6 +4,7 @@ using ViewModels.BaseClasses;
 using Interfaces;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
+using Interfaces.Dialogs;
 
 namespace ViewModels.CardViewModels
 {

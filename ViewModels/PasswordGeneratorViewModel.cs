@@ -2,13 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Interfaces.PasswordGenerator;
 using ViewModels.BaseClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using Interfaces;
+using Interfaces.Dialogs;
 
 namespace ViewModels
 {

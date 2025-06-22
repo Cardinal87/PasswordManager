@@ -5,6 +5,7 @@ using ViewModels.BaseClasses;
 using System.Collections.ObjectModel;
 using Interfaces.PasswordGenerator;
 using Microsoft.Extensions.Logging;
+using Interfaces.Dialogs;
 
 
 namespace ViewModels.AppViewModels

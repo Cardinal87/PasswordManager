@@ -1,14 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 
 using ViewModels.BaseClasses;
-using Interfaces;
-using System;
-using System.Collections.Generic;
+using Interfaces.Dialogs;
 using System.Diagnostics.CodeAnalysis;
 
 using Models;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ViewModels.CardViewModels
 {

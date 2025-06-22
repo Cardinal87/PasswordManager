@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using Interfaces.Dialogs;
 using ViewModels.BaseClasses;
 
 namespace ViewModels

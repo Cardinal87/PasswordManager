@@ -3,7 +3,7 @@ using System.Net;
 using Interfaces;
 using CommunityToolkit.Mvvm.Input;
 using Services;
-using Models.AppConfiguration;
+using Services.Http;
 
 
 namespace ViewModels

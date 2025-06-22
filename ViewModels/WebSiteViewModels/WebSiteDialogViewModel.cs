@@ -5,12 +5,11 @@ using Models;
 
 using ViewModels.BaseClasses;
 
-using Interfaces;
-
 
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Interfaces.PasswordGenerator;
+using Interfaces.Dialogs;
 
 namespace ViewModels.WebSiteViewModels
 {

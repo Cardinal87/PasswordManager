@@ -14,7 +14,7 @@ using ViewModels.CardViewModels;
 using ViewModels.AppViewModels;
 using ViewModels.WebSiteViewModels;
 using Serilog;
-using Interfaces;
+using Interfaces.Dialogs;
 
 namespace Views;
 
