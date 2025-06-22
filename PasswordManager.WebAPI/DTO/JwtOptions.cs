@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.WebAPI.Services
+﻿namespace PasswordManager.WebAPI.DTO
 {
     public class JwtOptions
     {

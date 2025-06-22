@@ -6,12 +6,10 @@ using Microsoft.IdentityModel.Tokens;
 using Models.DataConnectors;
 using Newtonsoft.Json;
 using System.Net;
-using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Hosting.WindowsServices;
 using Models.AppConfiguration;
 using Services.Extensions;
 using Serilog;
-using Serilog.Events;
+using PasswordManager.WebAPI.DTO;
 namespace PasswordManager.WebAPI;
 
 
