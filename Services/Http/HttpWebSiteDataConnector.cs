@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
-namespace Services
+namespace Services.Http
 {
     public class HttpWebSiteDataConnector : IHttpDataConnector<WebSiteModel>
     {

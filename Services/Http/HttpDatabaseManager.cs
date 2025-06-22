@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace Services
+namespace Services.Http
 {
     public class HttpDatabaseManager
     {

@@ -1,30 +1,30 @@
 ﻿using Interfaces;
 using Models;
 using Newtonsoft.Json;
-using System.Net.Http.Json;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
-namespace Services
+namespace Services.Http
 {
-    public class HttpCardDataConnector : IHttpDataConnector<CardModel>
+    public class HttpAppDataConnector : IHttpDataConnector<AppModel>
     {
+
         private HttpClient _client;
         private ITokenHandlerService _token;
 
-        public HttpCardDataConnector(IHttpClientFactory factory, ITokenHandlerService token)
+        public HttpAppDataConnector(IHttpClientFactory factory, ITokenHandlerService token)
         {
             _client = factory.CreateClient();
             _client.BaseAddress = new Uri(@"http://localhost:5167/");
             _token = token;
         }
 
-
         async public Task Delete(int id)
         {
-            ValidToken();
 
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/cards/{id}");
+            ValidToken();
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/apps/{id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
@@ -33,30 +33,27 @@ namespace Services
             }
         }
 
-        async public Task<List<CardModel>> GetList()
+        async public Task<List<AppModel>> GetList()
         {
             ValidToken();
-
-            var request = new HttpRequestMessage(HttpMethod.Get, $"api/cards/");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/apps/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             using var response = await _client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
                 await HandleResponse(response);
             }
-            var cards = await response.Content.ReadFromJsonAsync<List<CardModel>>() ?? throw new InvalidDataException("Failed to deserialize data");
-            return cards;
-
+            var apps = await response.Content.ReadFromJsonAsync<List<AppModel>>() ?? throw new InvalidDataException("Failed to deserialize data");
+            return apps;
         }
 
-        async public Task<int> Post(CardModel model)
+        async public Task<int> Post(AppModel model)
         {
             ValidToken();
-
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, $"api/cards/");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"api/apps/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             request.Content = content;
             using var response = await _client.SendAsync(request);
@@ -64,20 +61,20 @@ namespace Services
             {
                 await HandleResponse(response);
             }
-            var responsed_model = await response.Content.ReadFromJsonAsync<CardModel>();
+            var responsed_model = await response.Content.ReadFromJsonAsync<AppModel>();
             if (responsed_model == null)
                 throw new NullReferenceException("no valid json was received from the server");
             return responsed_model.Id;
         }
 
-        async public Task Put(CardModel model, int id)
+        async public Task Put(AppModel model, int id)
         {
-            ValidToken();
 
+            ValidToken();
             var json = JsonConvert.SerializeObject(model);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            var request = new HttpRequestMessage(HttpMethod.Put, $"api/cards/{id}");
+            var request = new HttpRequestMessage(HttpMethod.Put, $"api/apps/{id}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token.Token);
             request.Content = content;
             using var response = await _client.SendAsync(request);
@@ -86,7 +83,6 @@ namespace Services
                 await HandleResponse(response);
             }
         }
-
         async private Task HandleResponse(HttpResponseMessage response)
         {
             var content = await response.Content.ReadAsStringAsync();
@@ -104,6 +100,7 @@ namespace Services
                 throw new HttpRequestException($"Unexpected error: {content}", null, response.StatusCode);
             }
         }
+
         private void ValidToken()
         {
             if (_token.IsExpired)
